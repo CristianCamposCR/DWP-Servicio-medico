@@ -1,7 +1,9 @@
 package mx.edu.utez.server.modules.doctor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,15 +11,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.person.model.Person;
+import mx.edu.utez.server.modules.review.model.Review;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.status.model.Status;
+import mx.edu.utez.server.modules.user.model.User;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
@@ -29,6 +37,12 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
+    private String identificationCard;
+
+    @Column(columnDefinition = "BIGINT UNSIGNED", nullable = false)
+    private Long experience;
 
     // Relationships <-
     @ManyToOne
@@ -44,6 +58,13 @@ public class Doctor {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "id",
             nullable = false)
-    @JsonIgnoreProperties({"doctor", "patient"})
     private Person person;
+
+    // Relationships ->
+    @OneToMany(mappedBy = "doctor")
+    @JsonIgnore
+    private Set<Appointment> appointments;
+
+    @OneToMany(mappedBy = "doctor")
+    private Set<Review> reviews;
 }

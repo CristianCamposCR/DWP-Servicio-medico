@@ -1,5 +1,6 @@
 package mx.edu.utez.server.modules.patient.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -18,12 +20,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.person.model.Person;
-import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.status.model.Status;
-import org.hibernate.validator.constraints.CodePointLength;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Table(name = "patients")
@@ -39,7 +41,7 @@ public class Patient {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
     private String patientCode;
 
-    @Column(columnDefinition = "TIMESTAMP WITH TIMEZONE", nullable = false)
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
@@ -52,6 +54,10 @@ public class Patient {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "id",
             nullable = false)
-    @JsonIgnoreProperties({"doctor", "patient"})
     private Person person;
+
+    // Relationships ->
+    @OneToMany(mappedBy = "patient")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 }

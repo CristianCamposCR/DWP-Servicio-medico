@@ -1,4 +1,4 @@
-package mx.edu.utez.server.modules.speciality.model;
+package mx.edu.utez.server.modules.role.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -14,19 +14,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.server.modules.area.model.Area;
-import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.status.model.Status;
+import mx.edu.utez.server.modules.user.model.User;
 
 import java.util.Set;
 
 @Entity
-@Table(name = "specialities")
+@Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Speciality {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,17 +35,12 @@ public class Speciality {
 
     // Relationships <-
     @ManyToOne
-    @JoinColumn(name = "area_id", referencedColumnName = "id",
-            nullable = false)
-    private Area area;
-
-    @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id",
             nullable = false)
     private Status status;
 
     // Relationships ->
-    @OneToMany(mappedBy = "speciality")
+    @OneToMany(mappedBy = "role")
     @JsonIgnore
-    private Set<Doctor> doctors;
+    private Set<User> users;
 }

@@ -12,13 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.genre.model.Genre;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.person.model.Person;
-import mx.edu.utez.server.modules.rol.model.Rol;
+import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
 
 import java.util.Set;
@@ -52,7 +53,7 @@ public class Status {
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore
-    private Set<Rol> roles;
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore
@@ -69,4 +70,8 @@ public class Status {
     @OneToMany(mappedBy = "status")
     @JsonIgnore
     private Set<AppointmentType> appointmentTypes;
+
+    @OneToMany(mappedBy = "status")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 }
