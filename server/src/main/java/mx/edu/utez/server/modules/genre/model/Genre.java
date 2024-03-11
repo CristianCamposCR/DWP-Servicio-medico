@@ -33,6 +33,7 @@ public class Genre {
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     private String name;
 
+    // Relationships <-
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id",
             nullable = false)
