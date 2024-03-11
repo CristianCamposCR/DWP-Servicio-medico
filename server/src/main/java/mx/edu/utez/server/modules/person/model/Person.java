@@ -1,8 +1,11 @@
 package mx.edu.utez.server.modules.person.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,6 +21,7 @@ import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.genre.model.Genre;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.status.model.Status;
+import mx.edu.utez.server.modules.user.model.User;
 
 import java.time.LocalDate;
 
@@ -69,4 +73,8 @@ public class Person {
     @OneToOne(mappedBy = "person")
     @JsonIgnore
     private Patient patient;
+
+    @OneToOne(mappedBy = "person")
+    @JsonIgnore
+    private User user;
 }
