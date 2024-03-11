@@ -22,12 +22,14 @@
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #434547;
+
 }
 
 .title {
   position: absolute;
   top: 90px;
   left: 20px;
+
 }
 
 .profile-container {
@@ -35,6 +37,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+
 }
 
 .profile-section {
@@ -57,6 +60,7 @@
   background-color: #495157;
   margin-right: 20px;
   border-radius: 15px;
+
 }
 
 .user-info {
@@ -112,6 +116,7 @@ export default {
     getProfile() {
       alert("consumo de perfil");
     },
+
   },
 
   mounted() {
