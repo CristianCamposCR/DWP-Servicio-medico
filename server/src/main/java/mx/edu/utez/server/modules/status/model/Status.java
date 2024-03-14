@@ -1,13 +1,7 @@
 package mx.edu.utez.server.modules.status.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +12,9 @@ import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.genre.model.Genre;
 import mx.edu.utez.server.modules.patient.model.Patient;
-import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
+import mx.edu.utez.server.modules.user.model.User;
 
 import java.util.Set;
 
@@ -57,7 +51,7 @@ public class Status {
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore
-    private Set<Person> people;
+    private Set<User> users;
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore

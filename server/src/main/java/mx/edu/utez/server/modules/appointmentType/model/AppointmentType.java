@@ -1,18 +1,15 @@
 package mx.edu.utez.server.modules.appointmentType.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.status.model.Status;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "appointment_types")
@@ -33,4 +30,9 @@ public class AppointmentType {
     @JoinColumn(name = "status_id", referencedColumnName = "id",
             nullable = false)
     private Status status;
+
+    // Relationships ->
+    @OneToMany(mappedBy = "appointmentType")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 }

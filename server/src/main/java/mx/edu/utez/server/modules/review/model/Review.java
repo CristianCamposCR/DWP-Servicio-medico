@@ -34,7 +34,7 @@ public class Review {
     private Integer ranking;
 
     @Column(columnDefinition = "TINYINT", nullable = false)
-    private Boolean isSkipped;
+    private Boolean wasSkipped;
 
     // Relationships <-
     @ManyToOne
