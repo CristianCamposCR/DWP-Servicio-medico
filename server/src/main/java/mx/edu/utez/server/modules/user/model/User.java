@@ -1,24 +1,17 @@
 package mx.edu.utez.server.modules.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.role.model.Role;
+import mx.edu.utez.server.modules.status.model.Status;
+import mx.edu.utez.server.modules.verificationCode.model.VerificationCode;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -39,6 +32,11 @@ public class User {
 
     // Relationships <-
     @ManyToOne
+    @JoinColumn(name = "status_id", referencedColumnName = "id",
+            nullable = false)
+    private Status status;
+
+    @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id",
             nullable = false)
     private Role role;
@@ -49,4 +47,7 @@ public class User {
     private Person person;
 
     // Relationships ->
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<VerificationCode> verificationCodes;
 }

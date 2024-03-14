@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.record.model.Record;
@@ -35,8 +36,14 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String folio;
+
     @Column(columnDefinition = "BIGINT UNSIGNED", nullable = false)
     private Long duration;
+
+    @Column(columnDefinition = "TINYINT", nullable = false)
+    private Boolean hasReview;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -57,6 +64,11 @@ public class Appointment {
     @JoinColumn(name = "doctor_id", referencedColumnName = "id",
             nullable = false)
     private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "appointment_type_id", referencedColumnName = "id",
+            nullable = false)
+    private AppointmentType appointmentType;
 
     // Relationships ->
     @OneToMany(mappedBy = "appointment")

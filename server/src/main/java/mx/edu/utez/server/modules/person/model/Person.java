@@ -60,11 +60,6 @@ public class Person {
             nullable = false)
     private Genre genre;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id",
-            nullable = false)
-    private Status status;
-
     // Relationships ->
     @OneToOne(mappedBy = "person")
     @JsonIgnore
