@@ -20,7 +20,6 @@ import lombok.Setter;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.genre.model.Genre;
 import mx.edu.utez.server.modules.patient.model.Patient;
-import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.User;
 
 import java.time.LocalDate;
@@ -48,10 +47,13 @@ public class Person {
     @Column(columnDefinition = "VARCHAR(18)", unique = true)
     private String curp;
 
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false, unique = true)
+    private String phoneNumber;
+
     @Column(columnDefinition = "JSON")
     private String details;
 
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate birthday;
 
     // Relationships <-
@@ -69,7 +71,9 @@ public class Person {
     @JsonIgnore
     private Patient patient;
 
-    @OneToOne(mappedBy = "person")
-    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            mappedBy = "person")
+    @JsonIgnoreProperties({"person"})
     private User user;
 }

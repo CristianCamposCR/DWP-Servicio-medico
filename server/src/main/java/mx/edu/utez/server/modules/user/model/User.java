@@ -1,7 +1,20 @@
 package mx.edu.utez.server.modules.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +24,7 @@ import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.verificationCode.model.VerificationCode;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
@@ -30,6 +44,10 @@ public class User {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String password;
 
+    @Column(nullable = false, insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id",
@@ -41,9 +59,10 @@ public class User {
             nullable = false)
     private Role role;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "person_id", referencedColumnName = "id",
             nullable = false)
+    @JsonIgnore
     private Person person;
 
     // Relationships ->

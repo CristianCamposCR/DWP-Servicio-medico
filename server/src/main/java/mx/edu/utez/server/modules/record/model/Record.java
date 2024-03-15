@@ -2,11 +2,12 @@ package mx.edu.utez.server.modules.record.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -38,12 +39,12 @@ public class Record {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String medications;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
     // Relationships <-
-    @ManyToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "appointment_id", referencedColumnName = "id",
             nullable = false)
     private Appointment appointment;

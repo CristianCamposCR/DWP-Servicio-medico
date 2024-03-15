@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,7 +23,6 @@ import mx.edu.utez.server.modules.record.model.Record;
 import mx.edu.utez.server.modules.status.model.Status;
 
 import java.time.Instant;
-import java.util.Set;
 
 @Entity
 @Table(name = "appointments")
@@ -45,7 +44,7 @@ public class Appointment {
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean hasReview;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
@@ -61,8 +60,7 @@ public class Appointment {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id", referencedColumnName = "id",
-            nullable = false)
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 
     @ManyToOne
@@ -71,7 +69,7 @@ public class Appointment {
     private AppointmentType appointmentType;
 
     // Relationships ->
-    @OneToMany(mappedBy = "appointment")
+    @OneToOne(mappedBy = "appointment")
     @JsonIgnore
-    private Set<Record> records;
+    private Record records;
 }

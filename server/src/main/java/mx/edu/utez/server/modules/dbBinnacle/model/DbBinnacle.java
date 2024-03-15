@@ -38,7 +38,7 @@ public class DbBinnacle {
     @Column(columnDefinition = "JSON")
     private String to_record;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 

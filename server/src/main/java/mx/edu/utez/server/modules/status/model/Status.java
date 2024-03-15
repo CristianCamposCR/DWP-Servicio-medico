@@ -1,11 +1,20 @@
 package mx.edu.utez.server.modules.status.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.kernel.enums.Statuses;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.area.model.Area;
@@ -30,7 +39,8 @@ public class Status {
     private Long id;
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Statuses name;
 
     // Relationships ->
     @OneToMany(mappedBy = "status")

@@ -1,7 +1,6 @@
 package mx.edu.utez.server.modules.patient.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,7 +40,7 @@ public class Patient {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
     private String patientCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 

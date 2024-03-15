@@ -1,10 +1,22 @@
 package mx.edu.utez.server.modules.verificationCode.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.kernel.enums.MessageTypes;
 import mx.edu.utez.server.modules.user.model.User;
 
 import java.time.Instant;
@@ -20,20 +32,21 @@ public class VerificationCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false, updatable = false)
     private String code;
 
     @Column(columnDefinition = "VARCHAR(5)", nullable = false)
-    private String messageType;
+    @Enumerated(EnumType.STRING)
+    private MessageTypes messageType;
 
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean wasUsed;
 
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Instant expireAt;
 
     // Relationships <-

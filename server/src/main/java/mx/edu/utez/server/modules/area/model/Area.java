@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.status.model.Status;
 
@@ -33,6 +32,9 @@ public class Area {
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     private String name;
+
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String description;
 
     // Relationships <-
     @ManyToOne

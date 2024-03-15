@@ -9,12 +9,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
-import mx.edu.utez.server.modules.status.model.Status;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "reviews")
@@ -35,6 +38,10 @@ public class Review {
 
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean wasSkipped;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
 
     // Relationships <-
     @ManyToOne
