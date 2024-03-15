@@ -34,6 +34,9 @@ public class Speciality {
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     private String name;
 
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String description;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "area_id", referencedColumnName = "id",
