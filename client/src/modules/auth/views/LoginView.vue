@@ -1,57 +1,61 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
-    <b-tabs content-class="mt-3">
-      <b-tab title="Iniciar Sesión" active>
-        <b-card :img-src="require('@/assets/Hospital.jpg')" img-alt="Hospital" img-top>
-          <div class="px-5 mx-5">
-            <b-form-group>
-              <b-input-group class="mb-3">
-                <b-input placeholder="Correo Electronico"></b-input>
-              </b-input-group>
-              <b-input-group class="mb-3">
-                <b-input placeholder="Password" type="password"></b-input>
-              </b-input-group>
-            </b-form-group>
-            <b-row class="custom-row">
-              <b-col cols="12" sm="12" md="4">
-                <b-button class="custom-button">Iniciar Sesión</b-button>
-              </b-col>
-            </b-row>
-          </div>
-        </b-card>
-      </b-tab>
-      <b-tab title="Crear Cuenta" @click="navigateCreateAccount"
-        ><p>Crear Cuenta</p></b-tab
-      >
-      <router-view></router-view>
-    </b-tabs>
+    <div class="mx-3">
+      <b-card no-body class="overflow-hidden shadow">
+        <b-tabs
+          content-class="mt-3"
+          fill
+          active-nav-item-class="font-weight-bold"
+        >
+          <b-tab active>
+            <template #title>
+              <b-icon icon="person-fill"></b-icon>
+              Iniciar sesión
+            </template>
+            <login-form />
+          </b-tab>
+          <b-tab>
+            <template #title>
+              <b-icon icon="person-lines-fill"></b-icon>
+              Crear cuenta
+            </template>
+            <create-account />
+          </b-tab>
+        </b-tabs>
+      </b-card>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  methods: {
-    navigateCreateAccount() {
-      this.$router.push({
-        name: "createAccount",
-      });
-    },
+import Vue, { defineAsyncComponent } from "vue";
+
+export default Vue.extend({
+  name: "LoginView",
+  components: {
+    CreateAccount: defineAsyncComponent(() =>
+      import("@/modules/auth/views/CreateAccount.vue")
+    ),
+    LoginForm: defineAsyncComponent(() =>
+      import("@/modules/auth/views/LoginForm.vue")
+    ),
   },
-};
+});
 </script>
 
 <style>
-.custom-row {
-  text-align: center;
-  align-items: center;
-  justify-content: center;
+.nav-link {
+  color: grey;
+  border-color: transparent !important;
+  border-bottom: solid #ffffff !important;
+}
+.nav-link.active {
+  color: #10b981 !important;
+  border-bottom: 3px solid #10b981 !important;
 }
 
-.custom-button {
-  background-color: #10b981;
-  border-color: #10b981;
-  color: white;
-  font-size: 20px;
-  padding: 10px 20px;
+/* Estilos para los enlaces al pasar el cursor */
+.nav-link:hover {
+  color: #10b981 !important;
 }
 </style>
