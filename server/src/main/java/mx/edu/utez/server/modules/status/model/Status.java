@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.kernel.enums.StatusTypes;
 import mx.edu.utez.server.kernel.enums.Statuses;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
@@ -41,6 +42,10 @@ public class Status {
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private Statuses name;
+
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusTypes statusType;
 
     // Relationships ->
     @OneToMany(mappedBy = "status")

@@ -9,6 +9,8 @@ public enum Statuses {
     BLOQUEADO,
 
     // Citas
+    CONFIRMADA,
+    ATENDIDA,
     AGENDADA,
     CANCELADA,
     EXPIRADA,
