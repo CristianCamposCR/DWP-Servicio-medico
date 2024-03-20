@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.kernel.Genders;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.status.model.Status;
 
@@ -34,7 +35,7 @@ public class Gender {
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private String name;
+    private Genders name;
 
     // Relationships <-
     @ManyToOne
