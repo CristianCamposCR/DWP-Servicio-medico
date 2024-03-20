@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.server.kernel.enums.MessageTypes;
+import mx.edu.utez.server.kernel.MessageType;
 import mx.edu.utez.server.modules.user.model.User;
 
 import java.time.Instant;
@@ -37,7 +37,7 @@ public class VerificationCode {
 
     @Column(columnDefinition = "VARCHAR(5)", nullable = false)
     @Enumerated(EnumType.STRING)
-    private MessageTypes messageType;
+    private MessageType messageType;
 
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean wasUsed;

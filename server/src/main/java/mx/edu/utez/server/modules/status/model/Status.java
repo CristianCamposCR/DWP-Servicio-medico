@@ -14,13 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.server.kernel.enums.StatusTypes;
-import mx.edu.utez.server.kernel.enums.Statuses;
+import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
-import mx.edu.utez.server.modules.genre.model.Genre;
+import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
@@ -41,16 +40,16 @@ public class Status {
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private Statuses name;
+    private mx.edu.utez.server.kernel.Status name;
 
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusTypes statusType;
+    private StatusType statusType;
 
     // Relationships ->
     @OneToMany(mappedBy = "status")
     @JsonIgnore
-    private Set<Genre> genres;
+    private Set<Gender> genders;
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore

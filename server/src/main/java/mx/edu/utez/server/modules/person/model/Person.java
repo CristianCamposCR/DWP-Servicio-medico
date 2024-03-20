@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
-import mx.edu.utez.server.modules.genre.model.Genre;
+import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.user.model.User;
 
@@ -58,9 +58,9 @@ public class Person {
 
     // Relationships <-
     @ManyToOne
-    @JoinColumn(name = "genre_id", referencedColumnName = "id",
+    @JoinColumn(name = "gender_id", referencedColumnName = "id",
             nullable = false)
-    private Genre genre;
+    private Gender gender;
 
     // Relationships ->
     @OneToOne(mappedBy = "person")
