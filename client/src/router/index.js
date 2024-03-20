@@ -23,6 +23,11 @@ const router = new VueRouter({
       component: () => import('../modules/auth/views/CreateAccount.vue')
     },
     {
+      path: '/areaManagement',
+      name: 'areaManagement',
+      component: () => import('../modules/area-management/views/AreaView.vue')
+    },
+    {
       path: '/home',
       name: 'home',
       component: HomeView
