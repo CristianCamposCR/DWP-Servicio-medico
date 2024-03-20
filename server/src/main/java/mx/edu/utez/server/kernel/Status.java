@@ -1,6 +1,6 @@
-package mx.edu.utez.server.kernel.enums;
+package mx.edu.utez.server.kernel;
 
-public enum Statuses {
+public enum Status {
     // Usuarios y general
     ACTIVO,
     INACTIVO,
@@ -9,9 +9,9 @@ public enum Statuses {
     BLOQUEADO,
 
     // Citas
+    AGENDADA,
     CONFIRMADA,
     ATENDIDA,
-    AGENDADA,
     CANCELADA,
     EXPIRADA,
 
