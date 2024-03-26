@@ -22,6 +22,7 @@ import lombok.Setter;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.review.model.Review;
+import mx.edu.utez.server.modules.shift.model.Shift;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.status.model.Status;
 
@@ -42,14 +43,28 @@ public class Doctor {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
     private String professionalId;
 
-    @Column(columnDefinition = "BIGINT UNSIGNED", nullable = false)
+    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
     private Long experience;
+
+    @Column(columnDefinition = "TINYINT", nullable = false)
+    private Boolean isAux;
+
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    private String availableDays;
 
     @Column(nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
+    @Column(insertable = false)
+    private Instant updatedAt;
+
     // Relationships <-
+    @ManyToOne
+    @JoinColumn(name = "shift_id", referencedColumnName = "id",
+            nullable = false)
+    private Shift shift;
+
     @ManyToOne
     @JoinColumn(name = "speciality_id", referencedColumnName = "id",
             nullable = false)

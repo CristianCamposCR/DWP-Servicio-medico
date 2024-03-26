@@ -43,6 +43,9 @@ public class Review {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
+    @Column(insertable = false)
+    private Instant updatedAt;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id",

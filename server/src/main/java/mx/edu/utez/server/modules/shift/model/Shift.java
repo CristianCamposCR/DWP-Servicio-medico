@@ -1,4 +1,4 @@
-package mx.edu.utez.server.modules.area.model;
+package mx.edu.utez.server.modules.shift.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -10,44 +10,34 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mx.edu.utez.server.modules.speciality.model.Speciality;
+import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.status.model.Status;
 
-import java.time.Instant;
 import java.util.Set;
 
 @Entity
-@Table(name = "areas")
+@Table(name = "shifts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Area {
+public class Shift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     private String name;
 
-    @Column(columnDefinition = "VARCHAR(200)")
-    private String description;
+    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    private Integer entryHour;
 
-    @Column(columnDefinition = "TEXT")
-    private String bannerImage;
-
-    @Column(nullable = false, insertable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Instant createdAt;
-
-    @Column(insertable = false)
-    private Instant updatedAt;
+    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
+    private Integer departureHour;
 
     // Relationships <-
     @ManyToOne
@@ -56,7 +46,7 @@ public class Area {
     private Status status;
 
     // Relationships ->
-    @OneToMany(mappedBy = "area")
+    @OneToMany(mappedBy = "shift")
     @JsonIgnore
-    private Set<Speciality> specialities;
+    private Set<Doctor> doctors;
 }

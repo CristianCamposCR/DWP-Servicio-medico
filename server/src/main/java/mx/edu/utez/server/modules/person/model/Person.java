@@ -56,6 +56,9 @@ public class Person {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate birthday;
 
+    @Column(columnDefinition = "TEXT")
+    private String profilePhoto;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "gender_id", referencedColumnName = "id",
