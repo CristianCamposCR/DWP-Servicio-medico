@@ -15,13 +15,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.kernel.StatusType;
+import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.patient.model.Patient;
+import mx.edu.utez.server.modules.payment.module.Payment;
 import mx.edu.utez.server.modules.role.model.Role;
+import mx.edu.utez.server.modules.shift.model.Shift;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.user.model.User;
 
@@ -40,7 +43,7 @@ public class Status {
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private mx.edu.utez.server.kernel.Status name;
+    private Statuses name;
 
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -82,4 +85,12 @@ public class Status {
     @OneToMany(mappedBy = "status")
     @JsonIgnore
     private Set<Appointment> appointments;
+
+    @OneToMany(mappedBy = "status")
+    @JsonIgnore
+    private Set<Payment> payments;
+
+    @OneToMany(mappedBy = "status")
+    @JsonIgnore
+    private Set<Shift> shifts;
 }

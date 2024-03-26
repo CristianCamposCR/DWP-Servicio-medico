@@ -10,14 +10,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.status.model.Status;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
@@ -37,6 +41,19 @@ public class Speciality {
     @Column(columnDefinition = "VARCHAR(200)")
     private String description;
 
+    @Column(columnDefinition = "DOUBLE", nullable = false)
+    private Double cost;
+
+    @Column(columnDefinition = "TEXT")
+    private String bannerImage;
+
+    @Column(nullable = false, insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
+    @Column(insertable = false)
+    private Instant updatedAt;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "area_id", referencedColumnName = "id",
@@ -52,4 +69,8 @@ public class Speciality {
     @OneToMany(mappedBy = "speciality")
     @JsonIgnore
     private Set<Doctor> doctors;
+
+    @OneToMany(mappedBy = "speciality")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 }

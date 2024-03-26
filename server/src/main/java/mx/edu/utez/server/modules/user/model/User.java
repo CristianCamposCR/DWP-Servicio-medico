@@ -48,6 +48,9 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
+    @Column(insertable = false)
+    private Instant updatedAt;
+
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id",

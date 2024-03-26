@@ -43,6 +43,9 @@ public class Record {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
+    @Column(insertable = false)
+    private Instant updatedAt;
+
     // Relationships <-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "appointment_id", referencedColumnName = "id",

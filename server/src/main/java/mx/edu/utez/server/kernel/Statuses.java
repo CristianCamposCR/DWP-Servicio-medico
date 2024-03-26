@@ -1,6 +1,6 @@
 package mx.edu.utez.server.kernel;
 
-public enum Status {
+public enum Statuses {
     // Usuarios y general
     ACTIVO,
     INACTIVO,
