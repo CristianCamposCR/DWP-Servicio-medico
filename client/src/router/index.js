@@ -16,6 +16,11 @@ const router = new VueRouter({
       name: "login",
       component: () => import("../modules/auth/views/LoginView.vue"),
     },
+    {
+      path: "/areas",
+      name: "areas",
+      component: () => import("../modules/areas/views/AreasView.vue"),
+    },
   ],
 });
 
