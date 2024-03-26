@@ -3,8 +3,13 @@
     <div class="mt-5">
       <H1>ÁREAS</H1>
     </div>
+    <div class="bodybutton">
+          <b-button v-b-modal.modal-save-area class="custom-button">
+            <b-icon icon="plus"></b-icon> Registrar Area
+          </b-button>
+        </div>
     <b-row class="mt-5 ml-3">
-      <b-col v-for="(area, key) in areas" :key="key" lg="3" md="6" sm="12">
+      <b-col v-for="(area, key) in areas" :key="key" lg="3" md="6" sm="12" class="flex-grow-1">
         <b-card :title="area.name" :img-src="area.image" class="mb-2">
           <b-card-text class="card-text-scroll">
             <p class="area">Área</p>
@@ -17,11 +22,14 @@
         </b-card>
       </b-col>
     </b-row>
+    <ModalSaveArea/>
   </div>
 </template>
 
 <script>
+import ModalSaveArea from './ModalSaveArea.vue';
 export default {
+  components: {ModalSaveArea},
   name: "AreaView",
   data() {
     return {
