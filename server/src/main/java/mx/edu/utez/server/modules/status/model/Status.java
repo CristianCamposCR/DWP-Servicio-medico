@@ -37,11 +37,16 @@ import java.util.Set;
 @Getter
 @Setter
 public class Status {
+    public Status(Statuses name, StatusType statusType) {
+        this.name = name;
+        this.statusType = statusType;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(45)", nullable = false)
     @Enumerated(EnumType.STRING)
     private Statuses name;
 

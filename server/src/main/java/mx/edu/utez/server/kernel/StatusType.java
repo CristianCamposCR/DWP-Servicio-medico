@@ -5,4 +5,5 @@ public enum StatusType {
     USUARIOS,
     CITAS,
     DOCTORES,
+    PAGOS,
 }

@@ -10,6 +10,7 @@ public enum Statuses {
 
     // Citas
     AGENDADA,
+    REAGENDADA,
     CONFIRMADA,
     ATENDIDA,
     CANCELADA,
@@ -18,4 +19,8 @@ public enum Statuses {
     // Doctores
     OCUPADO,
     LIBRE,
+
+    // Pagos
+    PAGADO,
+    REEMBOLSADO,
 }
