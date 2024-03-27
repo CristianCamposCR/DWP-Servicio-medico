@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ISpecialityRepository extends JpaRepository<Speciality, Long> {
+    boolean existsByArea_Id(Long areaId);
 }
