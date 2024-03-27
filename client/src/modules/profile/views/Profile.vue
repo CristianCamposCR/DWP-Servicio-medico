@@ -3,7 +3,6 @@
     <h1 class="title">Perfil</h1>
     <div class="profile-container">
       <div class="profile-section">
-        
         <div class="profile-image"></div>
       </div>
       <div class="profile-section">
@@ -28,15 +27,15 @@
 
 .title {
   position: absolute;
-  top: 90px; 
-  left: 20px; 
+  top: 90px;
+  left: 20px;
 }
 
 .profile-container {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
-  height: 100vh; 
+  height: 100vh;
 }
 
 .profile-section {
@@ -54,11 +53,11 @@
 }
 
 .profile-image {
-  width: 300px; 
-  height: 300px; 
+  width: 300px;
+  height: 300px;
   background-color: #495157;
   margin-right: 20px;
-  border-radius: 15px; 
+  border-radius: 15px;
 }
 
 .user-info {
@@ -70,6 +69,28 @@ button {
   margin-top: 20px;
   padding: 10px;
   font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .title {
+    position: static;
+    text-align: center;
+  }
+
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .profile-section {
+    margin-bottom: 20px;
+  }
+
+  .profile-image {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
 }
 </style>
 
@@ -89,9 +110,9 @@ export default {
     editProfile() {
       alert("Editar información del perfil");
     },
-    getProfile(){
-      alert("consumo de perfil")
-    }
+    getProfile() {
+      alert("consumo de perfil");
+    },
   },
 
   mounted() {
