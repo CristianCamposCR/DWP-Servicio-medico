@@ -32,11 +32,6 @@ const router = new VueRouter({
           },
         },
         ...managmentRoute,
-        {
-          path: "/profile",
-          name: "profile",
-          component: () => import("../modules/profile/views/Profile.vue"),
-        },
       ],
     },
   ],
