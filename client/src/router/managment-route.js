@@ -14,6 +14,16 @@ export default [
           title: "Áreas",
           requireAuth: false
         },
+        
+      },
+      {
+        path: 'profile',
+        name: 'profile',
+        component: () => import('../modules/profile/views/Profile.vue'),
+        meta: {
+          title: "Áreas",
+          requireAuth: false
+        },
       },
     ],
   },
