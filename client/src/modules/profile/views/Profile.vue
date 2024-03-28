@@ -22,7 +22,6 @@
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #434547;
-  margin-top: 60px;
 }
 
 .title {
