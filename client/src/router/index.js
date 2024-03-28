@@ -10,12 +10,17 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
-      redirect: "/login",
+      redirect: { name: "landing"}
     },
     {
       path: "/",
       component: { render: (c) => c("router-view") },
       children: [
+        {
+          path: "/landing",
+          name: "landing",
+          component: () => import("../modules/public/views/LandingPageView.vue"),
+        },
         {
           path: "/login",
           name: "login",
