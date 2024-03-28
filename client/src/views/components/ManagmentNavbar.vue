@@ -26,7 +26,7 @@ export default Vue.extend({
     return {
       links: [
         { name: "Áreas", to: "areas-managment" },
-        { name: "Especialdiades", to: "especialities-managment" },
+        { name: "Especialidades", to: "especialities-managment" },
       ],
     };
   },
