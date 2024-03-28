@@ -6,11 +6,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
 public interface IAreaRepository extends JpaRepository<Area, Long> {
     Page<Area> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Page<Area> findAllByStatus_Name(Statuses statusName, Pageable pageable);
+
+    Page<Area> findAllByNameContainingIgnoreCaseAndStatus_Name(String name, Statuses statusName, Pageable pageable);
+
+    Optional<Area> findByIdAndStatus_Name(Long id, Statuses statusName);
 
     Set<Area> findAllByStatus_Name(Statuses statusName);
 

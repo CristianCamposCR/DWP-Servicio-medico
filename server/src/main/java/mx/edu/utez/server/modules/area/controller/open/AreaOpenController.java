@@ -1,4 +1,4 @@
-package mx.edu.utez.server.modules.area.controller;
+package mx.edu.utez.server.modules.area.controller.open;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
@@ -27,17 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/api/management/area/")
+@RequestMapping(value = "/api/open/area/")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-public class AreaController {
+public class AreaOpenController {
     private final AreaService areaService;
     private final HashService hashService;
 
     @PostMapping("/paged/")
     public ResponseEntity<ResponseApi<Page<Area>>> findAll(Pageable pageable,
                                                            @RequestBody(required = false) @Validated(GetAll.class) AreaDto areaDto) {
-        ResponseApi<Page<Area>> responseApi = this.areaService.findAll(areaDto, pageable);
+        ResponseApi<Page<Area>> responseApi = this.areaService.openFindAll(areaDto, pageable);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
@@ -45,7 +45,7 @@ public class AreaController {
     public ResponseEntity<ResponseApi<Area>> findOne(@PathVariable("id") String encryptedId) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Area> responseApi = this.areaService.findOne(id);
+            ResponseApi<Area> responseApi = this.areaService.openFindOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -59,46 +59,5 @@ public class AreaController {
     public ResponseEntity<ResponseApi<Set<Area>>> listAll() {
         ResponseApi<Set<Area>> responseApi = this.areaService.listAll();
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<ResponseApi<Area>> save(@RequestBody AreaDto areaDto) {
-        try {
-            ResponseApi<Area> responseApi = this.areaService.save(areaDto);
-            return new ResponseEntity<>(responseApi, responseApi.getStatus());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.internalServerError().body(
-                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
-            );
-        }
-    }
-
-    @PutMapping("/")
-    public ResponseEntity<ResponseApi<Area>> update(@RequestBody @Validated(Update.class) AreaDto areaDto) {
-        try {
-            areaDto.setId(this.hashService.decryptId(areaDto.getIdStr()));
-            ResponseApi<Area> responseApi = this.areaService.update(areaDto);
-            return new ResponseEntity<>(responseApi, responseApi.getStatus());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.internalServerError().body(
-                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
-            );
-        }
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ResponseApi<Area>> changeStatus(@PathVariable("id") String encryptedId) {
-        try {
-            Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Area> responseApi = this.areaService.changeStatus(id);
-            return new ResponseEntity<>(responseApi, responseApi.getStatus());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return ResponseEntity.internalServerError().body(
-                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
-            );
-        }
     }
 }
