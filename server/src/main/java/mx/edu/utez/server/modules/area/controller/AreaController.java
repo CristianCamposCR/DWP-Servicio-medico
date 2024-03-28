@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
-@RequestMapping(value = "/api/area")
+@RequestMapping(value = "/api/management/area/")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
 public class AreaController {
@@ -51,6 +53,12 @@ public class AreaController {
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
         }
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<ResponseApi<Set<Area>>> listAll() {
+        ResponseApi<Set<Area>> responseApi = this.areaService.listAll();
+        return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
     @PostMapping("/")

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -63,6 +64,26 @@ public class AreaService {
                     new ResponseApi<>(area, HttpStatus.OK, false, "Área")
             ).orElseGet(() ->
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name())
+            );
+        } catch (Exception e) {
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Set<Area>> listAll() {
+        try {
+            Set<Area> areas = this.iAreaRepository.findAllByStatus_Name(Statuses.ACTIVO);
+
+            return new ResponseApi<>(
+                    areas,
+                    HttpStatus.OK,
+                    false,
+                    "Lista de áreas."
             );
         } catch (Exception e) {
             return new ResponseApi<>(
