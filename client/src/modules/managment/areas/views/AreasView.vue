@@ -44,7 +44,7 @@
             class="overflow-hidden mt-3 mx-2 shadow card-animation"
             style="max-width: 270px; max-height: 800px"
             footer-bg-variant="transparent"
-            footer-border-variant="light"
+            footer-border-variant="white"
           >
             <b-row no-gutters>
               <b-col md="12">
