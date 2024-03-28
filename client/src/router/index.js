@@ -10,7 +10,7 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
-      redirect: { name: "landing"}
+      redirect: { name: "landing" },
     },
     {
       path: "/",
@@ -19,7 +19,8 @@ const router = new VueRouter({
         {
           path: "/landing",
           name: "landing",
-          component: () => import("../modules/public/views/LandingPageView.vue"),
+          component: () =>
+            import("../modules/public/views/LandingPageView.vue"),
         },
         {
           path: "/login",
@@ -31,6 +32,11 @@ const router = new VueRouter({
           },
         },
         ...managmentRoute,
+        {
+          path: "/profile",
+          name: "profile",
+          component: () => import("../modules/profile/views/Profile.vue"),
+        },
       ],
     },
   ],
