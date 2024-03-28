@@ -1,5 +1,12 @@
-.custom-button{
-    background-color: #10b981;
-    border-color: #10b981;
-    color: white;
+.custom-button {
+  background-color: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+.card-animation:hover {
+  scale: 102%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.custom-nav-font{
+  font-weight: bold;
 }

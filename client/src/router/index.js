@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import managmentRoute from "./managment-route";
 
 Vue.use(VueRouter);
 
@@ -12,14 +13,20 @@ const router = new VueRouter({
       redirect: "/login",
     },
     {
-      path: "/login",
-      name: "login",
-      component: () => import("../modules/auth/views/LoginView.vue"),
-    },
-    {
-      path: "/areas",
-      name: "areas",
-      component: () => import("../modules/areas/views/AreasView.vue"),
+      path: "/",
+      component: { render: (c) => c("router-view") },
+      children: [
+        {
+          path: "/login",
+          name: "login",
+          component: () => import("../modules/auth/views/LoginView.vue"),
+          meta: {
+            title: "Iniciar sesión",
+            requireAuth: false,
+          },
+        },
+        ...managmentRoute,
+      ],
     },
   ],
 });
