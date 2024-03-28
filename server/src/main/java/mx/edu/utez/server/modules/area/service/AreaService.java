@@ -54,12 +54,58 @@ public class AreaService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseApi<Page<Area>> openFindAll(AreaDto areaDto, Pageable pageable) {
+        try {
+            Page<Area> areas;
+            if (areaDto != null && areaDto.getName() != null) {
+                areas = this.iAreaRepository.findAllByNameContainingIgnoreCaseAndStatus_Name(
+                        areaDto.getName(), Statuses.ACTIVO, pageable);
+            } else {
+                areas = this.iAreaRepository.findAllByStatus_Name(Statuses.ACTIVO, pageable);
+            }
+            return new ResponseApi<>(
+                    areas,
+                    HttpStatus.OK,
+                    false,
+                    "Áreas"
+            );
+        } catch (Exception e) {
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
     public ResponseApi<Area> findOne(Long id) {
         try {
             if (id == null || id <= 0)
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             Optional<Area> optionalArea = this.iAreaRepository.findById(id);
+            return optionalArea.map(area ->
+                    new ResponseApi<>(area, HttpStatus.OK, false, "Área")
+            ).orElseGet(() ->
+                    new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name())
+            );
+        } catch (Exception e) {
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Area> openFindOne(Long id) {
+        try {
+            if (id == null || id <= 0)
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Area> optionalArea = this.iAreaRepository.findByIdAndStatus_Name(id, Statuses.ACTIVO);
             return optionalArea.map(area ->
                     new ResponseApi<>(area, HttpStatus.OK, false, "Área")
             ).orElseGet(() ->
