@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -52,11 +54,11 @@ public class Doctor {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String availableDays;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(insertable = false)
+    @Column(columnDefinition = "DATETIME", insertable = false)
     private Instant updatedAt;
 
     // Relationships <-
@@ -87,4 +89,15 @@ public class Doctor {
 
     @OneToMany(mappedBy = "doctor")
     private Set<Review> reviews;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void setUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
 }

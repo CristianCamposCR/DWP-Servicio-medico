@@ -3,6 +3,8 @@ package mx.edu.utez.server.modules.role.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.User;
 
@@ -26,12 +29,18 @@ import java.util.Set;
 @Getter
 @Setter
 public class Role {
+    public Role(Roles name, Status status) {
+        this.name = name;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "VARCHAR(45)", nullable = false, unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Roles name;
 
     // Relationships <-
     @ManyToOne

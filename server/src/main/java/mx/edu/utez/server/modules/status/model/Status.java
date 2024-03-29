@@ -19,6 +19,7 @@ import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointmentType.model.AppointmentType;
 import mx.edu.utez.server.modules.area.model.Area;
+import mx.edu.utez.server.modules.cancellationReason.module.CancellationReason;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.patient.model.Patient;
@@ -98,4 +99,8 @@ public class Status {
     @OneToMany(mappedBy = "status")
     @JsonIgnore
     private Set<Shift> shifts;
+
+    @OneToMany(mappedBy = "status")
+    @JsonIgnore
+    private Set<CancellationReason> cancellationReasons;
 }

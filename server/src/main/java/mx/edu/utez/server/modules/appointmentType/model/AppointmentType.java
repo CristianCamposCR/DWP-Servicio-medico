@@ -26,6 +26,12 @@ import java.util.Set;
 @Getter
 @Setter
 public class AppointmentType {
+    public AppointmentType(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

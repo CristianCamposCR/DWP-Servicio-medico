@@ -29,6 +29,11 @@ import java.util.Set;
 @Getter
 @Setter
 public class Gender {
+    public Gender(Genders name, Status status) {
+        this.name = name;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

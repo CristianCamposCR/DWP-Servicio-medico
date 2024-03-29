@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -44,7 +45,7 @@ public class Payment {
     @Column(columnDefinition = "JSON", nullable = false)
     private String charge;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
@@ -53,4 +54,10 @@ public class Payment {
     @JoinColumn(name = "status_id", referencedColumnName = "id",
             nullable = false)
     private Status status;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
 }
