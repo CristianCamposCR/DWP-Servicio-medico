@@ -21,7 +21,9 @@ public interface IAreaRepository extends JpaRepository<Area, Long> {
 
     Set<Area> findAllByStatus_Name(Statuses statusName);
 
-    public boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
-    public boolean existsByNameAndIdNot(String name, Long areaId);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long areaId);
+
+    boolean existsByIdAndStatus_Name(Long id, Statuses statusName);
 }

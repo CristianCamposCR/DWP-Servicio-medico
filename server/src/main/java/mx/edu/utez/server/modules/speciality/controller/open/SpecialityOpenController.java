@@ -1,11 +1,11 @@
-package mx.edu.utez.server.modules.area.controller.open;
+package mx.edu.utez.server.modules.speciality.controller.open;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
-import mx.edu.utez.server.modules.area.controller.dto.AreaDto;
-import mx.edu.utez.server.modules.area.controller.dto.AreaGroups;
-import mx.edu.utez.server.modules.area.model.Area;
-import mx.edu.utez.server.modules.area.service.AreaService;
+import mx.edu.utez.server.modules.speciality.controller.dto.SpecialityDto;
+import mx.edu.utez.server.modules.speciality.controller.dto.SpecialityGroups;
+import mx.edu.utez.server.modules.speciality.model.Speciality;
+import mx.edu.utez.server.modules.speciality.service.SpecialityService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.springframework.data.domain.Page;
@@ -24,25 +24,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/api/open/area/")
+@RequestMapping(value = "/api/open/speciality/")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-public class AreaOpenController {
-    private final AreaService areaService;
+public class SpecialityOpenController {
+    private final SpecialityService specialityService;
     private final HashService hashService;
 
     @PostMapping("/paged/")
-    public ResponseEntity<ResponseApi<Page<Area>>> findAll(Pageable pageable,
-                                                           @RequestBody(required = false) @Validated(AreaGroups.GetAll.class) AreaDto areaDto) {
-        ResponseApi<Page<Area>> responseApi = this.areaService.openFindAll(areaDto, pageable);
+    public ResponseEntity<ResponseApi<Page<Speciality>>> findAll(Pageable pageable,
+                                                                 @RequestBody(required = false) @Validated(SpecialityGroups.GetAll.class) SpecialityDto specialityDto) {
+        ResponseApi<Page<Speciality>> responseApi = this.specialityService.openFindAll(specialityDto, pageable);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseApi<Area>> findOne(@PathVariable("id") String encryptedId) {
+    public ResponseEntity<ResponseApi<Speciality>> findOne(@PathVariable("id") String encryptedId) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Area> responseApi = this.areaService.openFindOne(id);
+            ResponseApi<Speciality> responseApi = this.specialityService.openFindOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -53,8 +53,8 @@ public class AreaOpenController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<ResponseApi<Set<Area>>> listAll() {
-        ResponseApi<Set<Area>> responseApi = this.areaService.openListAll();
+    public ResponseEntity<ResponseApi<Set<Speciality>>> listAll() {
+        ResponseApi<Set<Speciality>> responseApi = this.specialityService.openListAll();
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 }
