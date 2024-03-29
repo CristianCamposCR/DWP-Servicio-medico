@@ -4,19 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import mx.edu.utez.server.modules.area.model.Area;
+import mx.edu.utez.server.modules.speciality.controller.dto.SpecialityGroups;
 import mx.edu.utez.server.modules.status.model.Status;
-import mx.edu.utez.server.utils.dtoGroups.GetAll;
-import mx.edu.utez.server.utils.dtoGroups.Save;
-import mx.edu.utez.server.utils.dtoGroups.Update;
 
 @Data
 public class AreaDto {
-    @NotBlank(groups = {Update.class})
+    @NotBlank(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     private String idStr;
     private Long id;
 
-    @NotBlank(groups = {Update.class, Save.class})
-    @Size(min = 1, max = 45, groups = {Update.class, Save.class, GetAll.class})
+    @NotBlank(groups = {AreaGroups.Update.class, AreaGroups.Save.class})
+    @Size(min = 1, max = 45, groups = {AreaGroups.Update.class, AreaGroups.Save.class, AreaGroups.GetAll.class})
     private String name;
 
     @Size(max = 200)
@@ -27,7 +25,7 @@ public class AreaDto {
     // Relationships <-
     private Status status;
 
-    public Area getArea() {
+    public Area getAreaEntity() {
         return new Area(
                 getId(),
                 getName(),

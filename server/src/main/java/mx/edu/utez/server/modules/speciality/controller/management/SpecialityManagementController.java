@@ -1,11 +1,11 @@
-package mx.edu.utez.server.modules.area.controller.management;
+package mx.edu.utez.server.modules.speciality.controller.management;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
-import mx.edu.utez.server.modules.area.controller.dto.AreaDto;
-import mx.edu.utez.server.modules.area.controller.dto.AreaGroups;
-import mx.edu.utez.server.modules.area.model.Area;
-import mx.edu.utez.server.modules.area.service.AreaService;
+import mx.edu.utez.server.modules.speciality.controller.dto.SpecialityDto;
+import mx.edu.utez.server.modules.speciality.controller.dto.SpecialityGroups;
+import mx.edu.utez.server.modules.speciality.model.Speciality;
+import mx.edu.utez.server.modules.speciality.service.SpecialityService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.springframework.data.domain.Page;
@@ -24,25 +24,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/management/area/")
+@RequestMapping(value = "/api/management/speciality")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-public class AreaManagementController {
-    private final AreaService areaService;
+public class SpecialityManagementController {
+    private final SpecialityService specialityService;
     private final HashService hashService;
 
     @PostMapping("/paged/")
-    public ResponseEntity<ResponseApi<Page<Area>>> findAll(Pageable pageable,
-                                                           @RequestBody(required = false) @Validated(AreaGroups.GetAll.class) AreaDto areaDto) {
-        ResponseApi<Page<Area>> responseApi = this.areaService.findAll(areaDto, pageable);
+    public ResponseEntity<ResponseApi<Page<Speciality>>> findAll(Pageable pageable,
+                                                                 @RequestBody(required = false) @Validated(SpecialityGroups.GetAll.class) SpecialityDto specialityDto) {
+        ResponseApi<Page<Speciality>> responseApi = this.specialityService.findAll(specialityDto, pageable);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseApi<Area>> findOne(@PathVariable("id") String encryptedId) {
+    public ResponseEntity<ResponseApi<Speciality>> findOne(@PathVariable("id") String encryptedId) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Area> responseApi = this.areaService.findOne(id);
+            ResponseApi<Speciality> responseApi = this.specialityService.findOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
@@ -52,9 +52,10 @@ public class AreaManagementController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseApi<Area>> save(@RequestBody @Validated(AreaGroups.Save.class) AreaDto areaDto) {
+    public ResponseEntity<ResponseApi<Speciality>> save(@RequestBody @Validated(SpecialityGroups.Save.class) SpecialityDto specialityDto) {
         try {
-            ResponseApi<Area> responseApi = this.areaService.save(areaDto);
+            specialityDto.getArea().setId(this.hashService.decryptId(specialityDto.getArea().getIdStr()));
+            ResponseApi<Speciality> responseApi = this.specialityService.save(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
@@ -64,10 +65,11 @@ public class AreaManagementController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<ResponseApi<Area>> update(@RequestBody @Validated(AreaGroups.Update.class) AreaDto areaDto) {
+    public ResponseEntity<ResponseApi<Speciality>> update(@RequestBody @Validated(SpecialityGroups.Update.class) SpecialityDto specialityDto) {
         try {
-            areaDto.setId(this.hashService.decryptId(areaDto.getIdStr()));
-            ResponseApi<Area> responseApi = this.areaService.update(areaDto);
+            specialityDto.getArea().setId(this.hashService.decryptId(specialityDto.getArea().getIdStr()));
+            specialityDto.setId(this.hashService.decryptId(specialityDto.getIdStr()));
+            ResponseApi<Speciality> responseApi = this.specialityService.update(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(
@@ -77,10 +79,10 @@ public class AreaManagementController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseApi<Area>> changeStatus(@PathVariable("id") String encryptedId) {
+    public ResponseEntity<ResponseApi<Speciality>> changeStatus(@PathVariable("id") String encryptedId) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Area> responseApi = this.areaService.changeStatus(id);
+            ResponseApi<Speciality> responseApi = this.specialityService.changeStatus(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(

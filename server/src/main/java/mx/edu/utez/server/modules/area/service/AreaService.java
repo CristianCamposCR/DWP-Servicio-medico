@@ -121,7 +121,7 @@ public class AreaService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseApi<Set<Area>> listAll() {
+    public ResponseApi<Set<Area>> openListAll() {
         try {
             Set<Area> areas = this.iAreaRepository.findAllByStatus_Name(Statuses.ACTIVO);
 
@@ -143,7 +143,7 @@ public class AreaService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Area> save(AreaDto areaDto) {
         try {
-            if (this.iAreaRepository.existsByName(areaDto.getName()))
+            if (this.iAreaRepository.existsByNameIgnoreCase(areaDto.getName()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_AREA.name());
 
             Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.ACTIVO, StatusType.GENERAL);
@@ -153,7 +153,7 @@ public class AreaService {
             areaDto.setStatus(optionalStatus.get());
 
             return new ResponseApi<>(
-                    this.iAreaRepository.saveAndFlush(areaDto.getArea()),
+                    this.iAreaRepository.saveAndFlush(areaDto.getAreaEntity()),
                     HttpStatus.CREATED,
                     false,
                     "Area creada."
@@ -177,13 +177,13 @@ public class AreaService {
             if (optionalArea.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name());
 
-            if (this.iAreaRepository.existsByNameAndIdNot(areaDto.getName(), areaDto.getId()))
+            if (this.iAreaRepository.existsByNameIgnoreCaseAndIdNot(areaDto.getName(), areaDto.getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_AREA.name());
 
             this.iStatusRepository.findById(optionalArea.get().getStatus().getId()).ifPresent(areaDto::setStatus);
 
             return new ResponseApi<>(
-                    this.iAreaRepository.saveAndFlush(areaDto.getArea()),
+                    this.iAreaRepository.saveAndFlush(areaDto.getAreaEntity()),
                     HttpStatus.OK,
                     false,
                     "Area actualizada."

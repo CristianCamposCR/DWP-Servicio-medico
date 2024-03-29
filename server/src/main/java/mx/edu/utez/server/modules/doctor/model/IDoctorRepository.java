@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
+    boolean existsBySpeciality_Id(Long id);
 }

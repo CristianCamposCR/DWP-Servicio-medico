@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -31,6 +33,16 @@ import java.util.Set;
 @Getter
 @Setter
 public class Speciality {
+    public Speciality(Long id, String name, String description, Double cost, String bannerImage, Area area, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.cost = cost;
+        this.bannerImage = bannerImage;
+        this.area = area;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,11 +59,11 @@ public class Speciality {
     @Column(columnDefinition = "TEXT")
     private String bannerImage;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(insertable = false)
+    @Column(columnDefinition = "DATETIME", insertable = false)
     private Instant updatedAt;
 
     // Relationships <-
@@ -73,4 +85,15 @@ public class Speciality {
     @OneToMany(mappedBy = "speciality")
     @JsonIgnore
     private Set<Appointment> appointments;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void setUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
 }
