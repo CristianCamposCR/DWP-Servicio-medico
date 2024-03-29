@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -38,7 +39,7 @@ public class DbBinnacle {
     @Column(columnDefinition = "JSON")
     private String to_record;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
@@ -47,4 +48,10 @@ public class DbBinnacle {
 
     @Column(columnDefinition = "VARCHAR(100)")
     private String dbUser;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
 }

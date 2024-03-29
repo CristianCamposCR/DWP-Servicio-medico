@@ -50,7 +50,7 @@ public class Person {
     @Column(columnDefinition = "VARCHAR(15)", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "TEXT")
     private String details;
 
     @Column(columnDefinition = "DATE", nullable = false)

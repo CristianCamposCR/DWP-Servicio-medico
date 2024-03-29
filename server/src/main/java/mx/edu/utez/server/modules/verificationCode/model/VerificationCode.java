@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -42,11 +43,11 @@ public class VerificationCode {
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean wasUsed;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(nullable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     private Instant expireAt;
 
     // Relationships <-
@@ -54,4 +55,10 @@ public class VerificationCode {
     @JoinColumn(name = "user_id", referencedColumnName = "id",
             nullable = false)
     private User user;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
 }

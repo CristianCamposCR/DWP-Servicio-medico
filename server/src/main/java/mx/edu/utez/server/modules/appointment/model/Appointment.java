@@ -11,6 +11,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -49,11 +51,11 @@ public class Appointment {
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean hasReview;
 
-    @Column(nullable = false, insertable = false, updatable = false)
+    @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(insertable = false)
+    @Column(columnDefinition = "DATETIME", insertable = false)
     private Instant updatedAt;
 
     @Column(nullable = false)
@@ -98,4 +100,15 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment")
     @JsonIgnore
     private Record records;
+
+    // Methods
+    @PrePersist
+    public void setCreatedAt() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void setUpdatedAt() {
+        this.updatedAt = Instant.now();
+    }
 }
