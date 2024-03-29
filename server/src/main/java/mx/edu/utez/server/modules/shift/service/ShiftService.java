@@ -15,7 +15,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class ShiftService {
-    private IShiftRepository iShiftRepository;
+    private final IShiftRepository iShiftRepository;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public Shift findOrSave(Shifts name, Integer entryHour, Integer departureHour, Status status) {
