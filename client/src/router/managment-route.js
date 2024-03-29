@@ -17,6 +17,17 @@ export default [
         
       },
       {
+        path: "patient-managment",
+        name: "patient-managment",
+        component: () =>
+          import("../modules/managment/patient/views/PatientView.vue"),
+        meta: {
+          title: "Pacientes",
+          requireAuth: false
+        },
+        
+      },
+      {
         path: 'profile',
         name: 'profile',
         component: () => import('../modules/profile/views/Profile.vue'),
