@@ -7,14 +7,14 @@
           fill
           active-nav-item-class="font-weight-bold"
         >
-          <b-tab active>
+          <b-tab :active="activeTab === 'login'">
             <template #title>
               <b-icon icon="person-fill"></b-icon>
               Iniciar sesión
             </template>
             <login-form />
           </b-tab>
-          <b-tab>
+          <b-tab :active="activeTab === 'register'">
             <template #title>
               <b-icon icon="person-lines-fill"></b-icon>
               Crear cuenta
@@ -39,6 +39,11 @@ export default Vue.extend({
     LoginForm: defineAsyncComponent(() =>
       import("@/modules/auth/views/LoginForm.vue")
     ),
+  },
+  data() {
+    return {
+      activeTab: this.$route.query.action || "login",
+    };
   },
 });
 </script>
