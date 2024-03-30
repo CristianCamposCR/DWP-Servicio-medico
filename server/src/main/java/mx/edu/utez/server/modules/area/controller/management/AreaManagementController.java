@@ -66,7 +66,6 @@ public class AreaManagementController {
     @PutMapping("/")
     public ResponseEntity<ResponseApi<Area>> update(@RequestBody @Validated(AreaGroups.Update.class) AreaDto areaDto) {
         try {
-            areaDto.setId(this.hashService.decryptId(areaDto.getIdStr()));
             ResponseApi<Area> responseApi = this.areaService.update(areaDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {

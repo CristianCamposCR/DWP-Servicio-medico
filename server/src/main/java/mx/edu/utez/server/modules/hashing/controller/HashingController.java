@@ -16,12 +16,12 @@ public class HashingController {
     private HashService hashService;
 
     @PostMapping("/encrypt")
-    public String encryptData(@RequestBody String data) throws Exception {
+    public String encryptData(@RequestBody String data) {
         return hashService.encrypt(data);
     }
 
     @PostMapping("/decrypt")
-    public String decryptData(@RequestBody String encryptedData) throws Exception {
+    public String decryptData(@RequestBody String encryptedData) {
         return hashService.decrypt(encryptedData);
     }
 }

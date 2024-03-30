@@ -54,7 +54,6 @@ public class SpecialityManagementController {
     @PostMapping("/")
     public ResponseEntity<ResponseApi<Speciality>> save(@RequestBody @Validated(SpecialityGroups.Save.class) SpecialityDto specialityDto) {
         try {
-            specialityDto.getArea().setId(this.hashService.decryptId(specialityDto.getArea().getIdStr()));
             ResponseApi<Speciality> responseApi = this.specialityService.save(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
@@ -67,8 +66,6 @@ public class SpecialityManagementController {
     @PutMapping("/")
     public ResponseEntity<ResponseApi<Speciality>> update(@RequestBody @Validated(SpecialityGroups.Update.class) SpecialityDto specialityDto) {
         try {
-            specialityDto.getArea().setId(this.hashService.decryptId(specialityDto.getArea().getIdStr()));
-            specialityDto.setId(this.hashService.decryptId(specialityDto.getIdStr()));
             ResponseApi<Speciality> responseApi = this.specialityService.update(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {

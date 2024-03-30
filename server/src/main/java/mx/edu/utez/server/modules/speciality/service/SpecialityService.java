@@ -149,8 +149,6 @@ public class SpecialityService {
     public ResponseApi<Speciality> save(SpecialityDto specialityDto) {
         try {
             Long areaId = specialityDto.getArea().getId();
-            if (Validations.isInvalidId(areaId))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             if (!areaExists(areaId))
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name());
@@ -186,9 +184,6 @@ public class SpecialityService {
     public ResponseApi<Speciality> update(SpecialityDto specialityDto) {
         try {
             Long areaId = specialityDto.getArea().getId();
-            Long specialityId = specialityDto.getId();
-            if (Validations.isInvalidId(areaId) || Validations.isInvalidId(specialityId))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             if (!areaExists(areaId))
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name());
