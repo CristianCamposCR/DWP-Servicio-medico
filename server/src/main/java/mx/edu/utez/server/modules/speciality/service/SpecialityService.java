@@ -38,7 +38,7 @@ public class SpecialityService {
     public ResponseApi<Page<Speciality>> findAll(SpecialityDto specialityDto, Pageable pageable) {
         try {
             Page<Speciality> specialities;
-            if (specialityDto != null && specialityDto.getName() != null) {
+            if (specialityDto != null && specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
                 specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCase(specialityDto.getName(), pageable);
             } else {
                 specialities = this.iSpecialityRepository.findAll(pageable);
@@ -62,7 +62,7 @@ public class SpecialityService {
     public ResponseApi<Page<Speciality>> openFindAll(SpecialityDto specialityDto, Pageable pageable) {
         try {
             Page<Speciality> specialities;
-            if (specialityDto != null && specialityDto.getName() != null) {
+            if (specialityDto != null && specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
                 specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCaseAndStatus_Name(
                         specialityDto.getName(), Statuses.ACTIVO, pageable);
             } else {

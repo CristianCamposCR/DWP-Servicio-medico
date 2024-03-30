@@ -20,7 +20,8 @@ public class SpecialityDto {
     private Long id;
 
     @NotBlank(groups = {SpecialityGroups.Update.class, SpecialityGroups.Save.class})
-    @Size(min = 1, max = 45, groups = {SpecialityGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.GetAll.class})
+    @Size(min = 1, max = 45, groups = {SpecialityGroups.Update.class, SpecialityGroups.Save.class})
+    @Size(max = 45, groups = {SpecialityGroups.GetAll.class})
     private String name;
 
     @Size(max = 200, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})

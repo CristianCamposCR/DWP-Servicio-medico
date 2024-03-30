@@ -11,6 +11,7 @@ import mx.edu.utez.server.modules.speciality.model.ISpecialityRepository;
 import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
+import mx.edu.utez.server.utils.Validations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class AreaService {
     public ResponseApi<Page<Area>> findAll(AreaDto areaDto, Pageable pageable) {
         try {
             Page<Area> areas;
-            if (areaDto != null && areaDto.getName() != null) {
+            if (areaDto != null && areaDto.getName() != null && !areaDto.getName().isBlank()) {
                 areas = this.iAreaRepository.findAllByNameContainingIgnoreCase(areaDto.getName(), pageable);
             } else {
                 areas = this.iAreaRepository.findAll(pageable);
@@ -57,7 +58,7 @@ public class AreaService {
     public ResponseApi<Page<Area>> openFindAll(AreaDto areaDto, Pageable pageable) {
         try {
             Page<Area> areas;
-            if (areaDto != null && areaDto.getName() != null) {
+            if (areaDto != null && areaDto.getName() != null && !areaDto.getName().isBlank()) {
                 areas = this.iAreaRepository.findAllByNameContainingIgnoreCaseAndStatus_Name(
                         areaDto.getName(), Statuses.ACTIVO, pageable);
             } else {
@@ -81,7 +82,7 @@ public class AreaService {
     @Transactional(readOnly = true)
     public ResponseApi<Area> findOne(Long id) {
         try {
-            if (id == null || id <= 0)
+            if (Validations.isInvalidId(id))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             Optional<Area> optionalArea = this.iAreaRepository.findById(id);
@@ -102,7 +103,7 @@ public class AreaService {
     @Transactional(readOnly = true)
     public ResponseApi<Area> openFindOne(Long id) {
         try {
-            if (id == null || id <= 0)
+            if (Validations.isInvalidId(id))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             Optional<Area> optionalArea = this.iAreaRepository.findByIdAndStatus_Name(id, Statuses.ACTIVO);
@@ -197,7 +198,7 @@ public class AreaService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Area> changeStatus(Long id) {
         try {
-            if (id == null || id <= 0)
+            if (Validations.isInvalidId(id))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
             Optional<Area> optionalArea = this.iAreaRepository.findById(id);
