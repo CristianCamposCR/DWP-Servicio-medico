@@ -24,7 +24,7 @@ import lombok.Setter;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.status.model.Status;
-import mx.edu.utez.server.modules.verificationCode.model.VerificationCode;
+import mx.edu.utez.server.modules.verification_code.model.VerificationCode;
 
 import java.time.Instant;
 import java.util.Set;
