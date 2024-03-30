@@ -7,7 +7,7 @@
       </div>
       <div class="profile-section">
         <div class="user-info">
-          <h2>{{ user.name }}</h2>
+          <h2>{{ user.name}} {{ user.lastname }} {{ user.surname  }}</h2>
           <p>Email: {{ user.email }}</p>
           <p>Teléfono: {{ user.phone }}</p>
           <p>Dirección: {{ user.address }}</p>
@@ -15,8 +15,42 @@
         <b-button class="custom-button" @click="editProfile">Editar Perfil</b-button>
       </div>
     </div>
+    <ModalUpdateProfile :user="user"/>
   </div>
 </template>
+
+
+<script>
+import ModalUpdateProfile from './ModalUpdateProfile.vue';
+export default {
+  components:{ModalUpdateProfile},
+  data() {
+    return {
+      user: {
+        name: "Maycon",
+        surname:"Medina",
+        lastname:"Carmona",
+        email: "20213tn004@utez.edu.mx",
+        phone: "777-200-2582",
+        address: "La huizachera",
+      },
+    };
+  },
+  methods: {
+    editProfile() {
+      this.$bvModal.show("modal-update-profile");
+    },
+    getProfile() {
+      alert("consumo de perfil");
+    },
+  },
+
+  mounted() {
+    this.getProfile();
+  },
+};
+</script>
+
 
 <style>
 #app {
@@ -96,31 +130,3 @@ button {
   }
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      user: {
-        name: "Maycon Carmona Medina",
-        email: "20213tn004@utez.edu.mx",
-        phone: "777-200-2582",
-        address: "La huizachera",
-      },
-    };
-  },
-  methods: {
-    editProfile() {
-      alert("Editar información del perfil");
-    },
-    getProfile() {
-      alert("consumo de perfil");
-    },
-
-  },
-
-  mounted() {
-    this.getProfile();
-  },
-};
-</script>
