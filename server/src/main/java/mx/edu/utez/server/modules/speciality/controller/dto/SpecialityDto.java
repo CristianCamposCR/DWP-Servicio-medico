@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,8 +15,8 @@ import mx.edu.utez.server.modules.status.model.Status;
 
 @Data
 public class SpecialityDto {
-    @NotBlank(groups = {SpecialityGroups.Update.class})
-    private String idStr;
+    @NotNull(groups = {SpecialityGroups.Update.class})
+    @Positive(groups = {SpecialityGroups.Update.class})
     private Long id;
 
     @NotBlank(groups = {SpecialityGroups.Update.class, SpecialityGroups.Save.class})
@@ -25,7 +27,7 @@ public class SpecialityDto {
     private String description;
 
     @Min(value = 0, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
-    @Max(value = 10000,groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
+    @Max(value = 10000, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     @PositiveOrZero(groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     private Double cost;
 

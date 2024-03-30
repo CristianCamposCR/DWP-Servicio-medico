@@ -1,6 +1,8 @@
 package mx.edu.utez.server.modules.area.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import mx.edu.utez.server.modules.area.model.Area;
@@ -9,8 +11,8 @@ import mx.edu.utez.server.modules.status.model.Status;
 
 @Data
 public class AreaDto {
-    @NotBlank(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
-    private String idStr;
+    @NotNull(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
+    @Positive(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     private Long id;
 
     @NotBlank(groups = {AreaGroups.Update.class, AreaGroups.Save.class})

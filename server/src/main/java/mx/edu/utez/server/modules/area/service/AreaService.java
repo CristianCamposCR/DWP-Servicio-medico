@@ -170,9 +170,6 @@ public class AreaService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Area> update(AreaDto areaDto) {
         try {
-            if (areaDto.getId() == null || areaDto.getId() <= 0)
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
-
             Optional<Area> optionalArea = this.iAreaRepository.findById(areaDto.getId());
             if (optionalArea.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name());
