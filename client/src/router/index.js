@@ -24,6 +24,7 @@ const router = new VueRouter({
         },
         {
           path: "/login",
+          props: true,
           name: "login",
           component: () => import("../modules/auth/views/LoginView.vue"),
           meta: {

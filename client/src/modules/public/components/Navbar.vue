@@ -10,16 +10,21 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#" class="custom-link">Inicio</b-nav-item>
+          <b-nav-item
+              href="#" class="custom-link">Inicio</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
 
-          <b-nav-item href="#" class="mr-4 custom-link" >Iniciar Sesión</b-nav-item>
+          <b-nav-item
+              :to="{ name: 'login'}"
+              class="mr-4 custom-link" >Iniciar Sesión</b-nav-item>
 
           <b-nav-form>
-            <b-button size="sm" class="my-2 my-sm-0 py-2 px-md-4 custom-link" type="button" variant="success">Crear cuenta</b-button>
+            <b-button
+                :to="{ name: 'login', query: { action: 'register' } }"
+                size="sm" class="my-2 my-sm-0 py-2 px-md-4 custom-link" type="button" variant="success">Crear cuenta</b-button>
           </b-nav-form>
         </b-navbar-nav>
       </b-collapse>
@@ -50,3 +55,6 @@ export default {
 }
 
 </style>
+
+
+

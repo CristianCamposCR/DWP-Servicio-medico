@@ -12,7 +12,9 @@
             <p class="lead">CIMI es una plataforma de gestión de información médica que te permite llevar un control de
               tus citas médicas, historial clínico y mucho más.</p>
             <p class="my-3">Regístrate y comienza a disfrutar de los beneficios que CIMI tiene para ti.</p>
-            <b-button variant="success" size="lg" class="custom-button">Crear cuenta</b-button>
+            <b-button
+                :to="{name: 'login', query: { action: 'register' }}"
+                variant="success" size="lg" class="custom-button">Crear cuenta</b-button>
           </div>
           <div class="col-md-6 text-center" data-aos="zoom-in-up">
             <img src="@/assets/image/kit-doctor-profile.gif" alt="CIMI" class="img-fluid">
@@ -210,7 +212,9 @@
         </div>
         <!--        button create account-->
         <div class="text-center mt-5">
-          <b-button variant="success" size="lg" class="custom-button w-75">Crear cuenta</b-button>
+          <b-button
+              :to="{name: 'login', query: { action: 'register' }}"
+              variant="success" size="lg" class="custom-button w-75">Crear cuenta</b-button>
         </div>
       </div>
     </div>
@@ -360,7 +364,7 @@
     </div>
 
     <!--    Footer  -->
-    <div class="" style="background-color: #10b981">
+    <div class="" style="background-color: #0d9265">
       <div class="px-4 py-5">
         <div class="row">
           <div class="col-12 col-md-3">
@@ -383,10 +387,11 @@
           </div>
           <div class="col-12 col-md-3">
             <h3 class="text-white mb-3" >Enlaces rapidos</h3>
-            <p class="d-flex"><b-link class="text-white" to="/">Inicio</b-link></p>
-            <p class="d-flex"><b-link class="text-white" to="/login">Iniciar Sesión</b-link></p>
-            <p class="d-flex"><b-link class="text-white" to="/register">Crear cuenta</b-link></p>
-            <p class="d-flex"><b-link class="text-white" to="/our-service">Nuestros servicios</b-link></p>
+            <p class="d-flex"><b-link class="text-white"
+                :to="{name: 'login'}">Iniciar Sesión</b-link></p>
+            <p class="d-flex"><b-link class="text-white"
+                :to="{name: 'login', query: { action: 'register' }}">Crear cuenta</b-link></p>
+            <p class="d-flex"><b-link class="text-white" >Nuestros servicios</b-link></p>
 
           </div>
           <div class="col-12 col-md-3">
