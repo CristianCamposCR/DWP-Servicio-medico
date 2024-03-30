@@ -9,7 +9,9 @@ import mx.edu.utez.server.modules.area.service.AreaService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,8 +35,12 @@ public class AreaManagementController {
     private final HashService hashService;
 
     @PostMapping("/paged/")
-    public ResponseEntity<ResponseApi<Page<Area>>> findAll(Pageable pageable,
+    public ResponseEntity<ResponseApi<Page<Area>>> findAll(@RequestParam(defaultValue = "0", required = false) int page,
+                                                           @RequestParam(defaultValue = "10", required = false) int size,
+                                                           @RequestParam(defaultValue = "id", required = false) String sort,
+                                                           @RequestParam(defaultValue = "asc", required = false) String direction,
                                                            @RequestBody(required = false) @Validated(AreaGroups.GetAll.class) AreaDto areaDto) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
         ResponseApi<Page<Area>> responseApi = this.areaService.findAll(areaDto, pageable);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }

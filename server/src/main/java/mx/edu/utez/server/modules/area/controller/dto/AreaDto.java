@@ -16,10 +16,11 @@ public class AreaDto {
     private Long id;
 
     @NotBlank(groups = {AreaGroups.Update.class, AreaGroups.Save.class})
-    @Size(min = 1, max = 45, groups = {AreaGroups.Update.class, AreaGroups.Save.class, AreaGroups.GetAll.class})
+    @Size(min = 1, max = 45, groups = {AreaGroups.Update.class, AreaGroups.Save.class})
+    @Size(max = 45, groups = {AreaGroups.GetAll.class})
     private String name;
 
-    @Size(max = 200)
+    @Size(max = 200, groups = {AreaGroups.Update.class, AreaGroups.Save.class})
     private String description;
 
     private String bannerImage;
@@ -28,12 +29,6 @@ public class AreaDto {
     private Status status;
 
     public Area getAreaEntity() {
-        return new Area(
-                getId(),
-                getName(),
-                getDescription(),
-                getBannerImage(),
-                getStatus()
-        );
+        return new Area(getId(), getName(), getDescription(), getBannerImage(), getStatus());
     }
 }
