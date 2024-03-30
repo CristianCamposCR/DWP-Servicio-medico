@@ -147,7 +147,7 @@
         </b-col>
       </b-row>
     </section>
-    <ModalPatientView />
+    <ModalPatientView :patient="patient" />
   </div>
 </template>
 
