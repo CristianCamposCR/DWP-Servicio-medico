@@ -13,8 +13,8 @@
                   <p class="detail-value"> paciente.nombre </p>
                 </div>
                 <div class="detail-item">
-                  <p class="detail-label">Edad:</p>
-                  <p class="detail-value"> paciente.edad </p>
+                  <p class="detail-label">Estado:</p>
+                  <p class="detail-value"> paciente.estado </p>
                 </div>
                 <div class="detail-item">
                   <p class="detail-label">Género:</p>
@@ -38,10 +38,7 @@
                   <p class="detail-label">Correo Electrónico:</p>
                   <p class="detail-value"> paciente.email </p>
                 </div>
-                <div class="detail-item">
-                  <p class="detail-label">Estado:</p>
-                  <p class="detail-value"> paciente.estado </p>
-                </div>
+                
               </div>
             </div>
           </div>
@@ -57,7 +54,7 @@
   export default {
     name: "ModalPatientView",
     props: {
-      paciente: {
+      patient: {
         type: Object,
         required: true
       }
