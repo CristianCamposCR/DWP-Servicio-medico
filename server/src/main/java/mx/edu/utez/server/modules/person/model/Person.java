@@ -55,7 +55,7 @@ public class Person {
     @Column(columnDefinition = "VARCHAR(50)")
     private String lastname;
 
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String email;
 
     @Column(columnDefinition = "VARCHAR(18)", unique = true)

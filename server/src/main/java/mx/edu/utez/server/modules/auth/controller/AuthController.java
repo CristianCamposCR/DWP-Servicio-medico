@@ -6,7 +6,6 @@ import mx.edu.utez.server.modules.auth.controller.dto.SignedDto;
 import mx.edu.utez.server.modules.auth.controller.dto.SignupDto;
 import mx.edu.utez.server.modules.auth.controller.dto.UserSignInDto;
 import mx.edu.utez.server.modules.auth.service.AuthService;
-import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.patient.service.PatientService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup/")
-    public ResponseEntity<ResponseApi<Patient>> signup(@Valid @RequestBody SignupDto signupDto) {
-        ResponseApi<Patient> responseApi = this.patientService.signup(signupDto);
+    public ResponseEntity<ResponseApi<Boolean>> signup(@Valid @RequestBody SignupDto signupDto) {
+        ResponseApi<Boolean> responseApi = this.patientService.signup(signupDto);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 

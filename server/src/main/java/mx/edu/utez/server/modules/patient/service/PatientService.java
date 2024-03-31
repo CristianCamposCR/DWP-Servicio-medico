@@ -16,6 +16,7 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
+import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,21 +33,27 @@ import java.util.Optional;
 public class PatientService {
     private final IPatientRepository iPatientRepository;
     private final IUserRepository iUserRepository;
-    private final PasswordEncoder passwordEncoder;
     private final IStatusRepository iStatusRepository;
     private final IRoleRepository iRoleRepository;
     private final IPersonRepository iPersonRepository;
+    private final HashService hashService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Patient> signup(SignupDto signupDto) {
+    public ResponseApi<Boolean> signup(SignupDto signupDto) {
         try {
-            String fullname = (signupDto.getName() + " " + signupDto.getSurname() + " " + (signupDto.getLastname() != null ? signupDto.getLastname() : "")).trim();
-            if (this.iPatientRepository.existsByFullnameOrCurpOrEmail(fullname, signupDto.getCurp(), signupDto.getEmail()) > 0)
+            String fullName = (signupDto.getName() + " " + signupDto.getSurname() + " " + (signupDto.getLastname() != null ? signupDto.getLastname() : "")).trim();
+            String originalPassword = hashService.decrypt(signupDto.getPassword());
+            if (this.iPatientRepository.existsByFullNameOrCurpOrEmail(fullName, signupDto.getCurp(), signupDto.getEmail()) > 0)
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_PATIENT.name());
+
             if (this.iUserRepository.existsByUsernameIgnoreCase(signupDto.getUsername()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_USER.name());
 
-            Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.ACTIVO, StatusType.USUARIOS);
+            if (originalPassword == null)
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.NO_VERIFICADO, StatusType.USUARIOS);
             if (optionalStatus.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
 
@@ -68,26 +75,26 @@ public class PatientService {
                     signupDto.getCurp(),
                     signupDto.getPhoneNumber(),
                     signupDto.getBirthday(),
-                    signupDto.getGender()
+                    signupDto.getGender().getGenderEntity()
             ));
 
             this.iUserRepository.saveAndFlush(new User(
                     signupDto.getUsername(),
                     false,
-                    passwordEncoder.encode(signupDto.getPassword()),
+                    passwordEncoder.encode(originalPassword),
                     optionalStatus.get(),
                     optionalRole.get(),
                     person
             ));
 
-            Patient patient = new Patient(
+            this.iPatientRepository.saveAndFlush(new Patient(
                     patientCode,
                     optionalStatus.get(),
                     person
-            );
+            ));
 
             return new ResponseApi<>(
-                    this.iPatientRepository.saveAndFlush(patient),
+                    true,
                     HttpStatus.CREATED,
                     false,
                     "Paciente creado"

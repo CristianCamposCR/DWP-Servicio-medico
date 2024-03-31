@@ -29,6 +29,15 @@ import java.time.Instant;
 @Getter
 @Setter
 public class VerificationCode {
+    public VerificationCode(String code, MessageType messageType, Boolean wasUsed, Boolean isExpired, Boolean isInvalid, User user) {
+        this.code = code;
+        this.messageType = messageType;
+        this.wasUsed = wasUsed;
+        this.isExpired = isExpired;
+        this.isInvalid = isInvalid;
+        this.user = user;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,8 +49,14 @@ public class VerificationCode {
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
-    @Column(columnDefinition = "TINYINT", nullable = false)
+    @Column(columnDefinition = "TINYINT DEFAULT 0", nullable = false)
     private Boolean wasUsed;
+
+    @Column(columnDefinition = "TINYINT DEFAULT 0", nullable = false)
+    private Boolean isExpired;
+
+    @Column(columnDefinition = "TINYINT DEFAULT 0", nullable = false)
+    private Boolean isInvalid;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -58,7 +73,9 @@ public class VerificationCode {
 
     // Methods
     @PrePersist
-    public void setCreatedAt() {
+    public void setAutoInsertFields() {
         this.createdAt = Instant.now();
+        // La fecha de expiración es de 5 minutos
+        this.expireAt = this.createdAt.plusSeconds(5 * 60L);
     }
 }

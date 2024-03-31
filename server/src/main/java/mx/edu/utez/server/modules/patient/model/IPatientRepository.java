@@ -12,7 +12,7 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
             "WHERE LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) = LOWER(?1) " +
             "OR p.curp = ?2 " +
             "OR p.email = ?3", nativeQuery = true)
-    Long existsByFullnameOrCurpOrEmail(String fullname, String curp, String email);
+    Long existsByFullNameOrCurpOrEmail(String fullname, String curp, String email);
 
     @Query(value = "SELECT COUNT(*)" +
             " FROM patients pa" +
@@ -20,5 +20,5 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
             " WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) = LOWER(?1)" +
             "   OR p.curp = ?2" +
             "   OR p.email = ?3) AND pa.id <> ?4", nativeQuery = true)
-    Long existsByFullnameOrCurpOrEmailAndIdNot(String fullname, String curp, String email, Long id);
+    Long existsByFullNameOrCurpOrEmailAndIdNot(String fullname, String curp, String email, Long id);
 }
