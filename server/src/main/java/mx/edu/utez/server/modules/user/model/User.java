@@ -36,12 +36,24 @@ import java.util.Set;
 @Getter
 @Setter
 public class User {
+    public User(String username, boolean blocked, String password, Status status, Role role, Person person) {
+        this.username = username;
+        this.blocked = blocked;
+        this.password = password;
+        this.status = status;
+        this.role = role;
+        this.person = person;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String username;
+
+    @Column(columnDefinition = "TINYINT DEFAULT 1", nullable = false)
+    private boolean blocked;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String password;

@@ -35,6 +35,12 @@ import java.util.Set;
 @Getter
 @Setter
 public class Patient {
+    public Patient(String patientCode, Status status, Person person) {
+        this.patientCode = patientCode;
+        this.status = status;
+        this.person = person;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
