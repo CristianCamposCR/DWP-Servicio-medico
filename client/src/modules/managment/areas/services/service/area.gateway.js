@@ -3,7 +3,7 @@ import axios from "../../../../../config/client.gateway";
 export default {
   async getAllAreas(pagination) {
     try {
-      const payloadPagination = `?page=${pagination.page}&size=${pagination.size}&sort=${pagination.sort},${pagination.direction}`;
+      const payloadPagination = `?page=${pagination.page}&size=${pagination.size}&sort=${pagination.sort}&direction=${pagination.direction}`;
       const response = await axios.doPost(
         `/management/area/paged/${payloadPagination}`,
         pagination.data
