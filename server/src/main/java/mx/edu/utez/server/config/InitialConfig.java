@@ -37,6 +37,7 @@ public class InitialConfig implements CommandLineRunner {
         Status activeStatusU = this.statusService.findOrSave(Statuses.ACTIVO, StatusType.USUARIOS);
         this.statusService.findOrSave(Statuses.INACTIVO, StatusType.USUARIOS);
         this.statusService.findOrSave(Statuses.BLOQUEADO, StatusType.USUARIOS);
+        this.statusService.findOrSave(Statuses.NO_VERIFICADO, StatusType.USUARIOS);
         // - Generales
         Status activeStatusG = this.statusService.findOrSave(Statuses.ACTIVO, StatusType.GENERAL);
         this.statusService.findOrSave(Statuses.INACTIVO, StatusType.GENERAL);

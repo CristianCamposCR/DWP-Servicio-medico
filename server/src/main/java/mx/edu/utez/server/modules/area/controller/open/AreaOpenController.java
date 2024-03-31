@@ -52,7 +52,6 @@ public class AreaOpenController {
             ResponseApi<Area> responseApi = this.areaService.openFindOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
-            System.err.println(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
