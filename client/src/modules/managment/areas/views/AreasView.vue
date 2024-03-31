@@ -11,6 +11,8 @@
           <b-input-group>
             <b-form-input
               placeholder="Escribe el nombre del área"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllAreas"
             ></b-form-input>
 
             <b-input-group-append>
@@ -20,13 +22,16 @@
         </b-col>
         <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
           <div class="d-flex align-items-center mt-2 mt-md-0">
-            <span>Agregar nueva área</span> &nbsp;
-            <b-button variant="primary"> <b-icon icon="plus" /> </b-button>
+            <span class="mr-1">Agregar nueva área</span> &nbsp;
+            <b-button variant="primary" v-b-modal.modal-save-area>
+              <b-icon icon="plus" />
+            </b-button>
           </div>
         </b-col>
       </b-row>
     </section>
 
+    <save-area />
     <section class="mt-5">
       <b-row>
         <b-col
@@ -62,7 +67,9 @@
                       {{ area.especiality }}
                     </div>
                     <div>
-                      <span v-if="area.description.length > 10">
+                      <span
+                        v-if="area.description && area.description.length > 10"
+                      >
                         {{
                           showFullDescriptionIndex === index
                             ? area.description
@@ -76,7 +83,9 @@
                           }}
                         </a>
                       </span>
-                      <span v-else>{{ area.description }}</span>
+                      <span v-else-if="area.description">{{
+                        area.description
+                      }}</span>
                     </div>
                   </b-card-text>
                 </b-card-body>
@@ -85,15 +94,15 @@
             <template #footer>
               <div>
                 <b-button
-                  v-if="area.status === EStatus.ACTIVE"
-                  @click="area.status = EStatus.INACTIVE"
+                  v-if="area.status.name === EStatus.ACTIVE"
+                  @click="area.status.name = EStatus.INACTIVE"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
-                  v-else-if="area.status === EStatus.INACTIVE"
-                  @click="area.status = EStatus.ACTIVE"
+                  v-else-if="area.status.name === EStatus.INACTIVE"
+                  @click="area.status.name = EStatus.ACTIVE"
                   variant="danger"
                   >Activar</b-button
                 >
@@ -106,7 +115,7 @@
         </b-col>
       </b-row>
     </section>
-    <section>
+    <section class="mt-4">
       <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
         <b-col
           cols="12"
@@ -153,199 +162,33 @@
 </template>
 
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
+import areaController from "../services/controller/area.controller";
 
 export default Vue.extend({
   name: "AreasView",
+  components: {
+    SaveArea: defineAsyncComponent(() => import("./SaveArea.vue")),
+  },
+  mounted() {
+    this.getAllAreas();
+  },
   data() {
     return {
       docState: "saved",
       showFullDescriptionIndex: -1,
-      areas: [
-        {
-          id: 1,
-          name: "Médica",
-          especiality: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          status: "ACTIVO",
-        },
-        {
-          id: 2,
-          name: "Dental",
-          especiality: "Ortodoncia",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 3,
-          name: "Pediatría",
-          especiality: "General",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "ACTIVO",
-        },
-        {
-          id: 4,
-          name: "Cardiología",
-          especiality: "Intervencionista",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "ACTIVO",
-        },
-        {
-          id: 5,
-          name: "Ginecología",
-          especiality: "Obstetricia",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "ACTIVO",
-        },
-        {
-          id: 6,
-          name: "Oncología",
-          especiality: "Médica",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "INACTIVO",
-        },
-        {
-          id: 7,
-          name: "Dermatología",
-          especiality: "Estética",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 8,
-          name: "Neurología",
-          especiality: "Clínica",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          status: "ACTIVO",
-        },
-        {
-          id: 9,
-          name: "Urología",
-          especiality: "Andrológica",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "ACTIVO",
-        },
-        {
-          id: 10,
-          name: "Oftalmología",
-          especiality: "General",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "ACTIVO",
-        },
-        {
-          id: 11,
-          name: "Endocrinología",
-          especiality: "Clínica",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 12,
-          name: "Reumatología",
-          especiality: "General",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "INACTIVO",
-        },
-        {
-          id: 13,
-          name: "Hematología",
-          especiality: "Clínica",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "ACTIVO",
-        },
-        {
-          id: 14,
-          name: "Nefrología",
-          especiality: "General",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 15,
-          name: "Neumología",
-          especiality: "General",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          status: "ACTIVO",
-        },
-        {
-          id: 16,
-          name: "Nutriología",
-          especiality: "Clínica",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "INACTIVO",
-        },
-        {
-          id: 17,
-          name: "Psicología",
-          especiality: "Clínica",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "INACTIVO",
-        },
-        {
-          id: 18,
-          name: "Psiquiatría",
-          especiality: "General",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 19,
-          name: "Traumatología",
-          especiality: "General",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          status: "INACTIVO",
-        },
-        {
-          id: 20,
-          name: "Cirugía",
-          especiality: "General",
-          description: "Vestibulum volutpat, risus quis suscipit feugiat.",
-          status: "ACTIVO",
-        },
-        {
-          id: 21,
-          name: "Gastroenterología",
-          especiality: "Clínica",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "ACTIVO",
-        },
-        {
-          id: 22,
-          name: "Odontología",
-          especiality: "General",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-        {
-          id: 23,
-          name: "Otorrinolaringología",
-          especiality: "General",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          status: "ACTIVO",
-        },
-        {
-          id: 24,
-          name: "Medicina Interna",
-          especiality: "General",
-          description: "Sed accumsan bibendum felis, ut feugiat est.",
-          status: "ACTIVO",
-        },
-        {
-          id: 25,
-          name: "Ortopedia",
-          especiality: "General",
-          description: "Fusce eget semper lorem, in feugiat libero.",
-          status: "ACTIVO",
-        },
-      ],
+      areas: [],
       EStatus: EStatus,
       pagination: {
         page: 1,
         sort: "id",
         size: 10,
         direction: "desc",
-        totalRows: 25,
+        totalRows: 0,
+        data: {
+          name: null,
+        },
       },
     };
   },
@@ -355,8 +198,20 @@ export default Vue.extend({
       this.showFullDescriptionIndex =
         this.showFullDescriptionIndex === index ? -1 : index;
     },
-    getAllAreas() {
-      console.log("Consiguiendo áreas");
+    async getAllAreas() {
+      try {
+        const response = await areaController.getAllAreas({
+          page: this.pagination.page - 1,
+          size: this.pagination.size,
+          sort: this.pagination.sort,
+          direction: this.pagination.direction,
+          data: this.pagination.data,
+        });
+        this.areas = response.content;
+        this.pagination.totalRows = response.totalElements;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });
