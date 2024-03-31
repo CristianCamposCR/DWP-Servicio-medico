@@ -15,7 +15,7 @@
         <b-button class="custom-button" @click="editProfile">Editar Perfil</b-button>
       </div>
     </div>
-    <ModalUpdateProfile :user="user"/>
+    <ModalUpdateProfile :users="user"/>
   </div>
 </template>
 
