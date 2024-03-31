@@ -25,8 +25,13 @@ public enum Errors {
     SPECIALITY_IS_INACTIVE,
     // Status
     NO_STATUS_FOUND,
+    // ROLE
+    NO_ROLE_FOUND,
+    // USER
     DUPLICATED_USER,
-
+    NO_USER_FOUND,
+    // PATIENT
+    DUPLICATED_PATIENT,
     // Session
     CREDENTIALS_MISMATCH,
     USER_IS_INACTIVE,
