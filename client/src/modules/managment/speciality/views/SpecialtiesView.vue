@@ -10,7 +10,9 @@
         <b-col cols="12" md="6">
           <b-input-group>
             <b-form-input
-              placeholder="Escribe el nombre del área"
+              placeholder="Escribe el nombre de la especialidad"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllSpecialties"
             ></b-form-input>
 
             <b-input-group-append>
@@ -20,9 +22,9 @@
         </b-col>
         <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
           <div class="d-flex align-items-center mt-2 mt-md-0">
-            <span>Agregar nueva especialidad</span> &nbsp;
-            <b-button class="custom-button" @click="saveSpeciality" variant="primary">
-              <b-icon icon="plus"/>
+            <span class="mr-1">Agregar nueva especialidad</span> &nbsp;
+            <b-button variant="primary" v-b-modal.modal-save-speciality>
+              <b-icon icon="plus" />
             </b-button>
           </div>
         </b-col>
@@ -30,12 +32,12 @@
     </section>
     <ModalSaveSpeciality :specialties="specialties" :isNew="isNewSpeciality"/>  
 
-    <section class="mt-5">
-      <b-row>
+    <save-speciality />
+
+    <!-- listato -->
         <b-col
           v-for="(speciality, index) in specialties"
           :key="index"
-          cols="12"
           sm="6"
           md="4"
           lg="3"
@@ -68,7 +70,12 @@
                   <b-card-text>
                     <strong> Description: </strong>
                     <div>
-                      <span v-if="speciality.description.length > 10">
+                      <span
+                        v-if="
+                          speciality.description &&
+                          speciality.description.length > 10
+                        "
+                      >
                         {{
                           showFullDescriptionIndex === index
                             ? speciality.description
@@ -82,7 +89,7 @@
                           }}
                         </a>
                       </span>
-                      <span v-else>{{ speciality.description }}</span>
+                      <span v-else-if="speciality.description">{{ speciality.description }}</span>
                       <div class="mb-3">
                         <strong>Costo:</strong> {{ speciality.costo }}
                       </div>
@@ -97,15 +104,15 @@
             <template #footer>
               <div>
                 <b-button
-                  v-if="speciality.status === EStatus.ACTIVE"
-                  @click="speciality.status = EStatus.INACTIVE"
+                  v-if="speciality.status.name === EStatus.ACTIVE"
+                  @click="speciality.status.name = EStatus.INACTIVE"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
-                  v-else-if="speciality.status === EStatus.INACTIVE"
-                  @click="speciality.status = EStatus.ACTIVE"
+                  v-else-if="speciality.status.name === EStatus.INACTIVE"
+                  @click="speciality.status.name = EStatus.ACTIVE"
                   variant="danger"
                   >Activar</b-button
                 >
@@ -118,7 +125,7 @@
         </b-col>
       </b-row>
     </section>
-    <section>
+    <section class="mt-4">
       <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
         <b-col
           cols="12"
@@ -165,134 +172,58 @@
 </template>
 
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
-
-import ModalSaveSpeciality from "./ModalSaveSpeciality.vue"
+import specialityController from "../services/controller/speciality.controller";
 
 export default Vue.extend({
-  components: { ModalSaveSpeciality },
   name: "SpecialtiesView",
+  components: {
+    SaveSpeciality: defineAsyncComponent(() =>
+      import("./components/SaveSpeciality.vue")
+    ),
+  },
+  mounted() {
+    this.getAllSpecialties();
+  },
   data() {
     return {
-      showElement: true,
-      docState: "saved",
+      docSate: "saved",
       showFullDescriptionIndex: -1,
-      specialties: [
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-        {
-          id: 1,
-          name: "Familiar",
-          description: "Lorem ipsum dolor sit amet, consectetur.",
-          costo: 1534.54,
-          area: {
-            id: 1,
-            name: "Médica",
-          },
-          status: "ACTIVO",
-        },
-      ],
+      specialties: [],
       EStatus: EStatus,
       pagination: {
         page: 1,
         sort: "id",
         size: 10,
         direction: "desc",
-        totalRows: 25,
+        totalRows: 0,
+        data: {
+          name: null,
+        },
       },
     };
   },
   methods: {
-    saveSpeciality(){
-      console.log("saveSpeciality method called");
-      this.$bvModal.show("form");
-      this.isNewSpeciality = true;
-    },
-
     toggleDescription(index, event) {
       event.preventDefault();
       this.showFullDescriptionIndex =
         this.showFullDescriptionIndex === index ? -1 : index;
     },
-
-    getAllSpecialties() {
-      console.log("Consiguiendo áreas");
+    async getAllSpecialties() {
+      try {
+        const response = await specialityController.getAllSpecialties({
+          page: this.pagination.page - 1,
+          size: this.pagination.size,
+          sort: this.pagination.sort,
+          direction: this.pagination.direction,
+          data: this.pagination.data,
+        });
+        this.specialties = response.content;
+        this.pagination.totalRows = response.totalElements;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });
