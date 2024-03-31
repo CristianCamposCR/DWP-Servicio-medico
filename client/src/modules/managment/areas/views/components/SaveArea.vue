@@ -84,7 +84,7 @@
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
-import areaController from "../services/controller/area.controller";
+import areaController from "../../services/controller/area.controller";
 export default Vue.extend({
   name: "SaveArea",
   setup() {

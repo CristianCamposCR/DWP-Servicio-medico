@@ -169,7 +169,7 @@ import areaController from "../services/controller/area.controller";
 export default Vue.extend({
   name: "AreasView",
   components: {
-    SaveArea: defineAsyncComponent(() => import("./SaveArea.vue")),
+    SaveArea: defineAsyncComponent(() => import("./components/SaveArea.vue")),
   },
   mounted() {
     this.getAllAreas();
