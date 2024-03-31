@@ -162,6 +162,14 @@ export default Vue.extend({
     return {
       docState: "saved",
       showFullDescriptionIndex: -1,
+      patient:
+        {
+          id: null,
+          name: "",
+          phone: "",
+          email: "",
+          status: "",
+        },
       patients: [
         {
           id: 1,
