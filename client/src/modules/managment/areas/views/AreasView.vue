@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mt-4">
+    <loading-custom :isLoading="isLoading" />
     <section class="mx-2">
       <b-row>
         <b-col>
@@ -31,7 +32,7 @@
       </b-row>
     </section>
 
-    <save-area />
+    <save-area @reloadRegisters="getAllAreas" />
     <section class="mt-5">
       <b-row>
         <b-col
@@ -54,7 +55,11 @@
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                  src="https://via.placeholder.com/270"
+                  :src="
+                    area.bannerImage
+                      ? area.bannerImage
+                      : 'https://via.placeholder.com/270'
+                  "
                   alt="Image"
                   class="rounded-0"
                   height="160"
@@ -170,20 +175,22 @@ export default Vue.extend({
   name: "AreasView",
   components: {
     SaveArea: defineAsyncComponent(() => import("./components/SaveArea.vue")),
+    LoadingCustom: () =>
+      import("../../../../views/components/LoadingCustom.vue"),
   },
   mounted() {
     this.getAllAreas();
   },
   data() {
     return {
-      docState: "saved",
+      isLoading: false,
       showFullDescriptionIndex: -1,
       areas: [],
       EStatus: EStatus,
       pagination: {
         page: 1,
         sort: "id",
-        size: 10,
+        size: 12,
         direction: "desc",
         totalRows: 0,
         data: {
@@ -200,6 +207,7 @@ export default Vue.extend({
     },
     async getAllAreas() {
       try {
+        this.isLoading = true;
         const response = await areaController.getAllAreas({
           page: this.pagination.page - 1,
           size: this.pagination.size,
@@ -211,6 +219,8 @@ export default Vue.extend({
         this.pagination.totalRows = response.totalElements;
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
   },
