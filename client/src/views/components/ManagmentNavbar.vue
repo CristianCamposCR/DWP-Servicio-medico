@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sticky-top">
     <b-navbar type="light " variant="white" class="shadow-sm">
       <b-navbar-brand to="/" class="custom-nav-font">
         <b-img src="https://picsum.photos/50/50/?image=41"></b-img>
