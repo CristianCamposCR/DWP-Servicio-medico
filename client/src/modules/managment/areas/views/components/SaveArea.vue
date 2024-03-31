@@ -7,11 +7,8 @@
       hide-footer
       scrollable
       :no-close-on-backdrop="true"
-<<<<<<< HEAD
       @hidden="cleanForm"
       @close="cleanForm"
-=======
->>>>>>> 4ee2be9 ([UPDATE] enfolded  structure)
     >
       <b-form>
         <label>Nombre del área :&nbsp;<span class="text-danger">*</span></label>
@@ -44,13 +41,7 @@
           >{{ errorMessages.name.maxLength }}</b-form-invalid-feedback
         >
 
-<<<<<<< HEAD
         <label class="mt-2">Descripción :</label>
-=======
-        <label class="mt-2"
-          >Descripción :&nbsp;<span class="text-danger">*</span></label
-        >
->>>>>>> 4ee2be9 ([UPDATE] enfolded  structure)
         <b-form-textarea
           v-model="v$.area.description.$model"
           :state="
@@ -58,11 +49,8 @@
           "
           @blur="v$.area.description.$touch()"
           required
-<<<<<<< HEAD
           rows="3"
           max-rows="6"
-=======
->>>>>>> 4ee2be9 ([UPDATE] enfolded  structure)
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.area.description.$errors"
@@ -71,7 +59,6 @@
           {{ error.$message }}
         </b-form-invalid-feedback>
 
-<<<<<<< HEAD
         <label class="mt-2"> Selecciona una imagen :</label>
         <b-form-file
           @change="handleFileChange"
@@ -128,26 +115,6 @@
           >
             Registrar
           </b-button>
-=======
-        <label class="mt-2"
-          >Selecciona una imagen :&nbsp;<span class="text-danger"
-            >*</span
-          ></label
-        >
-        <b-form-file
-          v-model="area.bannerImage"
-          :state="Boolean(area.bannerImage)"
-          browse-text="Buscar"
-          placeholder="Selecciona una imagen"
-          drop-placeholder="Suelta el archivo aquí..."
-        ></b-form-file>
-
-        <div class="col-12 mt-4 px-5 d-flex justify-content-between">
-          <b-button variant="danger" @click="saveArea">Cancelar</b-button>
-          <b-button variant="success" class="ml-2" :disabled="v$.area.$invalid"
-            >Registrar</b-button
-          >
->>>>>>> 4ee2be9 ([UPDATE] enfolded  structure)
         </div>
       </b-form>
     </b-modal>
