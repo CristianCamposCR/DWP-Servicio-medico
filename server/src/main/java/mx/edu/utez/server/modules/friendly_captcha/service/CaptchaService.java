@@ -24,7 +24,7 @@ public class CaptchaService {
     @Value("${FRIENDLY_CAPTCHA.SITE_KEY}")
     private String siteKey;
     @Value("${FRIENDLY_CAPTCHA.URL_VERIFY_CAPTCHA}")
-    private String url_verify_captcha;
+    private String urlVerifyCaptcha;
 
     public CaptchaResponse verifyCaptcha(String solution) {
         HttpHeaders headers = new HttpHeaders();
@@ -40,7 +40,7 @@ public class CaptchaService {
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
         // Get the response
         ResponseEntity<CaptchaResponse> responseEntity = restTemplate.postForEntity(
-            url_verify_captcha, requestEntity, CaptchaResponse.class
+            urlVerifyCaptcha, requestEntity, CaptchaResponse.class
         );
 
         return responseEntity.getBody();

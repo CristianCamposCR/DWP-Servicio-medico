@@ -31,7 +31,8 @@ public class MainSecurity {
     private static final String[] WHITE_LIST_URL = {
             "/api/auth/**",
             "/api/hashing/**",
-            "/api/open/**"
+            "/api/open/**",
+            "/api/captcha/**",
     };
 
     private final UserDetailsServiceImpl service;

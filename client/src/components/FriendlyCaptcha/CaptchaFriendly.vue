@@ -1,6 +1,6 @@
 <template>
   <div ref="container" class="frc-captcha"
-       data-sitekey="FCMMIMMO56VDHAQ7"
+       :data-sitekey="dataKey"
   ></div>
 </template>
 
@@ -12,6 +12,7 @@ import friendlyCaptchaController from "./controller/friendly-captcha.controller"
 export default {
   data() {
     return {
+      dataKey: import.meta.env.VITE_API_FRIENLY_CAPTCHA_KEY,
       container: ref(),
       widget: ref(),
     };
