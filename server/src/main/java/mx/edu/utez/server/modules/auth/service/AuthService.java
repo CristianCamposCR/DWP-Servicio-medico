@@ -8,6 +8,8 @@ import mx.edu.utez.server.modules.security.jwt.JwtProvider;
 import mx.edu.utez.server.modules.user.model.User;
 import mx.edu.utez.server.modules.user.service.UserService;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
+    Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
@@ -42,6 +45,7 @@ public class AuthService {
             SignedDto signedDto = new SignedDto(token);
             return new ResponseApi<>(signedDto, HttpStatus.OK, false, "ok");
         } catch (Exception e) {
+            logger.error(e.getMessage());
             String message = Errors.CREDENTIALS_MISMATCH.name();
             if (e instanceof DisabledException)
                 message = Errors.USER_IS_INACTIVE.name();

@@ -7,6 +7,8 @@ import mx.edu.utez.server.modules.appointment_type.model.AppointmentType;
 import mx.edu.utez.server.modules.appointment_type.model.IAppointmentTypeRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class AppointmentTypeService {
+    Logger logger = LoggerFactory.getLogger(AppointmentTypeService.class);
     private final IAppointmentTypeRepository iAppointmentTypeRepository;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -38,6 +41,7 @@ public class AppointmentTypeService {
                     "Lista de tipos de cita."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,

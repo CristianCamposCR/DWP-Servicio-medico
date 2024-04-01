@@ -18,6 +18,8 @@ import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class PatientService {
+    Logger logger = LoggerFactory.getLogger(PatientService.class);
     private final IPatientRepository iPatientRepository;
     private final IUserRepository iUserRepository;
     private final IStatusRepository iStatusRepository;
@@ -100,6 +103,7 @@ public class PatientService {
                     "Paciente creado"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,

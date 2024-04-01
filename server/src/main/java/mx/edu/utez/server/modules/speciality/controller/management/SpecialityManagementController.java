@@ -8,6 +8,8 @@ import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.speciality.service.SpecialityService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
 @RequiredArgsConstructor
 public class SpecialityManagementController {
+    Logger logger = LoggerFactory.getLogger(SpecialityManagementController.class);
     private final SpecialityService specialityService;
     private final HashService hashService;
 
@@ -54,6 +57,7 @@ public class SpecialityManagementController {
             ResponseApi<Speciality> responseApi = this.specialityService.findOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -66,6 +70,7 @@ public class SpecialityManagementController {
             ResponseApi<Speciality> responseApi = this.specialityService.save(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -78,6 +83,7 @@ public class SpecialityManagementController {
             ResponseApi<Speciality> responseApi = this.specialityService.update(specialityDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -91,6 +97,7 @@ public class SpecialityManagementController {
             ResponseApi<Speciality> responseApi = this.specialityService.changeStatus(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
