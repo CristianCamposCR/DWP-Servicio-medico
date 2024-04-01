@@ -1,5 +1,7 @@
 package mx.edu.utez.server.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.Base64;
 
 @Service
 public class HashService {
+    Logger logger = LoggerFactory.getLogger(HashService.class);
 
     @Value("${hash.secret}")
     private String secretKey;
@@ -46,6 +49,7 @@ public class HashService {
             byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
             return Base64.getUrlEncoder().encodeToString(encryptedBytes);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return null;
         }
     }
@@ -57,6 +61,7 @@ public class HashService {
             byte[] decryptedBytes = cipher.doFinal(Base64.getUrlDecoder().decode(encryptedText));
             return new String(decryptedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return null;
         }
     }
@@ -70,6 +75,7 @@ public class HashService {
             String idStr = new String(decryptedBytes, StandardCharsets.UTF_8);
             return Long.parseLong(idStr);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return null;
         }
     }

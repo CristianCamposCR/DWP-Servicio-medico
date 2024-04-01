@@ -12,6 +12,8 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.Validations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class AreaService {
+    Logger logger = LoggerFactory.getLogger(AreaService.class);
     private final IAreaRepository iAreaRepository;
     private final IStatusRepository iStatusRepository;
     private final ISpecialityRepository iSpecialityRepository;
@@ -46,6 +49,7 @@ public class AreaService {
                     "Áreas"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -71,6 +75,7 @@ public class AreaService {
                     "Áreas"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -92,6 +97,7 @@ public class AreaService {
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name())
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -113,6 +119,7 @@ public class AreaService {
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_AREA_FOUND.name())
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -133,6 +140,7 @@ public class AreaService {
                     "Lista de áreas."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -160,6 +168,7 @@ public class AreaService {
                     "Area creada."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -187,6 +196,7 @@ public class AreaService {
                     "Area actualizada."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -224,6 +234,7 @@ public class AreaService {
                     "Estado de área actualizado."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
