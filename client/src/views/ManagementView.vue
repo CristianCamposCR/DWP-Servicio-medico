@@ -1,16 +1,16 @@
 <template>
   <div>
-    <managment-navbar/>
+    <management-navbar/>
     <router-view></router-view>
   </div>
 </template>
 <script>
 import Vue, { defineAsyncComponent } from "vue";
 export default Vue.extend({
-  name: "ManagmentView",
+  name: "ManagementView",
   components: {
-    ManagmentNavbar: defineAsyncComponent(() =>
-      import("../views/components/ManagmentNavbar.vue")
+    ManagementNavbar: defineAsyncComponent(() =>
+      import("../views/components/ManagementNavbar.vue")
     ),
   },
 });

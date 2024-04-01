@@ -18,4 +18,13 @@ export default {
       console.log(error);
     }
   },
+
+  async changeStatus(payload) {
+    try {
+      const data = await ApiService.changeStatus(payload);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

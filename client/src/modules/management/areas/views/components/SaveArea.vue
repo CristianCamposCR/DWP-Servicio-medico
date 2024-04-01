@@ -160,7 +160,6 @@ export default Vue.extend({
         SweetAlertCustom.questionMessage().then(async (result) => {
           if (result.isConfirmed) {
             const resp = await areaController.saveArea(this.area);
-            console.log("respuesta save", resp);
             const { error } = resp;
             if (!error) {
               this.$emit("reloadRegisters");

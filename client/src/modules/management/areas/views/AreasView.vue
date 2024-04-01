@@ -100,14 +100,14 @@
               <div>
                 <b-button
                   v-if="area.status.name === EStatus.ACTIVE"
-                  @click="area.status.name = EStatus.INACTIVE"
+                  @click="changeStatus(area.id)"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
                   v-else-if="area.status.name === EStatus.INACTIVE"
-                  @click="area.status.name = EStatus.ACTIVE"
+                  @click="changeStatus(area.id)"
                   variant="danger"
                   >Activar</b-button
                 >
@@ -170,6 +170,8 @@
 import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
 import areaController from "../services/controller/area.controller";
+import { encrypt, decrypt } from "../../../../kernel/hashFunctions";
+import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 
 export default Vue.extend({
   name: "AreasView",
@@ -221,6 +223,27 @@ export default Vue.extend({
         console.log(error);
       } finally {
         this.isLoading = false;
+      }
+    },
+
+    async changeStatus(id) {
+      try {
+        SweetAlertCustom.questionMessage().then(async (result) => {
+          if (result.isConfirmed) {
+            const cipherId = await encrypt(id);
+            const resp = await areaController.changeStatus(cipherId);
+            const { error } = resp;
+            if (!error) {
+              this.getAllAreas();
+              setTimeout(() => {
+                SweetAlertCustom.successMessage();
+              }, 100);
+              return;
+            }
+          }
+        });
+      } catch (error) {
+        console.log(error);
       }
     },
   },

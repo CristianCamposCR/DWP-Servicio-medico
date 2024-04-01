@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import managmentRoute from "./managment-route";
+import managementRoute from "./management-route";
 
 Vue.use(VueRouter);
 
@@ -32,7 +32,7 @@ const router = new VueRouter({
             requireAuth: false,
           },
         },
-        ...managmentRoute,
+        ...managementRoute,
       ],
     },
   ],

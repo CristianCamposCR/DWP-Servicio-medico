@@ -1,15 +1,15 @@
 export default [
   {
-    path: "/managment",
-    component: () => import("../views/ManagmentView.vue"),
-    redirect: {name: "areas-managment"},
-    name: "managment",
+    path: "/management",
+    component: () => import("../views/ManagementView.vue"),
+    redirect: {name: "areas-management"},
+    name: "management",
     children: [
       {
-        path: "areas-managment",
-        name: "areas-managment",
+        path: "areas-management",
+        name: "areas-management",
         component: () =>
-          import("../modules/managment/areas/views/AreasView.vue"),
+          import("../modules/management/areas/views/AreasView.vue"),
         meta: {
           title: "Áreas",
           requireAuth: false
@@ -17,10 +17,10 @@ export default [
         
       },
       {
-        path: "patient-managment",
-        name: "patient-managment",
+        path: "patient-management",
+        name: "patient-management",
         component: () =>
-          import("../modules/managment/patient/views/PatientView.vue"),
+          import("../modules/management/patient/views/PatientView.vue"),
         meta: {
           title: "Pacientes",
           requireAuth: false
