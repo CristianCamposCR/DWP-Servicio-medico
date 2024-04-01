@@ -184,10 +184,15 @@
           </b-input-group>
         </b-form-group>
       </b-col>
+      <b-col class="d-flex justify-content-center mb-3">
+        <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" />
+      </b-col>
     </b-row>
     <b-row class="d-flex justify-content-center mb-5 mx-4">
       <b-col cols="12" sm="12" md="6">
-        <b-button class="custom-button" block> Crear cuenta </b-button>
+        <b-button class="custom-button" block
+        :disabled="v$.newAccount.$invalid || !isValidFriendlyCaptcha"
+        > Crear cuenta </b-button>
       </b-col>
     </b-row>
   </div>
@@ -197,8 +202,10 @@
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
+import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
 export default Vue.extend({
   name: "CreateAccount",
+  components: {CaptchaFriendly},
   setup() {
     return {
       v$: useVuelidate(),
@@ -206,6 +213,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      isValidFriendlyCaptcha: false,
       showPasswordState: false,
       showConfirmPasswordState: false,
       newAccount: {
