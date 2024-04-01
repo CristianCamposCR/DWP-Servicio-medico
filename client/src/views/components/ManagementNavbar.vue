@@ -21,13 +21,13 @@
 <script>
 import Vue from "vue";
 export default Vue.extend({
-  name: "ManagmentNavbar",
+  name: "ManagementNavbar",
   data() {
     return {
       links: [
-        { name: "Áreas", to: "areas-managment" },
-        { name: "Especialidades", to: "especialities-managment" },
-        { name: "Pacientes", to: "patient-managment" },
+        { name: "Áreas", to: "areas-management" },
+        { name: "Especialidades", to: "especialities-management" },
+        { name: "Pacientes", to: "patient-management" },
         { name: "Perfil", to: "profile" },
       ],
     };

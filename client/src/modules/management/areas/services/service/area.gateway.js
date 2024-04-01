@@ -22,4 +22,13 @@ export default {
       console.log(error);
     }
   },
+
+  async changeStatus(payload) {
+    try {
+      const response = await axios.doPatch(`/management/area/${payload}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
