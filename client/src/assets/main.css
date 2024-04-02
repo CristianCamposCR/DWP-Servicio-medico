@@ -10,3 +10,11 @@
 .custom-nav-font{
   font-weight: bold;
 }
+
+
+.custom-swal-buttons .swal2-actions {
+  justify-content: space-between; /* Esto separará los botones */
+}
+.custom-swal-buttons .swal2-confirm, .custom-swal-buttons .swal2-cancel {
+  width: auto; /* Esto permitirá que los botones ocupen su ancho natural */
+}

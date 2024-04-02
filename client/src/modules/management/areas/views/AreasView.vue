@@ -42,7 +42,6 @@
           sm="6"
           md="4"
           lg="3"
-          xl="2"
           class="d-flex justify-content-center"
         >
           <b-card
@@ -58,7 +57,7 @@
                   :src="
                     area.bannerImage
                       ? area.bannerImage
-                      : 'https://via.placeholder.com/270'
+                      : '/src/assets/image/default-area.avif'
                   "
                   alt="Image"
                   class="rounded-0"
@@ -192,7 +191,7 @@ export default Vue.extend({
       pagination: {
         page: 1,
         sort: "id",
-        size: 12,
+        size: 8,
         direction: "desc",
         totalRows: 0,
         data: {

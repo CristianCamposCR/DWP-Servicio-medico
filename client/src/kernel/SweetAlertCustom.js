@@ -8,13 +8,15 @@ class SweetAlertCustom {
     return Swal.fire({
       title: title,
       text: text,
-      icon: "question",
       showCancelButton: true,
       confirmButtonText: "Aceptar",
-      confirmButtonColor: "#0e7490",
+      confirmButtonColor: "#10b981",
       cancelButtonText: "Cancelar",
       cancelButtonColor: "#dc2626",
       reverseButtons: true,
+      customClass: {
+        actions: "custom-swal-buttons", // Esta es la clase personalizada que añadimos
+      },
     });
   }
 
