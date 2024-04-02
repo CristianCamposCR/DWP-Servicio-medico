@@ -6,7 +6,12 @@ export default {
       const data = await ApiService.getAllAreas(pagination);
       return data;
     } catch (error) {
-      console.log(error);
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+      f;
     }
   },
 
@@ -15,7 +20,11 @@ export default {
       const data = await ApiService.saveArea(payload);
       return data;
     } catch (error) {
-      console.log(error);
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
     }
   },
 
@@ -24,7 +33,11 @@ export default {
       const data = await ApiService.changeStatus(payload);
       return data;
     } catch (error) {
-      console.log(error);
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
     }
   },
 };
