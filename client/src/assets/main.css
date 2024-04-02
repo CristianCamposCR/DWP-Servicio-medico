@@ -18,3 +18,9 @@
 .custom-swal-buttons .swal2-confirm, .custom-swal-buttons .swal2-cancel {
   width: auto; /* Esto permitirá que los botones ocupen su ancho natural */
 }
+.card-title{
+  font-size: 18px;
+}
+.card-description{
+  font-size: 14px;
+}

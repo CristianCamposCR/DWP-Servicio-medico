@@ -65,19 +65,20 @@
                 ></b-card-img>
               </b-col>
               <b-col md="12">
-                <b-card-body :title="area.name">
+                <b-card-body>
+                  <b-card-title class="card-title">{{
+                    area.name
+                  }}</b-card-title>
                   <b-card-text>
-                    <div class="mb-3">
-                      {{ area.especiality }}
-                    </div>
                     <div>
                       <span
-                        v-if="area.description && area.description.length > 10"
+                        v-if="area.description && area.description.length > 50"
+                        class="card-description"
                       >
                         {{
                           showFullDescriptionIndex === index
                             ? area.description
-                            : area.description.substring(0, 10) + "..."
+                            : area.description.substring(0, 50) + "..."
                         }}
                         <a href="#" @click="toggleDescription(index, $event)">
                           {{
@@ -87,9 +88,11 @@
                           }}
                         </a>
                       </span>
-                      <span v-else-if="area.description">{{
-                        area.description
-                      }}</span>
+                      <span
+                        v-else-if="area.description"
+                        class="card-description"
+                        >{{ area.description }}</span
+                      >
                     </div>
                   </b-card-text>
                 </b-card-body>
@@ -110,8 +113,8 @@
                   variant="danger"
                   >Activar</b-button
                 >
-                <b-button class="ml-2" variant="primary"
-                  ><b-icon icon="eye"></b-icon
+                <b-button class="ml-1" variant="primary"
+                  ><b-icon icon="eye" @click="getOne(area.id)"></b-icon
                 ></b-button>
               </div>
             </template>
@@ -162,6 +165,8 @@
         </b-col>
       </b-row>
     </section>
+
+    <update-area :areaSelected="areaSelected" @reloadRegisters2="getAllAreas" />
   </div>
 </template>
 
@@ -169,7 +174,7 @@
 import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
 import areaController from "../services/controller/area.controller";
-import { encrypt, decrypt } from "../../../../kernel/hashFunctions";
+import { encrypt } from "../../../../kernel/hashFunctions";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 
 export default Vue.extend({
@@ -178,6 +183,9 @@ export default Vue.extend({
     SaveArea: defineAsyncComponent(() => import("./components/SaveArea.vue")),
     LoadingCustom: () =>
       import("../../../../views/components/LoadingCustom.vue"),
+    UpdateArea: defineAsyncComponent(() =>
+      import("./components/UpdateArea.vue")
+    ),
   },
   mounted() {
     this.getAllAreas();
@@ -198,6 +206,7 @@ export default Vue.extend({
           name: null,
         },
       },
+      areaSelected: {},
     };
   },
   methods: {
@@ -241,6 +250,21 @@ export default Vue.extend({
             }
           }
         });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getOne(id) {
+      try {
+        const cipherId = await encrypt(id);
+        const resp = await areaController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.areaSelected = resp;
+          console.log("DATAONE", resp);
+          this.$bvModal.show("modal-update-area");
+        }
       } catch (error) {
         console.log(error);
       }
