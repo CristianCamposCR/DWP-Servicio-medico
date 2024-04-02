@@ -43,4 +43,30 @@ export default {
       };
     }
   },
+
+  async getOne(payload) {
+    try {
+      const response = await axios.doGet(`management/area/${payload}`);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async update(payload) {
+    try {
+      const response = await axios.doPut("/management/area/", payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };

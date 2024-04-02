@@ -40,4 +40,29 @@ export default {
       };
     }
   },
+
+  async getOne(payload) {
+    try {
+      const data = await ApiService.getOne(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async update(payload) {
+    try {
+      const data = await ApiService.update(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };
