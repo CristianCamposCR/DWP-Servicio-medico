@@ -171,32 +171,99 @@ export default Vue.extend({
       },
     };
   },
-  computed: {
-    selectedArea() {
-      if (this.speciality) {
-        return { id: this.speciality.area.id };
-      } else {
-        return null;
+  methods: {
+    async getAreas() {
+      try {
+        const areas = await specialityController.getAreas();
+        this.areasOptions = areas.map((area) => ({
+          value: area.id,
+          text: area.name,
+        }));
+        console.log(this.areasOptions);
+      } catch (error) {
+        console.error("Error al obtener las áreas:", error);
       }
     },
   },
   methods: {
     async saveSpeciality() {
       try {
-        const resp = await specialityController.saveSpeciality({
-          name: "Otorrinolaringología",
-          description: "Descripción",
-          costo: 1546.25,
-          bannerImage: null,
-          area: {
-            id: 1,
-            name: "Quirúrgica",
-          },
+        SweetAlertCustom.questionMessage().then(async (result) => {
+          if (result.isConfirmed) {
+            const resp = await specialityController.saveSpeciality(
+              this.speciality
+            );
+            const { error } = resp;
+            if (!error) {
+              this.$emit("reloadRegisters");
+              setTimeout(() => {
+                SweetAlertCustom.successMessage();
+              }, 1000);
+              this.$nextTick(() => this.$bvModal.hide("modal-save-speciality"));
+              this.cleanForm();
+              return;
+            }
+          }
         });
         console.log("respuesta save", resp);
       } catch (error) {
         console.log(error);
       }
+    },
+    cleanForm() {
+      this.speciality = {
+        name: "",
+        description: "",
+        costo: 0,
+        bannerImage: null,
+        area: {
+          id: "",
+          name: "",
+        },
+      };
+      this.previewImage = null;
+      this.validFile = null;
+      this.v$.speciality.$reset();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (!this.isValidImage(file)) {
+          this.validFile = false;
+          event.target.value = null;
+          this.previewImage = null;
+          this.speciality.bannerImage = null;
+          return;
+        }
+        this.validFile = true;
+        this.previewImage = URL.createObjectURL(file);
+        this.convertFileToBase64(file);
+      } else {
+        this.validFile = true;
+        this.previewImage = null;
+      }
+    },
+    isValidImage(file) {
+      return file.type === "image/png" || file.type === "image/jpeg";
+    },
+    convertFileToBase64(file) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        this.speciality.bannerImage = base64String;
+      };
+    },
+    clearFiles() {
+      this.$refs["banner-image"].reset();
+      this.validFile = null;
+      this.previewImage = null;
+      this.area.bannerImage = null;
+    },
+    closeModal() {
+      this.$bvModal.hide("modal-save-speciality");
     },
   },
   validations() {
@@ -240,6 +307,9 @@ export default Vue.extend({
         },
       },
     };
+  },
+  mounted() {
+    this.getAreas();
   },
 });
 </script>

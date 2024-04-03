@@ -10,16 +10,76 @@ export default {
       );
       return response.data.data;
     } catch (error) {
-      console.log(error);
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async getAreas() {
+    try {
+      const response = await axios.doGet(`/open/area/`);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
     }
   },
 
   async saveSpeciality(payload) {
     try {
-      const response = await axios.doPost("/management/speciality", payload);
+      const response = await axios.doPost("/management/speciality/", payload);
       return response.data.data;
     } catch (error) {
-      console.log(error);
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
     }
   },
+
+  async chageStatus(payload) {
+    try {
+      const response = await axios.doPatch(`/management/speciality/${payload}`);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async getOne(payload) {
+    try {
+      const response  = await axios.doGet(`management/speciality/${payload}`);
+      response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message
+      };
+    }
+  },
+
+  async updateSpeciality(payload) {
+    try {
+      const response = await axios.doPut("management/speciality/", payload);
+      response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message
+      };
+    }
+  }
 };
