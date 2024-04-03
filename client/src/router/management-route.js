@@ -17,6 +17,16 @@ export default [
         
       },
       {
+        path: "specialties-management",
+        name: "specialties-management",
+        component: () =>
+          import("../modules/management/speciality/views/SpecialtiesView.vue"),
+        meta: {
+          title: "Specialties",
+          requireAuth: false
+        }
+      },
+      {
         path: "patient-management",
         name: "patient-management",
         component: () =>
