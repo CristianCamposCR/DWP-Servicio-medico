@@ -41,7 +41,6 @@ export default {
       this.$bvModal.show("modal-update-profile");
     },
     getProfile() {
-      alert("consumo de perfil");
     },
   },
 
@@ -86,6 +85,8 @@ export default {
   color: white;
   font-size: 20px;
   padding: 10px 20px;
+  margin-top: 20px;
+  font-size: 16px;
 }
 
 .profile-image {
@@ -100,12 +101,6 @@ export default {
 .user-info {
   text-align: left;
   margin-top: 20px;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px;
-  font-size: 16px;
 }
 
 @media (max-width: 768px) {
