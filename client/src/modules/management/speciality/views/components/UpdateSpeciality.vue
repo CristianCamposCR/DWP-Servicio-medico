@@ -2,8 +2,8 @@ import { maxLength, minLength } from '@vuelidate/validators';
 <template>
   <div>
     <b-modal
-      id="modal-save-speciality"
-      title="Registrar especialidad"
+      id="modal-update-speciality"
+      title="Actualizar especialidad"
       centered
       hide-footer
       scrollable
@@ -98,10 +98,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
           {{ errorMessages.name.noneScripts }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2">
-          Selecciona una imagen :&nbsp;
-          <span class="text-danger">*</span>
-        </label>
+        <label class="mt-2"> Selecciona una imagen :&nbsp; </label>
         <b-form-file
           @change="handleFileChange"
           browse-text="Buscar"
@@ -165,7 +162,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
             variant="success"
             class="ml-2"
             :disabled="v$.speciality.$invalid"
-            @click="saveSpeciality"
+            @click="updateSpeciality"
             >Registrar</b-button
           >
         </div>
@@ -186,14 +183,16 @@ export default Vue.extend({
   setup() {
     return { v$: useVuelidate() };
   },
+  props: {
+    specialitySelected: {
+      required: true,
+      type: Object,
+    },
+  },
   data() {
     return {
       areasOptions: [],
       speciality: {
-        name: "",
-        description: "",
-        cost: 0,
-        bannerImage: null,
         area: {
           id: null,
           name: null,
@@ -215,6 +214,12 @@ export default Vue.extend({
       validFile: null,
     };
   },
+  watch: {
+    specialitySelected() {
+      this.speciality = { ...this.specialitySelected };
+      this.previewImage = this.speciality.bannerImage;
+    },
+  },
   methods: {
     async getAreas() {
       try {
@@ -227,21 +232,22 @@ export default Vue.extend({
         console.error("Error al obtener las áreas:", error);
       }
     },
-
-    async saveSpeciality() {
+    async updateSpeciality() {
       try {
         SweetAlertCustom.questionMessage().then(async (result) => {
           if (result.isConfirmed) {
-            const resp = await specialityController.saveSpeciality(
+            const resp = await specialityController.updateSpeciality(
               this.speciality
             );
             const { error } = resp;
             if (!error) {
-              this.$emit("reloadRegisters");
+              this.$emit("reloadRegisters2");
               setTimeout(() => {
                 SweetAlertCustom.successMessage();
               }, 1000);
-              this.$nextTick(() => this.$bvModal.hide("modal-save-speciality"));
+              this.$nextTick(() =>
+                this.$bvModal.hide("modal-update-speciality")
+              );
               this.cleanForm();
               return;
             }
@@ -301,10 +307,10 @@ export default Vue.extend({
       this.$refs["banner-image"].reset();
       this.validFile = null;
       this.previewImage = null;
-      this.area.bannerImage = null;
+      this.speciality.bannerImage = null;
     },
     closeModal() {
-      this.$bvModal.hide("modal-save-speciality");
+      this.$bvModal.hide("modal-update-speciality");
     },
   },
   validations() {
