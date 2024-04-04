@@ -7,6 +7,7 @@ public enum Statuses {
 
     // Usuario
     BLOQUEADO,
+    NO_VERIFICADO,
 
     // Citas
     AGENDADA,

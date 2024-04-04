@@ -14,6 +14,8 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.Validations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class SpecialityService {
+    Logger logger = LoggerFactory.getLogger(SpecialityService.class);
     private final ISpecialityRepository iSpecialityRepository;
     private final IStatusRepository iStatusRepository;
     private final IAreaRepository iAreaRepository;
@@ -50,6 +53,7 @@ public class SpecialityService {
                     "Especialidades"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -75,6 +79,7 @@ public class SpecialityService {
                     "Especialidades"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -96,6 +101,7 @@ public class SpecialityService {
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name())
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -117,6 +123,7 @@ public class SpecialityService {
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name())
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -137,6 +144,7 @@ public class SpecialityService {
                     "Lista de especialidades"
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -172,6 +180,7 @@ public class SpecialityService {
                     "Especialidad creada."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -207,6 +216,7 @@ public class SpecialityService {
                     "Especialidad actualizada."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,
@@ -244,6 +254,7 @@ public class SpecialityService {
                     "Estado de especialidad actualizado."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,

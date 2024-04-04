@@ -8,7 +8,10 @@ import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.appointment_type.service.AppointmentTypeService;
 import mx.edu.utez.server.modules.cancellation_reason.service.CancellationReasonService;
+import mx.edu.utez.server.modules.doctor.service.DoctorService;
+import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.gender.service.GenderService;
+import mx.edu.utez.server.modules.role.model.Role;
 import mx.edu.utez.server.modules.role.service.RoleService;
 import mx.edu.utez.server.modules.shift.service.ShiftService;
 import mx.edu.utez.server.modules.status.model.Status;
@@ -25,6 +28,7 @@ public class InitialConfig implements CommandLineRunner {
     private final GenderService genderService;
     private final ShiftService shiftService;
     private final RoleService roleService;
+    private final DoctorService doctorService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -33,6 +37,7 @@ public class InitialConfig implements CommandLineRunner {
         Status activeStatusU = this.statusService.findOrSave(Statuses.ACTIVO, StatusType.USUARIOS);
         this.statusService.findOrSave(Statuses.INACTIVO, StatusType.USUARIOS);
         this.statusService.findOrSave(Statuses.BLOQUEADO, StatusType.USUARIOS);
+        this.statusService.findOrSave(Statuses.NO_VERIFICADO, StatusType.USUARIOS);
         // - Generales
         Status activeStatusG = this.statusService.findOrSave(Statuses.ACTIVO, StatusType.GENERAL);
         this.statusService.findOrSave(Statuses.INACTIVO, StatusType.GENERAL);
@@ -59,16 +64,17 @@ public class InitialConfig implements CommandLineRunner {
         this.cancellationReasonService.findOrSave("Ausencia", 0, activeStatusG);
         this.cancellationReasonService.findOrSave("Paciente", 50, activeStatusG);
         // GENDER
+        Gender genderM = this.genderService.findOrSave(Genders.MASCULINO, activeStatusG);
         this.genderService.findOrSave(Genders.FEMENINO, activeStatusG);
-        this.genderService.findOrSave(Genders.MASCULINO, activeStatusG);
         this.genderService.findOrSave(Genders.OTRO, activeStatusG);
         // SHIFTS
         this.shiftService.findOrSave(Shifts.MATUTINO, 6, 12, activeStatusG);
         this.shiftService.findOrSave(Shifts.VESPERTINO, 12, 18, activeStatusG);
         // ROLE
-        this.roleService.findOrSave(Roles.ADMIN, activeStatusG);
+        Role adminRole = this.roleService.findOrSave(Roles.ADMIN, activeStatusG);
         this.roleService.findOrSave(Roles.PATIENT, activeStatusG);
         this.roleService.findOrSave(Roles.DOCTOR, activeStatusG);
         // DEFAULT USER
+        this.doctorService.findOrSaveAdmin(genderM, activeStatusU, adminRole);
     }
 }

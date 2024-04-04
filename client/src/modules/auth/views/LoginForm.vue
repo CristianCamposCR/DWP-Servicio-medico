@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-form @submit.prevent="submitForm">
     <b-card-img
       src="/src/assets/Hospital.jpg"
       width="100px"
@@ -62,20 +62,28 @@
           </b-input-group>
         </b-form-group>
       </b-col>
+      <b-col class="d-flex justify-content-center">
+        <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" />
+      </b-col>
     </div>
     <div class="d-flex justify-content-center mt-3 mb-5 mx-4">
       <b-col cols="12" sm="6">
-        <b-button block class="custom-button"> Iniciar sesión </b-button>
+        <b-button block class="custom-button"
+                  type="submit"
+                  :disabled="v$.signin.$invalid || !isValidFriendlyCaptcha"
+        > Iniciar sesión </b-button>
       </b-col>
     </div>
-  </div>
+  </b-form>
 </template>
 <script>
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
+import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
 export default Vue.extend({
   name: "LoginForm",
+  components: {CaptchaFriendly},
   setup() {
     return {
       v$: useVuelidate(),
@@ -84,6 +92,7 @@ export default Vue.extend({
   data() {
     return {
       showPasswordState: false,
+      isValidFriendlyCaptcha: false,
       signin: {
         email: "",
         password: "",
@@ -93,6 +102,10 @@ export default Vue.extend({
   methods: {
     showPassword() {
       this.showPasswordState = !this.showPasswordState;
+    },
+    submitForm() {
+      //prefer not active button submit if not valid the captcha
+      console.log("Formulario válido", this.isValidFriendlyCaptcha);
     },
   },
   validations() {

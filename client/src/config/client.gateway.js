@@ -35,7 +35,6 @@ AxiosClient.interceptors.response.use(
     const {
       response: { status },
     } = error;
-    console.info(status, "status error");
     if (status) {
       switch (status) {
         case 400: {
@@ -44,7 +43,6 @@ AxiosClient.interceptors.response.use(
               data: { message },
             },
           } = error;
-          console.info(message, "message error, handle interceptor");
           if (message) {
             let messageAlert = "",
               titleAlert = "";
@@ -100,6 +98,9 @@ AxiosClient.interceptors.response.use(
               case "The curp is already registered":
                 titleAlert = "Registro duplicado";
                 messageAlert = "Esta CURP ya existe";
+              case "DUPLICATED_AREA":
+                titleAlert = "Registro duplicado";
+                messageAlert = "Esta área ya existe";
             }
             if (message !== "Review request")
               Vue.swal(titleAlert, messageAlert, "warning");

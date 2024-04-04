@@ -29,6 +29,10 @@ import java.util.Set;
 @Getter
 @Setter
 public class Gender {
+    public Gender(Long id) {
+        this.id = id;
+    }
+
     public Gender(Genders name, Status status) {
         this.name = name;
         this.status = status;

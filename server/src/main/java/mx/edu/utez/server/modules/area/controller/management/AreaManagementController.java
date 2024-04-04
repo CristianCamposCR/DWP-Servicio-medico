@@ -8,12 +8,15 @@ import mx.edu.utez.server.modules.area.model.Area;
 import mx.edu.utez.server.modules.area.service.AreaService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/management/area/")
 @CrossOrigin(origins = {"*"})
+@PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
 @RequiredArgsConstructor
 public class AreaManagementController {
+    Logger logger = LoggerFactory.getLogger(AreaManagementController.class);
     private final AreaService areaService;
     private final HashService hashService;
 
@@ -52,6 +57,7 @@ public class AreaManagementController {
             ResponseApi<Area> responseApi = this.areaService.findOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -64,6 +70,7 @@ public class AreaManagementController {
             ResponseApi<Area> responseApi = this.areaService.save(areaDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -76,6 +83,7 @@ public class AreaManagementController {
             ResponseApi<Area> responseApi = this.areaService.update(areaDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
@@ -89,6 +97,7 @@ public class AreaManagementController {
             ResponseApi<Area> responseApi = this.areaService.changeStatus(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );

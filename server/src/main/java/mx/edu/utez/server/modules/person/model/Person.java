@@ -31,6 +31,17 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Person {
+    public Person(String name, String surname, String lastname, String email, String curp, String phoneNumber, LocalDate birthday, Gender gender) {
+        this.name = name;
+        this.surname = surname;
+        this.lastname = lastname;
+        this.email = email;
+        this.curp = curp;
+        this.phoneNumber = phoneNumber;
+        this.birthday = birthday;
+        this.gender = gender;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,10 +55,13 @@ public class Person {
     @Column(columnDefinition = "VARCHAR(50)")
     private String lastname;
 
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
+    private String email;
+
     @Column(columnDefinition = "VARCHAR(18)", unique = true)
     private String curp;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
     private String phoneNumber;
 
     @Column(columnDefinition = "TEXT")

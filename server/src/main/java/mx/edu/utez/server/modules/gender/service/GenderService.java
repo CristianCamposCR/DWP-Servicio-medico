@@ -8,6 +8,8 @@ import mx.edu.utez.server.modules.gender.model.Gender;
 import mx.edu.utez.server.modules.gender.model.IGenderRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class GenderService {
+    Logger logger = LoggerFactory.getLogger(GenderService.class);
     private final IGenderRepository iGenderRepository;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -39,6 +42,7 @@ public class GenderService {
                     "Lista de tipos de cita."
             );
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     true,

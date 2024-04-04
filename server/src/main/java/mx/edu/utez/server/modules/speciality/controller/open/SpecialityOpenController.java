@@ -8,6 +8,8 @@ import mx.edu.utez.server.modules.speciality.model.Speciality;
 import mx.edu.utez.server.modules.speciality.service.SpecialityService;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ import java.util.Set;
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
 public class SpecialityOpenController {
+    Logger logger = LoggerFactory.getLogger(SpecialityOpenController.class);
     private final SpecialityService specialityService;
     private final HashService hashService;
 
@@ -52,7 +55,7 @@ public class SpecialityOpenController {
             ResponseApi<Speciality> responseApi = this.specialityService.openFindOne(id);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(
                     new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
             );
