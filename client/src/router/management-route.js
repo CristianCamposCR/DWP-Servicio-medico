@@ -22,7 +22,7 @@ export default [
         component: () =>
           import("../modules/management/speciality/views/SpecialtiesView.vue"),
         meta: {
-          title: "Specialties",
+          title: "Especialidades",
           requireAuth: false
         }
       },
