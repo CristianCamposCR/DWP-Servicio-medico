@@ -2,12 +2,14 @@ import { maxLength, minLength } from '@vuelidate/validators';
 <template>
   <div>
     <b-modal
-      id="modal-save-speciality"
-      title="Registrar especialidad"
+      id="modal-update-speciality"
+      title="Actualizar especialidad"
       centered
       hide-footer
       scrollable
       :no-close-on-backdrop="true"
+      @hidden="cleanForm"
+      @close="cleanForm"
     >
       <b-form>
         <label>
@@ -48,9 +50,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
           {{ errorMessages.name.maxLength }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2"
-          >Descripción :&nbsp; <span class="text-danger">*</span></label
-        >
+        <label class="mt-2">Descripción :&nbsp;</label>
         <b-form-textarea
           v-model="v$.speciality.description.$model"
           :state="
@@ -60,6 +60,8 @@ import { maxLength, minLength } from '@vuelidate/validators';
           "
           @blur="v$.speciality.description.$touch()"
           required
+          rows="3"
+          max-rows="6"
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.speciality.description.$errors"
@@ -73,48 +75,80 @@ import { maxLength, minLength } from '@vuelidate/validators';
           <span class="text-danger">*</span>
         </label>
         <b-form-input
-          id="costo"
+          id="cost"
           type="number"
-          v-model.trim="v$.speciality.costo.$model"
-          :state="
-            v$.speciality.costo.$dirty ? !v$.speciality.costo.$error : null
-          "
-          @blur="v$.speciality.costo.$touch()"
+          v-model.trim="v$.speciality.cost.$model"
+          :state="v$.speciality.cost.$dirty ? !v$.speciality.cost.$error : null"
+          @blur="v$.speciality.cost.$touch()"
           required
           trim
         ></b-form-input>
         <b-form-invalid-feedback
-          v-if="!v$.speciality.costo.required.$response"
+          v-if="!v$.speciality.cost.required.$response"
           >{{ errorMessages.required }}</b-form-invalid-feedback
         >
         <b-form-invalid-feedback
-          v-else-if="!v$.speciality.costo.valid.$response"
+          v-else-if="!v$.speciality.cost.valid.$response"
         >
           {{ errorMessages.name.valid }}
         </b-form-invalid-feedback>
         <b-form-invalid-feedback
-          v-else-if="!v$.speciality.costo.notScript.$response"
+          v-else-if="!v$.speciality.cost.notScript.$response"
         >
           {{ errorMessages.name.noneScripts }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2">
-          Selecciona una imagen :&nbsp;
-          <span class="text-danger">*</span>
-        </label>
+        <label class="mt-2"> Selecciona una imagen :&nbsp; </label>
         <b-form-file
-          v-model="speciality.bannerImage"
-          :state="Boolean(speciality.bannerImage)"
+          @change="handleFileChange"
           browse-text="Buscar"
           placeholder="Selecciona una imagen"
           drop-placeholder="Suelta el archivo aquí..."
+          accept="image/png, image/jpeg"
+          :state="validFile"
+          ref="banner-image"
         ></b-form-file>
+        <b-form-invalid-feedback v-if="validFile == false">{{
+          errorMessages.bannerImage.validFile
+        }}</b-form-invalid-feedback>
+
+        <b-row class="mt-3" v-if="previewImage">
+          <b-col cols="12" class="my-2">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <p class="mb-0">Previsualización:</p>
+              </div>
+              <div>
+                <b-button
+                  variant="primary"
+                  size="sm"
+                  @click="clearFiles"
+                  class="ml-auto"
+                  >Quitar imagen</b-button
+                >
+              </div>
+            </div>
+          </b-col>
+          <b-col cols="12" class="d-flex justify-content-center">
+            <b-form>
+              <b-form-group>
+                <b-img
+                  v-if="previewImage"
+                  :src="previewImage"
+                  fluid
+                  thumbnail
+                  alt="Image"
+                ></b-img>
+              </b-form-group>
+            </b-form>
+          </b-col>
+        </b-row>
 
         <label class="mt-2">
           Selecciona el área de la especialidad :&nbsp;
           <span class="text-danger">*</span>
         </label>
-        <b-form-select v-model="selectedArea.id" :options="areasOptions">
+        <b-form-select v-model="speciality.area.id" :options="areasOptions">
           <template #first>
             <b-form-select-option :value="null">
               Selecciona un Área
@@ -123,11 +157,12 @@ import { maxLength, minLength } from '@vuelidate/validators';
         </b-form-select>
 
         <div class="col-12 mt-4 px-5 d-flex justify-content-between">
-          <b-button variant="danger" @click="saveSpeciality">Cancelar</b-button>
+          <b-button variant="danger" @click="closeModal">Cancelar</b-button>
           <b-button
             variant="success"
             class="ml-2"
             :disabled="v$.speciality.$invalid"
+            @click="updateSpeciality"
             >Registrar</b-button
           >
         </div>
@@ -141,23 +176,26 @@ import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import specialityController from "../../services/controller/speciality.controller";
+import SweetAlertCustom from "../../../../../kernel/SweetAlertCustom";
 
 export default Vue.extend({
   name: "SaveSpeciality",
   setup() {
     return { v$: useVuelidate() };
   },
+  props: {
+    specialitySelected: {
+      required: true,
+      type: Object,
+    },
+  },
   data() {
     return {
       areasOptions: [],
       speciality: {
-        name: "",
-        description: "",
-        costo: 0,
-        bannerImage: null,
         area: {
-          id: "",
-          name: "",
+          id: null,
+          name: null,
         },
       },
       errorMessages: {
@@ -168,8 +206,19 @@ export default Vue.extend({
           noneScripts: "Campo inválido no se aceptar scripts",
           valid: "Campos inválidos - caracteres inválidos",
         },
+        bannerImage: {
+          validFile: "El archivo no es una imagen PNG o JPEG",
+        },
       },
+      previewImage: null,
+      validFile: null,
     };
+  },
+  watch: {
+    specialitySelected() {
+      this.speciality = { ...this.specialitySelected };
+      this.previewImage = this.speciality.bannerImage;
+    },
   },
   methods: {
     async getAreas() {
@@ -183,28 +232,27 @@ export default Vue.extend({
         console.error("Error al obtener las áreas:", error);
       }
     },
-  },
-  methods: {
-    async saveSpeciality() {
+    async updateSpeciality() {
       try {
         SweetAlertCustom.questionMessage().then(async (result) => {
           if (result.isConfirmed) {
-            const resp = await specialityController.saveSpeciality(
+            const resp = await specialityController.updateSpeciality(
               this.speciality
             );
             const { error } = resp;
             if (!error) {
-              this.$emit("reloadRegisters");
+              this.$emit("reloadRegisters2");
               setTimeout(() => {
                 SweetAlertCustom.successMessage();
               }, 1000);
-              this.$nextTick(() => this.$bvModal.hide("modal-save-speciality"));
+              this.$nextTick(() =>
+                this.$bvModal.hide("modal-update-speciality")
+              );
               this.cleanForm();
               return;
             }
           }
         });
-        console.log("respuesta save", resp);
       } catch (error) {
         console.log(error);
       }
@@ -259,10 +307,10 @@ export default Vue.extend({
       this.$refs["banner-image"].reset();
       this.validFile = null;
       this.previewImage = null;
-      this.area.bannerImage = null;
+      this.speciality.bannerImage = null;
     },
     closeModal() {
-      this.$bvModal.hide("modal-save-speciality");
+      this.$bvModal.hide("modal-update-speciality");
     },
   },
   validations() {
@@ -289,9 +337,27 @@ export default Vue.extend({
           ),
         },
         description: {
-          required: helpers.withMessage(this.errorMessages.required, required),
+          minLength: helpers.withMessage(
+            this.errorMessages.name.minLength,
+            minLength(0)
+          ),
+          maxLength: helpers.withMessage(
+            this.errorMessages.name.maxLength,
+            maxLength(100)
+          ),
+          notScript: helpers.withMessage(
+            this.errorMessages.name.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
+          valid: helpers.withMessage(this.errorMessages.name.valid, (value) =>
+            /^(?:[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*)?$/.test(
+              value
+            )
+          ),
         },
-        costo: {
+        cost: {
           required: helpers.withMessage(this.errorMessages.required, required),
           notScript: helpers.withMessage(
             this.errorMessages.name.noneScripts,
@@ -301,7 +367,10 @@ export default Vue.extend({
           ),
           valid: helpers.withMessage(
             this.errorMessages.name.valid,
-            (value) => /^-?\d*\.?\d+$/.test(value) && !isNaN(parseFloat(value))
+            (value) =>
+              /^\d+(\.\d{1,2})?$/.test(value) &&
+              !isNaN(parseFloat(value)) &&
+              parseFloat(value) >= 0
           ),
         },
       },

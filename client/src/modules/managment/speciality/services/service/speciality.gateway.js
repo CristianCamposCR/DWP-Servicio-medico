@@ -59,8 +59,8 @@ export default {
 
   async getOne(payload) {
     try {
-      const response  = await axios.doGet(`management/speciality/${payload}`);
-      response.data.data;
+      const response  = await axios.doGet(`/management/speciality/${payload}`);
+      return response.data.data;
     } catch (error) {
       return {
         code: error.data?.code,
@@ -72,8 +72,8 @@ export default {
 
   async updateSpeciality(payload) {
     try {
-      const response = await axios.doPut("management/speciality/", payload);
-      response.data.data;
+      const response = await axios.doPut("/management/speciality/", payload);
+      return response.data.data;
     } catch (error) {
       return {
         code: error.data?.code,
