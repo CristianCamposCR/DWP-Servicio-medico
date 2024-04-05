@@ -33,8 +33,18 @@ const router = new VueRouter({
             requireAuth: false,
           },
         },
+        {
+          path: "doctors",
+          name: "doctors",
+          component: () =>
+            import("../modules/public/views/DoctorsView.vue"),
+          meta: {
+            title: "Doctores",
+            requireAuth: false
+          },
+          
+        },
         ...managementRoute,
-        ...publicRoute,
       ],
     },
   ],
