@@ -44,6 +44,28 @@ const router = new VueRouter({
           },
           
         },
+        {
+          path: "areas",
+          name: "public areas",
+          component: () =>
+            import("../modules/public/views/AreasView.vue"),
+          meta: {
+            title: "Areas",
+            requireAuth: false
+          },
+          
+        },
+        {
+          path: "specialities",
+          name: "public specialities",
+          component: () =>
+            import("../modules/public/views/SpecialitiesView.vue"),
+          meta: {
+            title: "Especialidades",
+            requireAuth: false
+          },
+          
+        },
         ...managementRoute,
       ],
     },

@@ -319,7 +319,7 @@ export default Vue.extend({
         this.showFullDescriptionIndex === index ? -1 : index;
     },
     getAllDoctors() {
-      console.log("wachando pacientes");
+      console.log("wachando doctors");
     },
   },
 });
