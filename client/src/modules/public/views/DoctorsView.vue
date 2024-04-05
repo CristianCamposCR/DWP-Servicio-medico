@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mt-4">
+    <loading-custom :isLoading="isLoading" />
     <section class="mx-2">
       <b-row>
         <b-col>
@@ -11,12 +12,16 @@
           <b-input-group>
             <b-form-input
               placeholder="Escribe el nombre del doctor"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllDoctors"
             ></b-form-input>
 
             <b-input-group-append>
               <b-button variant="primary" block>Buscar</b-button>
             </b-input-group-append>
           </b-input-group>
+        </b-col>
+        <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
         </b-col>
       </b-row>
     </section>
@@ -30,7 +35,6 @@
           sm="6"
           md="4"
           lg="3"
-          xl="2"
           class="d-flex justify-content-center"
         >
           <b-card
@@ -43,14 +47,21 @@
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                  src="https://via.placeholder.com/270"
-                  alt="Image"
-                  class="rounded-0"
-                  height="160"
-                ></b-card-img>
+                    :src="
+                      doctor.bannerImage
+                        ? doctor.bannerImage
+                        : '/src/assets/image/default-area.avif'
+                    "
+                    alt="Image"
+                    class="rounded-0"
+                    height="160"
+                  ></b-card-img>
               </b-col>
               <b-col md="12">
-                <b-card-body :title="doctor.name">
+                <b-card-body>
+                  <b-card-title class="card-title">{{
+                      doctor.name
+                    }}</b-card-title>
                   <b-card-text>
                     <div class="mb-3">Doctor</div>
                     <div class="mb-3">
@@ -91,7 +102,7 @@
         </b-col>
       </b-row>
     </section>
-    <section>
+    <section class="mt-4">
       <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
         <b-col
           cols="12"
@@ -142,23 +153,21 @@ import Vue from "vue";
 import { EStatus } from "../../../kernel/types";
 export default Vue.extend({
   name: "DoctorsPublicView",
+  components: {
+      LoadingCustom: () =>
+        import("../../../views/components/LoadingCustom.vue"),
+    },
   data() {
     return {
+      isLoading: false,
       docState: "saved",
       showFullDescriptionIndex: -1,
-      doctor:
-        {
-          id: null,
-          name: "",
-          phone: "",
-          email: "",
-          status: "",
-        },
       doctors: [
         {
           id: 1,
           name: "Maycon Manuel Carmona",
           phone: "7772002582",
+          bannerImage:'',
           email: "maycon@grupoeimsa.com.mx",
           status: "ACTIVO",
         },
@@ -166,6 +175,7 @@ export default Vue.extend({
           id: 2,
           name: "Laura González",
           phone: "5551234567",
+          bannerImage:'',
           email: "20213tn004@utez.edu.mx",
           status: "ACTIVO",
         },
@@ -173,6 +183,7 @@ export default Vue.extend({
           id: 3,
           name: "Juan Pérez",
           phone: "3339876543",
+          bannerImage:'',
           email: "juan@example.com",
           status: "ACTIVO",
         },
@@ -180,6 +191,7 @@ export default Vue.extend({
           id: 4,
           name: "María Rodríguez",
           phone: "4442345678",
+          bannerImage:'',
           email: "maria@example.com",
           status: "ACTIVO",
         },
@@ -187,6 +199,7 @@ export default Vue.extend({
           id: 5,
           name: "Carlos García",
           phone: "6668765432",
+          bannerImage:'',
           email: "carlos@example.com",
           status: "ACTIVO",
         },
@@ -194,6 +207,7 @@ export default Vue.extend({
           id: 6,
           name: "Ana Martínez",
           phone: "7777654321",
+          bannerImage:'',
           email: "ana@example.com",
           status: "ACTIVO",
         },
@@ -201,6 +215,7 @@ export default Vue.extend({
           id: 7,
           name: "Pedro López",
           phone: "9991122334",
+          bannerImage:'',
           email: "pedro@example.com",
           status: "ACTIVO",
         },
@@ -208,6 +223,7 @@ export default Vue.extend({
           id: 8,
           name: "Sofía Hernández",
           phone: "8883344556",
+          bannerImage:'',
           email: "sofia@example.com",
           status: "ACTIVO",
         },
@@ -215,6 +231,7 @@ export default Vue.extend({
           id: 9,
           name: "Diego Díaz",
           phone: "1114445566",
+          bannerImage:'',
           email: "diego@example.com",
           status: "ACTIVO",
         },
@@ -222,6 +239,7 @@ export default Vue.extend({
           id: 10,
           name: "Luisa Sánchez",
           phone: "2227778888",
+          bannerImage:'',
           email: "luisa@example.com",
           status: "ACTIVO",
         },
@@ -229,6 +247,7 @@ export default Vue.extend({
           id: 11,
           name: "Martín Ramírez",
           phone: "3339990001",
+          bannerImage:'',
           email: "martin@example.com",
           status: "ACTIVO",
         },
@@ -236,6 +255,7 @@ export default Vue.extend({
           id: 12,
           name: "Elena Vázquez",
           phone: "7771112222",
+          bannerImage:'',
           email: "elena@example.com",
           status: "ACTIVO",
         },
@@ -243,6 +263,7 @@ export default Vue.extend({
           id: 13,
           name: "Héctor González",
           phone: "5554443333",
+          bannerImage:'',
           email: "hector@example.com",
           status: "ACTIVO",
         },
@@ -250,6 +271,7 @@ export default Vue.extend({
           id: 14,
           name: "Marta Fernández",
           phone: "7777777777",
+          bannerImage:'',
           email: "marta@example.com",
           status: "ACTIVO",
         },
@@ -257,6 +279,7 @@ export default Vue.extend({
           id: 15,
           name: "Javier Torres",
           phone: "9993332222",
+          bannerImage:'',
           email: "javier@example.com",
           status: "ACTIVO",
         },
@@ -264,6 +287,7 @@ export default Vue.extend({
           id: 16,
           name: "Natalia Gómez",
           phone: "7775551111",
+          bannerImage:'',
           email: "natalia@example.com",
           status: "ACTIVO",
         },
@@ -271,6 +295,7 @@ export default Vue.extend({
           id: 17,
           name: "Gabriel Ruiz",
           phone: "8887776666",
+          bannerImage:'',
           email: "gabriel@example.com",
           status: "ACTIVO",
         },
@@ -278,6 +303,7 @@ export default Vue.extend({
           id: 18,
           name: "Anaí Jiménez",
           phone: "7774449999",
+          bannerImage:'',
           email: "anai@example.com",
           status: "ACTIVO",
         },
@@ -285,6 +311,7 @@ export default Vue.extend({
           id: 19,
           name: "Roberto Mendoza",
           phone: "5557779999",
+          bannerImage:'',
           email: "roberto@example.com",
           status: "ACTIVO",
         },
@@ -292,6 +319,7 @@ export default Vue.extend({
           id: 20,
           name: "Sara Martínez",
           phone: "7773331111",
+          bannerImage:'',
           email: "sara@example.com",
           status: "ACTIVO",
         },
@@ -300,9 +328,12 @@ export default Vue.extend({
       pagination: {
         page: 1,
         sort: "id",
-        size: 10,
+        size: 8,
         direction: "desc",
-        totalRows: 25,
+        totalRows: 0,
+        data: {
+            name: null,
+          },
       },
     };
   },
@@ -320,7 +351,26 @@ export default Vue.extend({
     },
     getAllDoctors() {
       console.log("wachando doctors");
+      // try {
+        //   this.isLoading = true;
+        //   const response = await doctorsController.getAllDoctos({
+        //     page: this.pagination.page - 1,
+        //     size: this.pagination.size,
+        //     sort: this.pagination.sort,
+        //     direction: this.pagination.direction,
+        //     data: this.pagination.data,
+        //   });
+        //   this.doctors = response.content;
+        //   this.pagination.totalRows = response.totalElements;
+        // } catch (error) {
+        //   console.log(error);
+        // } finally {
+        //   this.isLoading = false;
+        // }
     },
   },
+  mounted(){
+    this.getAllDoctors();
+  }
 });
 </script>

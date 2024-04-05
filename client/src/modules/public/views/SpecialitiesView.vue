@@ -133,7 +133,7 @@
               :total-rows="pagination.totalRows"
               :per-page="pagination.size"
               aria-controls="table-transition-example"
-              @input="getAllspecialities"
+              @input="getAllSpecialities"
             >
             </b-pagination>
           </b-col>
@@ -252,6 +252,7 @@
           this.showFullDescriptionIndex === index ? -1 : index;
       },
       async getAllSpecialities() {
+        console.log("wachando specialidades");
         // try {
         //   this.isLoading = true;
         //   const response = await specialitiesController.getAllSpecialities({
