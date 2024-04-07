@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/management/area/")
 @CrossOrigin(origins = {"*"})
-@PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequiredArgsConstructor
 public class AreaManagementController {
     Logger logger = LoggerFactory.getLogger(AreaManagementController.class);

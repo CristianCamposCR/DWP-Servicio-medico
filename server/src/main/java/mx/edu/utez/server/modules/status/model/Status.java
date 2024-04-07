@@ -82,10 +82,6 @@ public class Status {
 
     @OneToMany(mappedBy = "status")
     @JsonIgnore
-    private Set<Patient> patients;
-
-    @OneToMany(mappedBy = "status")
-    @JsonIgnore
     private Set<AppointmentType> appointmentTypes;
 
     @OneToMany(mappedBy = "status")
