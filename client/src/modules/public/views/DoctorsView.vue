@@ -58,6 +58,7 @@
                   class="rounded-0"
                   height="160"
                 ></b-card-img>
+
               </b-col>
               <b-col md="12">
                 <b-card-body>
@@ -169,6 +170,10 @@ export default Vue.extend({
 
 },
   name: "DoctorsPublicView",
+  components: {
+      LoadingCustom: () =>
+        import("../../../views/components/LoadingCustom.vue"),
+    },
   data() {
     return {
       isLoading: false,
@@ -346,6 +351,7 @@ export default Vue.extend({
       ],
       EStatus: EStatus,
       pagination: {
+
           page: 1,
           sort: "id",
           size: 8,
@@ -391,5 +397,6 @@ export default Vue.extend({
   mounted() {
       this.getAllDoctors();
     },
+
 });
 </script>
