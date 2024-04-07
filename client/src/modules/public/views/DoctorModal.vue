@@ -1,0 +1,212 @@
+<template>
+    <div>
+      <b-modal hide-footer hide-header id="modal-doctor" title="Detalles del Doctor" centered>
+        <header class="text-center border-bottom" style="margin-bottom: 20px">
+        <h4 style="font-family: 'Arial', sans-serif; color: #333">
+          Información del doctor
+        </h4>
+      </header>
+        <div class="modal-container">
+          
+            <div class="doctor-details fullscreen">
+            <div class="modal-content">  
+                <div class="profile-section">
+                <img class="profile-picture" :src="doctor.profile" alt="Profile Picture">
+              </div>
+            </div>
+              <div class="info-section">
+                <div class="header">
+                  <h1 class="doctor-name">{{ doctor.name }} {{ doctor.surname }} {{ doctor.lastname }}</h1>
+                  <p class="specialty">{{ doctor.specialty }}</p>
+                </div>
+                <div class="details">
+                  <div class="personal-info">
+                    <div class="info-item">
+                      <strong>Edad:</strong> {{ calculateAge(doctor.birthday) }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Género:</strong> {{ doctor.gender }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Email:</strong> {{ doctor.email }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Teléfono:</strong> {{ doctor.phoneNumber }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Dirección:</strong> {{ doctor.address }}
+                    </div>
+                    <div class="info-item">
+                      <strong>CURP:</strong> {{ doctor.curp }}
+                    </div>
+                  </div>
+                  <div class="professional-info">
+                    <div class="info-item">
+                      <strong>Especialidad:</strong> {{ doctor.specialty }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Experiencia:</strong> {{ doctor.experience }} años
+                    </div>
+                    <div class="info-item">
+                      <strong>¿Es Auxiliar?</strong> {{ doctor.isAux ? 'Sí' : 'No' }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Días Disponibles:</strong> {{ doctor.availableDays }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Turno:</strong> {{ doctor.shift }}
+                    </div>
+                    <div class="info-item">
+                      <strong>Estado:</strong> {{ doctor.status }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+        </div>
+        <footer class="text-center mt-5">
+          <div class="btn-group">
+            <b-button variant="danger" class="mr-4" @click="onClose"
+            >Cerrar</b-button
+          >
+          <b-button variant="primary">
+            Aceptar
+          </b-button>
+          </div>
+        </footer>
+      </b-modal>
+    </div>
+  </template>
+  <script>
+  export default {
+    name: 'DoctorModal',
+    props: {
+      doctor: {
+        type: Object,
+        required: true,
+        default: () => ({
+          name: 'Dr. Alicia',
+          surname: 'García',
+          lastname: 'Martínez',
+          age: 35,
+          gender: 'Femenino',
+          email: 'alicia.garcia@example.com',
+          phoneNumber: '+1 (234) 567-8901',
+          address: '456 Main Street, City, Country',
+          curp: 'XXXX123456XXXXXX01',
+          birthday: '1989-03-15',
+          specialty: 'Pediatría',
+          experience: 15,
+          professionalId: '12345',
+          isAux: false,
+          availableDays: 'Lunes a Viernes',
+          shift: 'Mañana',
+          speciality: 'Pediatría',
+          status: 'Activo',
+          profile: 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg',
+        }),
+      },
+    },
+    methods: {
+      calculateAge(birthday) {
+        const today = new Date();
+        const birthDate = new Date(birthday);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const month = today.getMonth() - birthDate.getMonth();
+        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      },
+      onClose() {
+      this.$bvModal.hide("modal-doctor");
+    },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .modal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
+  .modal-content {
+    max-width: 600px;
+    width: 100%;
+    background-color:#10b981;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+  
+  .profile-section {
+    width: 100%;
+  }
+  
+  .profile-picture {
+  width: 100%;
+  border-radius: 10px;
+  }
+
+
+
+  
+  .info-section {
+    margin-top: 20px;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .doctor-name {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .specialty {
+    color: #2ecc71;
+    font-size: 18px;
+  }
+  
+  .details {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .personal-info,
+  .professional-info {
+    text-align: left;
+  }
+  
+  .info-item {
+    margin-bottom: 10px;
+  }
+  
+  .info-item strong {
+    margin-right: 5px;
+  }
+  
+  .section-title {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #555;
+  }
+  </style>
+  

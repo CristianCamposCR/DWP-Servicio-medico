@@ -11,7 +11,13 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item
-              href="#" class="custom-link">Inicio</b-nav-item>
+          v-for="link in links"
+          :key="link.name"
+          :to="link.to"
+          class="custom-link"
+        >
+          {{ link.name }}
+        </b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -41,7 +47,17 @@ export default {
   name: 'Navbar',
   components: {
     ProgressIndicator
-  }
+  },
+  data() {
+    return {
+      links: [
+      { name: "Inicio", to: "/" },
+        { name: "Doctores", to: "doctors" },
+        { name: "Especialidades", to: "specialities" },
+        { name: "Areas", to: "areas" },
+      ],
+    };
+  },
 }
 </script>
 

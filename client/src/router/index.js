@@ -32,6 +32,39 @@ const router = new VueRouter({
             requireAuth: false,
           },
         },
+        {
+          path: "doctors",
+          name: "doctors",
+          component: () =>
+            import("../modules/public/views/DoctorsView.vue"),
+          meta: {
+            title: "Doctores",
+            requireAuth: false
+          },
+          
+        },
+        {
+          path: "areas",
+          name: "public areas",
+          component: () =>
+            import("../modules/public/views/AreasView.vue"),
+          meta: {
+            title: "Areas",
+            requireAuth: false
+          },
+          
+        },
+        {
+          path: "specialities",
+          name: "public specialities",
+          component: () =>
+            import("../modules/public/views/SpecialitiesView.vue"),
+          meta: {
+            title: "Especialidades",
+            requireAuth: false
+          },
+          
+        },
         ...managementRoute,
       ],
     },
@@ -40,3 +73,4 @@ const router = new VueRouter({
 
 
 export default router;
+
