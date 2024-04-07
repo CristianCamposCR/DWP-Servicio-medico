@@ -1,9 +1,9 @@
-package mx.edu.utez.server.modules.patient.controller.user;
+package mx.edu.utez.server.modules.doctor.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
-import mx.edu.utez.server.modules.patient.model.Patient;
-import mx.edu.utez.server.modules.patient.service.PatientService;
+import mx.edu.utez.server.modules.doctor.model.Doctor;
+import mx.edu.utez.server.modules.doctor.service.DoctorService;
 import mx.edu.utez.server.modules.security.entities.UserDetailsImpl;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
@@ -19,22 +19,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/patient/")
+@RequestMapping(value = "/api/doctor/")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('PATIENT')")
-public class PatientController {
-    Logger logger = LoggerFactory.getLogger(mx.edu.utez.server.modules.patient.controller.management.PatientManagementController.class);
-    private final PatientService patientService;
+@PreAuthorize("hasAuthority('DOCTOR')")
+public class DoctorController {
+    Logger logger = LoggerFactory.getLogger(DoctorController.class);
+    private final DoctorService doctorService;
 
     @GetMapping("/profile/")
-    public ResponseEntity<ResponseApi<Patient>> findOne() {
+    public ResponseEntity<ResponseApi<Doctor>> findOne() {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String email = userDetails.getUsername();
             logger.info(email);
-            ResponseApi<Patient> responseApi = this.patientService.loadProfileByEmail(email);
+            ResponseApi<Doctor> responseApi = this.doctorService.loadProfileByEmail(email);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
