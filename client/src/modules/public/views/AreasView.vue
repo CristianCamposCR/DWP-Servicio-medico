@@ -1,4 +1,6 @@
 <template>
+  <div>
+    <navbar/>
     <div class="container-fluid mt-4">
       <loading-custom :isLoading="isLoading" />
       <section class="mx-2">
@@ -141,6 +143,7 @@
       </section>
   
     </div>
+  </div>
   </template>
   
   <script>
@@ -152,6 +155,7 @@
     components: {
       LoadingCustom: () =>
         import("../../../views/components/LoadingCustom.vue"),
+      Navbar: () => import('@/modules/public/components/Navbar.vue'),
     },
     mounted() {
       this.getAllAreas();

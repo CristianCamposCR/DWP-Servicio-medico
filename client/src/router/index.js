@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import managementRoute from "./management-route";
-import publicRoute from "./public-route";
 
 Vue.use(VueRouter);
 
@@ -75,6 +74,3 @@ const router = new VueRouter({
 
 export default router;
 
-
-
-// hola es una prueba

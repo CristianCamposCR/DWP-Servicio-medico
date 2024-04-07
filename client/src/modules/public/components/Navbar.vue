@@ -51,8 +51,10 @@ export default {
   data() {
     return {
       links: [
-      { name: "Inicio", to: "#" },
+      { name: "Inicio", to: "/" },
         { name: "Doctores", to: "doctors" },
+        { name: "Especialidades", to: "specialities" },
+        { name: "Areas", to: "areas" },
       ],
     };
   },
