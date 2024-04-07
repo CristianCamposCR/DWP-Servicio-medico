@@ -7,6 +7,7 @@ import mx.edu.utez.server.modules.security.jwt.JwtEntryPoint;
 import mx.edu.utez.server.modules.security.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -70,8 +71,18 @@ public class MainSecurity {
         http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .requestMatchers("/api/management/area/**").hasAnyAuthority(Roles.ADMIN.name(), Roles.DOCTOR.name())
-                        .requestMatchers("/api/management/speciality/**").hasAnyAuthority(Roles.ADMIN.name(), Roles.DOCTOR.name())
+                        .requestMatchers(HttpMethod.POST,"/api/management/area/paged/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH,"/api/management/area/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api/management/area/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/api/management/area/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api/management/area/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api/management/speciality/paged/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api/management/speciality/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api/management/speciality/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/api/management/speciality/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH,"/api/management/speciality/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/profile/").hasAuthority(Roles.PATIENT.name())
+                        .requestMatchers(HttpMethod.GET, "/api/doctor/profile/").hasAuthority(Roles.DOCTOR.name())
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

@@ -18,8 +18,12 @@ import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
+import mx.edu.utez.server.utils.SearchDto;
+import mx.edu.utez.server.utils.Validations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -92,7 +96,6 @@ public class PatientService {
 
             this.iPatientRepository.saveAndFlush(new Patient(
                     patientCode,
-                    optionalStatus.get(),
                     person
             ));
 
@@ -111,6 +114,77 @@ public class PatientService {
             );
         }
     }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Page<Patient>> findAll(SearchDto searchDto, Pageable pageable) {
+        try {
+            Page<Patient> patients;
+            if (searchDto != null && searchDto.getSearchValue() != null && !searchDto.getSearchValue().isBlank()) {
+                patients = this.iPatientRepository.findAllBySearchValueAndStatusNameNot(searchDto.getSearchValue(), Statuses.NO_VERIFICADO, pageable);
+            } else {
+                patients = this.iPatientRepository.findAllByPerson_User_Status_NameNot(Statuses.NO_VERIFICADO, pageable);
+            }
+
+            return new ResponseApi<>(
+                    patients,
+                    HttpStatus.OK,
+                    false,
+                    "Pacientes."
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Patient> findOne(Long id) {
+        try {
+            if (Validations.isInvalidId(id))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Patient> optionalPatient = this.iPatientRepository.findByIdAndPerson_User_StatusNameNot(id, Statuses.NO_VERIFICADO);
+            return optionalPatient.map(patient ->
+                    new ResponseApi<>(patient, HttpStatus.OK, false, "Patient")
+            ).orElseGet(() ->
+                    new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_PATIENT_FOUND.name())
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Patient> loadProfileByEmail(String email) {
+        try {
+            if (email == null || email.isBlank())
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Patient> optionalPatient = this.iPatientRepository.findByPerson_User_UsernameAndPerson_User_Status_Name_Not(email, Statuses.NO_VERIFICADO);
+            return optionalPatient.map(patient ->
+                    new ResponseApi<>(patient, HttpStatus.OK, false, "Patient profile.")
+            ).orElseGet(() ->
+                    new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_PATIENT_FOUND.name())
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
 
     public String generatePatientCode(String name, String surname, LocalDate yearBirth) {
         String namePart = name.substring(0, Math.min(name.length(), 2)).toUpperCase();

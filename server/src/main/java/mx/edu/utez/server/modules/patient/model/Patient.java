@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -23,7 +22,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.person.model.Person;
-import mx.edu.utez.server.modules.status.model.Status;
 
 import java.time.Instant;
 import java.util.Set;
@@ -35,9 +33,8 @@ import java.util.Set;
 @Getter
 @Setter
 public class Patient {
-    public Patient(String patientCode, Status status, Person person) {
+    public Patient(String patientCode, Person person) {
         this.patientCode = patientCode;
-        this.status = status;
         this.person = person;
     }
 
@@ -59,11 +56,6 @@ public class Patient {
     private Instant updatedAt;
 
     // Relationships <-
-    @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id",
-            nullable = false)
-    private Status status;
-
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "id",
             nullable = false)

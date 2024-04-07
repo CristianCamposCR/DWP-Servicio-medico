@@ -56,7 +56,7 @@ public class Speciality {
     @Column(columnDefinition = "DOUBLE", nullable = false)
     private Double cost;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String bannerImage;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)

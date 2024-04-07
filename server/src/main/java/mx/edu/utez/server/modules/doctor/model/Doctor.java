@@ -38,11 +38,32 @@ import java.util.Set;
 @Getter
 @Setter
 public class Doctor {
+    public Doctor(Long id, String professionalId, Long experience, Boolean isAux, String availableDays, Shift shift, Speciality speciality, Person person) {
+        this.id = id;
+        this.professionalId = professionalId;
+        this.experience = experience;
+        this.isAux = isAux;
+        this.availableDays = availableDays;
+        this.shift = shift;
+        this.speciality = speciality;
+        this.person = person;
+    }
+
+    public Doctor(String professionalId, Long experience, Boolean isAux, String availableDays, Shift shift, Speciality speciality, Person person) {
+        this.professionalId = professionalId;
+        this.experience = experience;
+        this.isAux = isAux;
+        this.availableDays = availableDays;
+        this.shift = shift;
+        this.speciality = speciality;
+        this.person = person;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
     private String professionalId;
 
     @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
@@ -51,7 +72,7 @@ public class Doctor {
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Boolean isAux;
 
-    @Column(columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(80)", nullable = false)
     private String availableDays;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
@@ -71,11 +92,6 @@ public class Doctor {
     @JoinColumn(name = "speciality_id", referencedColumnName = "id",
             nullable = false)
     private Speciality speciality;
-
-    @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id",
-            nullable = false)
-    private Status status;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "id",

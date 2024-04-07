@@ -1,8 +1,13 @@
 package mx.edu.utez.server.modules.doctor.model;
 
+import mx.edu.utez.server.kernel.Statuses;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
@@ -14,5 +19,51 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
             "WHERE LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) = LOWER(?1) " +
             "OR p.curp = ?2 " +
             "OR p.email = ?3", nativeQuery = true)
-    Long existsByFullNameOrCurpOrEmail(String fullname, String curp, String email);
+    Long existsByFullNameOrCurpOrEmail(String fullName, String curp, String email);
+
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM doctors d " +
+            "INNER JOIN people p ON d.person_id = p.id " +
+            "WHERE LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) = LOWER(?1) " +
+            "OR p.curp = ?2 " +
+            "OR p.email = ?3 " +
+            "OR d.professional_id = ?4", nativeQuery = true)
+    Long existsByFullNameOrCurpOrEmailOrProfessionalId(String fullName, String curp, String email, String professionalId);
+
+    @Query(value = """
+            SELECT d.* FROM doctors d
+            INNER JOIN people p ON d.person_id = p.id 
+            INNER JOIN users u ON u.person_id = p.id 
+            INNER JOIN statuses s ON u.status_id = s.id 
+            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' OR p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
+            """,
+            nativeQuery = true,
+            countQuery = "SELECT COUNT(*) FROM doctors")
+    Page<Doctor> findAllBySearchValue(String searchValue, Pageable pageable);
+
+    @Query(value = """
+            SELECT d.* FROM doctors d
+            INNER JOIN people p ON d.person_id = p.id 
+            INNER JOIN users u ON u.person_id = p.id 
+            INNER JOIN statuses s ON u.status_id = s.id 
+            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' OR p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
+            AND s.name <> ?2
+            """,
+            nativeQuery = true,
+            countQuery = """
+                    SELECT COUNT(*) FROM doctors d
+                    INNER JOIN people p ON d.person_id = p.id 
+                    INNER JOIN user u ON u.person_id = p.id
+                    INNER JOIN status s ON s.id = u.status_id
+                    WHERE s.name <> 'INACTIVO'
+                    """)
+    Page<Doctor> findAllBySearchValueAndStatusNameNot(String searchValue, Statuses statusName, Pageable pageable);
+
+    Page<Doctor> findAllByPerson_User_Status_NameNot(Statuses statusName, Pageable pageable);
+
+    Optional<Doctor> findByIdAndPerson_User_StatusNameNot(Long id, Statuses statusName);
+
+    boolean existsByProfessionalIdAndIdNot(String professionalId, Long id);
+
+    Optional<Doctor> findByPerson_User_UsernameAndPerson_User_Status_Name_Not(String username, Statuses statusName);
 }
