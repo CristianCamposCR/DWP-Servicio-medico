@@ -33,6 +33,13 @@ public enum Errors {
     // PATIENT
     DUPLICATED_PATIENT,
     NO_PATIENT_FOUND,
+    // DOCTOR
+    DUPLICATED_DOCTOR,
+    NO_DOCTOR_FOUND,
+    // SHIFT
+    NO_SHIFT_FOUND,
+    // GENDER
+    NO_GENDER_FOUND,
     // Session
     CREDENTIALS_MISMATCH,
     USER_IS_INACTIVE,
