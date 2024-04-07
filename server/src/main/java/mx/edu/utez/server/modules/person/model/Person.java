@@ -70,7 +70,7 @@ public class Person {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate birthday;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String profilePhoto;
 
     // Relationships <-

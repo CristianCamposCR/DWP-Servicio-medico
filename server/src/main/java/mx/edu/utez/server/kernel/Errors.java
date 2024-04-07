@@ -32,6 +32,7 @@ public enum Errors {
     NO_USER_FOUND,
     // PATIENT
     DUPLICATED_PATIENT,
+    NO_PATIENT_FOUND,
     // Session
     CREDENTIALS_MISMATCH,
     USER_IS_INACTIVE,

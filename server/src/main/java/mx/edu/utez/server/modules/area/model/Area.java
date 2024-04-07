@@ -49,7 +49,7 @@ public class Area {
     @Column(columnDefinition = "VARCHAR(200)")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String bannerImage;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)

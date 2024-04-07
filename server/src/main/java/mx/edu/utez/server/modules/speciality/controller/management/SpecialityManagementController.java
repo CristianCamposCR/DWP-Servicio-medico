@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/management/speciality")
 @CrossOrigin(origins = {"*"})
-@PreAuthorize("hasAnyAuthority('ADMIN', 'DOCTOR')")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 public class SpecialityManagementController {
     Logger logger = LoggerFactory.getLogger(SpecialityManagementController.class);
     private final SpecialityService specialityService;
