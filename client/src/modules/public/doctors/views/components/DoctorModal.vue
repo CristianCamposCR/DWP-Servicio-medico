@@ -11,38 +11,35 @@
             <div class="doctor-details fullscreen">
             <div class="modal-content">  
                 <div class="profile-section">
-                <img class="profile-picture" :src="doctor.profile" alt="Profile Picture">
+                <img class="profile-picture" src='https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg' alt="Profile Picture">
               </div>
             </div>
               <div class="info-section">
                 <div class="header">
-                  <h1 class="doctor-name">{{ doctor.name }} {{ doctor.surname }} {{ doctor.lastname }}</h1>
-                  <p class="specialty">{{ doctor.specialty }}</p>
+                  <h1 class="doctor-name">{{ doctor.person.name }} {{ doctor.person.surname }} {{ doctor.person.lastname }}</h1>
+                  <p class="specialty">{{ doctor.speciality.name}}</p>
                 </div>
                 <div class="details">
                   <div class="personal-info">
                     <div class="info-item">
-                      <strong>Edad:</strong> {{ calculateAge(doctor.birthday) }}
+                      <strong>Edad:</strong> {{ calculateAge(doctor.person.birthday) }}
                     </div>
                     <div class="info-item">
-                      <strong>Género:</strong> {{ doctor.gender }}
+                      <strong>Género:</strong> {{ doctor.person.gender.name }}
                     </div>
                     <div class="info-item">
-                      <strong>Email:</strong> {{ doctor.email }}
+                      <strong>Email:</strong> {{ doctor.person.email }}
                     </div>
                     <div class="info-item">
-                      <strong>Teléfono:</strong> {{ doctor.phoneNumber }}
+                      <strong>Teléfono:</strong> {{ doctor.person.phoneNumber }}
                     </div>
                     <div class="info-item">
-                      <strong>Dirección:</strong> {{ doctor.address }}
-                    </div>
-                    <div class="info-item">
-                      <strong>CURP:</strong> {{ doctor.curp }}
+                      <strong>Días Disponibles:</strong> {{ doctor.availableDays }}
                     </div>
                   </div>
                   <div class="professional-info">
                     <div class="info-item">
-                      <strong>Especialidad:</strong> {{ doctor.specialty }}
+                      <strong>CURP:</strong> {{ doctor.person.curp }}
                     </div>
                     <div class="info-item">
                       <strong>Experiencia:</strong> {{ doctor.experience }} años
@@ -50,14 +47,9 @@
                     <div class="info-item">
                       <strong>¿Es Auxiliar?</strong> {{ doctor.isAux ? 'Sí' : 'No' }}
                     </div>
+                    
                     <div class="info-item">
-                      <strong>Días Disponibles:</strong> {{ doctor.availableDays }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Turno:</strong> {{ doctor.shift }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Estado:</strong> {{ doctor.status }}
+                      <strong>Turno:</strong> {{ doctor.shift.name }}
                     </div>
                   </div>
                 </div>
@@ -85,27 +77,6 @@
       doctor: {
         type: Object,
         required: true,
-        default: () => ({
-          name: 'Dr. Alicia',
-          surname: 'García',
-          lastname: 'Martínez',
-          age: 35,
-          gender: 'Femenino',
-          email: 'alicia.garcia@example.com',
-          phoneNumber: '+1 (234) 567-8901',
-          address: '456 Main Street, City, Country',
-          curp: 'XXXX123456XXXXXX01',
-          birthday: '1989-03-15',
-          specialty: 'Pediatría',
-          experience: 15,
-          professionalId: '12345',
-          isAux: false,
-          availableDays: 'Lunes a Viernes',
-          shift: 'Mañana',
-          speciality: 'Pediatría',
-          status: 'Activo',
-          profile: 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg',
-        }),
       },
     },
     methods: {
