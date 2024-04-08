@@ -40,7 +40,7 @@ export default [
       {
         path: 'profile',
         name: 'profile',
-        component: () => import('../modules/profile/views/Profile.vue'),
+        component: () => import('../modules/management/profile/views/Profile.vue'),
         meta: {
           title: "Áreas",
           requireAuth: false

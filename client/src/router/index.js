@@ -36,7 +36,7 @@ const router = new VueRouter({
           path: "doctors",
           name: "doctors",
           component: () =>
-            import("../modules/public/views/DoctorsView.vue"),
+            import("../modules/public/doctors/views/DoctorsView.vue"),
           meta: {
             title: "Doctores",
             requireAuth: false
