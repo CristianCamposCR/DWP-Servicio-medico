@@ -6,6 +6,8 @@ import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.email.controller.dto.EmailDto;
 import mx.edu.utez.server.modules.email.service.EmailService;
+import mx.edu.utez.server.modules.sms.controller.dto.SmsDto;
+import mx.edu.utez.server.modules.sms.service.SmsService;
 import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
@@ -25,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -37,6 +42,7 @@ public class VerificationCodeService {
     private final IStatusRepository iStatusRepository;
     private final HashService hashService;
     private final EmailService emailService;
+    private final SmsService smsService;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public String generateVerificationCode(User user) {
@@ -132,13 +138,33 @@ public class VerificationCodeService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> refreshForActivation(GenerateVerificationCodeDto dto) {
+    public ResponseApi<Boolean> refreshCode(GenerateVerificationCodeDto dto, boolean isActivation) {
         try {
             Optional<User> optionalUser = this.iUserRepository.findByUsername(dto.getUsername());
             if (optionalUser.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_USER_FOUND.name());
 
             User user = optionalUser.get();
+
+            if (!isActivation) {
+                // Obtener la zona horaria UTC
+                ZoneId utcZoneId = ZoneId.of("UTC");
+
+                // Convertir el instante actual a un LocalDate en UTC
+                LocalDate currentDate = LocalDate.now(utcZoneId);
+
+                // Obtener el inicio del día actual en UTC (00:00:00)
+                Instant startOfDay = currentDate.atStartOfDay(utcZoneId).toInstant();
+
+                // Obtener el fin del día actual en UTC (23:59:59.999999999)
+                Instant endOfDay = currentDate.atTime(LocalTime.MAX).atZone(utcZoneId).toInstant();
+
+                Long count = this.iVerificationCodeRepository.countByUser_IdAndCreatedAtBetween(user.getId(), startOfDay, endOfDay);
+
+                if (count >= 5)
+                    return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_CODES_REMAINING.name());
+            }
+
             this.iVerificationCodeRepository.updateIsInvalidByUserId(user.getId());
             String originalCode = Methods.generateRandomString();
             String encryptedCode = hashService.encrypt(originalCode);
@@ -150,18 +176,23 @@ public class VerificationCodeService {
                     user
             ));
 
-            boolean sent = false;
+            boolean sent;
+            String body = "Este es tú código de verificación: " + originalCode;
             if (dto.getMode() == 1) {
                 EmailDto emailDto = new EmailDto(
                         user.getPerson().getEmail(),
                         null,
                         "Confirmación de correo",
                         "Código de verificación",
-                        "Este es tú código de verificación: " + originalCode
+                        body
                 );
                 sent = this.emailService.sendMail(emailDto);
             } else {
-                // sms
+                SmsDto smsDto = new SmsDto(
+                        user.getPerson().getPhoneNumber(),
+                        body
+                );
+                sent = this.smsService.sendSms(smsDto);
             }
 
             if (!sent)

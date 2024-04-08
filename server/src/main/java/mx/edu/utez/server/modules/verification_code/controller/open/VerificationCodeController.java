@@ -47,7 +47,20 @@ public class VerificationCodeController {
     @PostMapping("/refresh-activation-code/")
     public ResponseEntity<ResponseApi<Boolean>> refreshCodeForActivation(@Valid @RequestBody GenerateVerificationCodeDto dto) {
         try {
-            ResponseApi<Boolean> responseApi = this.verificationCodeService.refreshForActivation(dto);
+            ResponseApi<Boolean> responseApi = this.verificationCodeService.refreshCode(dto, true);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
+            );
+        }
+    }
+
+    @PostMapping("/refresh-code/")
+    public ResponseEntity<ResponseApi<Boolean>> refreshCode(@Valid @RequestBody GenerateVerificationCodeDto dto) {
+        try {
+            ResponseApi<Boolean> responseApi = this.verificationCodeService.refreshCode(dto, false);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
