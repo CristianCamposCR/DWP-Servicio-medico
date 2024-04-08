@@ -11,7 +11,6 @@ export default {
         error: true,
         message: error.data?.message,
       };
-      f;
     }
   },
 
