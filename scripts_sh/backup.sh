@@ -77,11 +77,27 @@ printf "%s" "$ENCRYPTION_PASSWORD" | gpg --batch --yes --passphrase-fd 0 --symme
 #check
 ls -l $DIRECTORY.7z.gpg
 
+
 # Delete compressed file
 rm -rf $DIRECTORY.7z
 
 printf "____________________________________\n"
 printf "Encrypted\n"
+printf "____________________________________\n"
+
+
+printf "____________________________________\n"
+printf "Uploading to google drive\n"
+printf "____________________________________\n"
+
+curl -X POST -L \
+-H "Authorization: Bearer $TOKEN_DRIVE" \
+-F "metadata={name : '$NAME_FOLDER_DB_BACKUP.7z.gpg'};type=application/json;charset=UTF-8" \
+-F "file=@$DIRECTORY.7z.gpg;type=application/octet-stream" \
+"https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart"
+
+printf "____________________________________\n"
+printf "Uploaded\n"
 printf "____________________________________\n"
 
 printf "____________________________________\n"
