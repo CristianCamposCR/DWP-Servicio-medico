@@ -5,7 +5,6 @@ import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.patient.service.PatientService;
 import mx.edu.utez.server.modules.security.entities.UserDetailsImpl;
-import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('PATIENT')")
 public class PatientController {
-    Logger logger = LoggerFactory.getLogger(mx.edu.utez.server.modules.patient.controller.management.PatientManagementController.class);
+    Logger logger = LoggerFactory.getLogger(PatientController.class);
     private final PatientService patientService;
 
     @GetMapping("/profile/")
