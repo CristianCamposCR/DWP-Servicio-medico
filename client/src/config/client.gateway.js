@@ -112,14 +112,35 @@ AxiosClient.interceptors.response.use(
         }
         case 401: {
           console.log("401 error", "handle interceptor");
-          Vue.swal(
-            "Sesión expirada",
-            "Por seguridad tu sesión se ha cerrado, vuelve a iniciar sesión",
-            "warning"
-          ).then((result) => {
-            router.push("/");
-          });
-          localStorage.clear();
+          const {
+            response: {
+              data: { message },
+            },
+          } = error;
+          if (message) {
+            let messageAlert = "",
+              titleAlert = "";
+            switch (message.trim()) {
+              // AUTH
+              case "CREDENTIALS_MISMATCH":
+                titleAlert = "Credenciales incorrectas";
+                messageAlert = "Usuario y/o contraseña erróneos";
+                break;
+              case "EXPIRED_SESSION":
+                Vue.swal(
+                  "Sesión expirada",
+                  "Por seguridad tu sesión se ha cerrado, vuelve a iniciar sesión",
+                  "warning"
+                ).then((result) => {
+                  router.push("/");
+                });
+                localStorage.clear();
+                break;
+            }
+            if (message !== "EXPIRED_SESSION")
+              Vue.swal(titleAlert, messageAlert, "warning");
+            break;
+          }
           break;
         }
         case 403: {
