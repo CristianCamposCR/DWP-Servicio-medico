@@ -21,9 +21,10 @@ public class SmsService {
     public boolean sendSms(SmsDto dto) {
         try {
             Twilio.init(sid, token);
-            Message.creator(new PhoneNumber("+527772002582"), new PhoneNumber(phoneNumber), dto.getBody()).create();
+            Message.creator(new PhoneNumber(dto.getPhoneNumber()), new PhoneNumber(phoneNumber), dto.getBody()).create();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

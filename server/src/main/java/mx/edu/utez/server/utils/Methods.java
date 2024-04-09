@@ -9,8 +9,8 @@ import java.util.Random;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Methods {
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private static final int LENGTH = 8;
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final int LENGTH = 10;
 
     public static String convertToString(Object data) {
         if (data == null)
