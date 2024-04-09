@@ -1,8 +1,10 @@
+const rolesAllowed = ["ADMIN"];
+
 export default [
   {
     path: "/management",
     component: () => import("../views/ManagementView.vue"),
-    redirect: {name: "areas-management"},
+    redirect: { name: "areas-management" },
     name: "management",
     children: [
       {
@@ -12,9 +14,9 @@ export default [
           import("../modules/management/areas/views/AreasView.vue"),
         meta: {
           title: "Áreas",
-          requireAuth: false
+          requireAuth: true,
+          role: rolesAllowed,
         },
-        
       },
       {
         path: "specialties-management",
@@ -23,8 +25,9 @@ export default [
           import("../modules/management/speciality/views/SpecialtiesView.vue"),
         meta: {
           title: "Especialidades",
-          requireAuth: false
-        }
+          requireAuth: true,
+          role: rolesAllowed,
+        },
       },
       {
         path: "patient-management",
@@ -33,9 +36,9 @@ export default [
           import("../modules/management/patient/views/PatientView.vue"),
         meta: {
           title: "Pacientes",
-          requireAuth: false
+          requireAuth: true,
+          role: rolesAllowed,
         },
-        
       },
       {
         path: 'profile',
@@ -43,7 +46,8 @@ export default [
         component: () => import('../modules/management/profile/views/Profile.vue'),
         meta: {
           title: "Áreas",
-          requireAuth: false
+          requireAuth: true,
+          role: rolesAllowed,
         },
       },
     ],

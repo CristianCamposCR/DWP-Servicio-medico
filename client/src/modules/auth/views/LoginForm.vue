@@ -10,16 +10,20 @@
         <b-form-group>
           <b-input-group class="mb-3">
             <b-input
-              placeholder="Correo Electronico"
-              type="email"
+              placeholder="Nombre de usuario"
+              type="text"
               required
-              v-model.trim="v$.signin.email.$model"
+              v-model.trim="v$.signinPayload.username.$model"
               trim
-              :state="v$.signin.email.$dirty ? !v$.signin.email.$error : null"
-              @blur="v$.signin.email.$touch()"
+              :state="
+                v$.signinPayload.username.$dirty
+                  ? !v$.signinPayload.username.$error
+                  : null
+              "
+              @blur="v$.signinPayload.username.$touch()"
             ></b-input>
             <b-form-invalid-feedback
-              v-for="error in v$.signin.email.$errors"
+              v-for="error in v$.signinPayload.username.$errors"
               :key="error.$uid"
             >
               {{ error.$message }}
@@ -33,12 +37,14 @@
               placeholder="Contraseña"
               style="border-right: none !important"
               required
-              v-model.trim="v$.signin.password.$model"
+              v-model.trim="v$.signinPayload.password.$model"
               trim
               :state="
-                v$.signin.password.$dirty ? !v$.signin.password.$error : null
+                v$.signinPayload.password.$dirty
+                  ? !v$.signinPayload.password.$error
+                  : null
               "
-              @blur="v$.signin.password.$touch()"
+              @blur="v$.signinPayload.password.$touch()"
             >
             </b-form-input>
             <b-input-group-prepend>
@@ -54,7 +60,7 @@
               </span>
             </b-input-group-prepend>
             <b-form-invalid-feedback
-              v-for="error in v$.signin.password.$errors"
+              v-for="error in v$.signinPayload.password.$errors"
               :key="error.$uid"
             >
               {{ error.$message }}
@@ -68,10 +74,15 @@
     </div>
     <div class="d-flex justify-content-center mt-3 mb-5 mx-4">
       <b-col cols="12" sm="6">
-        <b-button block class="custom-button"
-                  type="submit"
-                  :disabled="v$.signin.$invalid || !isValidFriendlyCaptcha"
-        > Iniciar sesión </b-button>
+        <b-button
+          block
+          class="custom-button"
+          type="submit"
+          :disabled="v$.signinPayload.$invalid || !isValidFriendlyCaptcha"
+          @click="sigin"
+        >
+          Iniciar sesión
+        </b-button>
       </b-col>
     </div>
   </b-form>
@@ -81,9 +92,13 @@ import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
+import { jwtDecode } from "jwt-decode";
+import authController from "../services/controller/auth.controller";
+import SweetAlertCustom from "../../../kernel/SweetAlertCustom";
+import { ERoles } from "../../../kernel/types";
 export default Vue.extend({
   name: "LoginForm",
-  components: {CaptchaFriendly},
+  components: { CaptchaFriendly },
   setup() {
     return {
       v$: useVuelidate(),
@@ -93,8 +108,8 @@ export default Vue.extend({
     return {
       showPasswordState: false,
       isValidFriendlyCaptcha: false,
-      signin: {
-        email: "",
+      signinPayload: {
+        username: "",
         password: "",
       },
     };
@@ -107,13 +122,43 @@ export default Vue.extend({
       //prefer not active button submit if not valid the captcha
       console.log("Formulario válido", this.isValidFriendlyCaptcha);
     },
+    async sigin() {
+      try {
+        if (
+          this.signinPayload.email != "" &&
+          this.signinPayload.password != ""
+        ) {
+          console.log("obj", this.signinPayload.email);
+          const response = await authController.login(this.signinPayload);
+          if (!response.error) {
+            localStorage.setItem("token", response.token);
+            if (await this.checkNextRedirect())
+              SweetAlertCustom.welcomeMessage();
+          }
+        }
+      } catch (error) {
+        // TODO
+      } finally {
+        // TODO
+      }
+    },
+    async checkNextRedirect() {
+      if (localStorage.token) {
+        if (jwtDecode(localStorage.token).roles[0].authority === ERoles.ADMIN) {
+          await this.$router.replace("/management");
+          return true;
+        }
+      }
+    },
+  },
+  created() {
+    this.checkNextRedirect();
   },
   validations() {
     return {
-      signin: {
-        email: {
+      signinPayload: {
+        username: {
           required: helpers.withMessage("Campo obligatorio", required),
-          email: helpers.withMessage("Correo inválido", email),
         },
         password: {
           required: helpers.withMessage("Campo obligatorio", required),
