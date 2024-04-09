@@ -1,10 +1,8 @@
 package mx.edu.utez.server.modules.doctor.service;
 
 import lombok.RequiredArgsConstructor;
-import mx.edu.utez.server.kernel.Errors;
-import mx.edu.utez.server.kernel.Roles;
-import mx.edu.utez.server.kernel.StatusType;
-import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.kernel.*;
+import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
 import mx.edu.utez.server.modules.doctor.controller.dto.DoctorDto;
 import mx.edu.utez.server.modules.doctor.controller.dto.UpdateDoctorDto;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
@@ -21,10 +19,7 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
-import mx.edu.utez.server.utils.HashService;
-import mx.edu.utez.server.utils.ResponseApi;
-import mx.edu.utez.server.utils.SearchDto;
-import mx.edu.utez.server.utils.Validations;
+import mx.edu.utez.server.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -52,6 +48,7 @@ public class DoctorService {
     private final IGenderRepository iGenderRepository;
     private final IStatusRepository iStatusRepository;
     private final IRoleRepository iRoleRepository;
+    private final IAppointmentRepository iAppointmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final HashService hashService;
 
@@ -103,8 +100,11 @@ public class DoctorService {
             if (!this.iShiftRepository.existsById(doctorDto.getShift().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SHIFT_FOUND.name());
 
-            if (!this.iSpecialityRepository.existsById(doctorDto.getSpeciality().getId()))
+            if (!specialityExists(doctorDto.getSpeciality().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SPECIALITY_FOUND.name());
+
+            if (!specialityIsActive(doctorDto.getSpeciality().getId()))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SPECIALITY_IS_INACTIVE.name());
 
             if (!this.iGenderRepository.existsById(doctorDto.getGender().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_GENDER_FOUND.name());
@@ -270,14 +270,20 @@ public class DoctorService {
             if (optionalDoctor.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_DOCTOR_FOUND.name());
 
+            if(this.iAppointmentRepository.existByDoctorId(dto.getId(), Instant.now()) > 0)
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DOCTOR_HAS_DEPENDENCIES.name());
+
             if (this.iDoctorRepository.existsByProfessionalIdAndIdNot(dto.getProfessionalId(), dto.getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_DOCTOR.name());
 
             if (!this.iShiftRepository.existsById(dto.getShift().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SHIFT_FOUND.name());
 
-            if (!this.iSpecialityRepository.existsById(dto.getSpeciality().getId()))
+            if (!specialityExists(dto.getSpeciality().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SPECIALITY_FOUND.name());
+
+            if (!specialityIsActive(dto.getSpeciality().getId()))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SPECIALITY_IS_INACTIVE.name());
 
             Doctor doctor = dto.getDoctorEntity();
             doctor.setPerson(optionalDoctor.get().getPerson());
@@ -318,5 +324,13 @@ public class DoctorService {
                     Errors.SERVER_ERROR.name()
             );
         }
+    }
+
+    private boolean specialityExists(Long specialityId) {
+        return this.iSpecialityRepository.existsById(specialityId);
+    }
+
+    private boolean specialityIsActive(Long specialityId) {
+        return this.iSpecialityRepository.existsByIdAndStatus_Name(specialityId, Statuses.ACTIVO);
     }
 }
