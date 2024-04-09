@@ -1,5 +1,6 @@
 package mx.edu.utez.server.modules.patient.service;
 
+import com.twilio.exception.ApiException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
@@ -7,14 +8,14 @@ import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.auth.controller.dto.SignupDto;
-import mx.edu.utez.server.modules.email.controller.dto.EmailDto;
-import mx.edu.utez.server.modules.email.service.EmailService;
 import mx.edu.utez.server.modules.patient.model.IPatientRepository;
 import mx.edu.utez.server.modules.patient.model.Patient;
 import mx.edu.utez.server.modules.person.model.IPersonRepository;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.role.model.IRoleRepository;
 import mx.edu.utez.server.modules.role.model.Role;
+import mx.edu.utez.server.modules.sms.controller.dto.SmsDto;
+import mx.edu.utez.server.modules.sms.service.SmsService;
 import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
@@ -49,11 +50,11 @@ public class PatientService {
     private final IPersonRepository iPersonRepository;
     private final HashService hashService;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
+    private final SmsService smsService;
     private final VerificationCodeService verificationCodeService;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class, MessagingException.class})
-    public ResponseApi<Boolean> signup(SignupDto signupDto) throws MessagingException {
+    public ResponseApi<Boolean> signup(SignupDto signupDto) {
         String fullName = (signupDto.getName() + " " + signupDto.getSurname() + " " + (signupDto.getLastname() != null ? signupDto.getLastname() : "")).trim();
         String originalPassword = hashService.decrypt(signupDto.getPassword());
         if (this.iPatientRepository.existsByFullNameOrCurpOrEmail(fullName, signupDto.getCurp(), signupDto.getEmail()) > 0)
@@ -104,17 +105,12 @@ public class PatientService {
                 person
         ));
 
-        String verificationCode = this.verificationCodeService.generateVerificationCode(user);
-        EmailDto emailDto = new EmailDto(
-                person.getEmail(),
-                null,
-                "Confirmación de correo",
-                "Código de verificación",
-                "Este es tú código de verificación: " + verificationCode
-        );
+        SmsDto smsDto = new SmsDto(
+                user.getPerson().getPhoneNumber(),
+                "Este es tú código de verificación: " + this.verificationCodeService.generateVerificationCode(user));
 
-        if (!this.emailService.sendMail(emailDto))
-            throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+        if (!this.smsService.sendSms(smsDto))
+            throw new ApiException(Errors.ERROR_SENDING_CODE.name());
 
         return new ResponseApi<>(
                 true,
