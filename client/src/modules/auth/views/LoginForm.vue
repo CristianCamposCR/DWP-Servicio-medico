@@ -128,7 +128,6 @@ export default Vue.extend({
           this.signinPayload.email != "" &&
           this.signinPayload.password != ""
         ) {
-          console.log("obj", this.signinPayload.email);
           const response = await authController.login(this.signinPayload);
           if (!response.error) {
             localStorage.setItem("token", response.token);

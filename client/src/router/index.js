@@ -4,7 +4,7 @@ import managementRoute from "./management-route";
 import { jwtDecode } from "jwt-decode";
 
 Vue.use(VueRouter);
-const DEFAULT_TITLE = 'CIMI';
+const DEFAULT_TITLE = "CIMI";
 
 const router = new VueRouter({
   mode: "history",
@@ -70,11 +70,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-
   let hasPermission = false;
   if (localStorage.token) {
     const rl = jwtDecode(localStorage.token);
-    console.log("router function", rl);
     const roles = rl.roles;
     const role = roles[0].authority;
     if (role) {
