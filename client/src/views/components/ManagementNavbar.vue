@@ -30,7 +30,6 @@
                 size="md"
                 icon="person-fill"
               ></b-avatar>
-              <em class="ml-2">{{ role }}</em>
             </template>
             <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
               >Perfil</b-dropdown-item
