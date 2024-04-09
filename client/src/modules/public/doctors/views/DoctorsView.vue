@@ -153,12 +153,12 @@
         </b-col>
       </b-row>
     </section>
-    <DoctorModal :doctor="doctorSelected" />
+    <doctor-modal-details :doctor="doctorSelected" />
   </div>
 </div>
 </template>
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
 import { encrypt } from "../../../../kernel/hashFunctions";
 import DoctorModal from "./components/DoctorModal.vue";
@@ -167,8 +167,8 @@ export default Vue.extend({
   components: {
   LoadingCustom: () =>
         import("../../../../views/components/LoadingCustom.vue"),
-  DoctorModal,
   Navbar: () => import('@/modules/public/components/Navbar.vue'),
+  DoctorModalDetails: defineAsyncComponent(() => import("./components/DoctorModal.vue")) 
 
 },
   name: "DoctorsPublicView",
