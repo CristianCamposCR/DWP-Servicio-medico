@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mt-4">
+    <loading-custom :isLoading="isLoading" />
     <section class="mx-2">
       <b-row>
         <b-col>
@@ -11,6 +12,8 @@
           <b-input-group>
             <b-form-input
               placeholder="Escribe el nombre del paciente"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllPatients"
             ></b-form-input>
 
             <b-input-group-append>
@@ -30,7 +33,6 @@
           sm="6"
           md="4"
           lg="3"
-          xl="2"
           class="d-flex justify-content-center"
         >
           <b-card
@@ -50,7 +52,10 @@
                 ></b-card-img>
               </b-col>
               <b-col md="12">
-                <b-card-body :title="patient.name">
+                <b-card-body>
+                  <b-card-title class="card-title">{{
+                    patient.name
+                  }}</b-card-title>
                   <b-card-text>
                     <div class="mb-3">Paciente</div>
                     <div class="mb-3">
@@ -104,7 +109,7 @@
         </b-col>
       </b-row>
     </section>
-    <section>
+    <section class="mt-4">
       <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
         <b-col
           cols="12"
@@ -156,10 +161,13 @@ import Vue from "vue";
 import { EStatus } from "../../../../kernel/types";
 import ModalPatientView from "./ModalPatientView.vue";
 export default Vue.extend({
-  components: { ModalPatientView },
+  components: { ModalPatientView,
+    LoadingCustom: () =>
+      import("../../../../views/components/LoadingCustom.vue"), },
   name: "PatientView",
   data() {
     return {
+      isLoading: false,
       docState: "saved",
       showFullDescriptionIndex: -1,
       patient:
@@ -316,19 +324,16 @@ export default Vue.extend({
       pagination: {
         page: 1,
         sort: "id",
-        size: 10,
+        size: 8,
         direction: "desc",
-        totalRows: 25,
+        totalRows: 0,
+        data: {
+          name: null,
+        },
       },
     };
   },
   methods: {
-    enable(){
-        
-    },
-    disable(){
-
-    },
     toggleDescription(index, event) {
       event.preventDefault();
       this.showFullDescriptionIndex =
