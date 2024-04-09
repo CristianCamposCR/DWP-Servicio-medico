@@ -81,6 +81,7 @@ public class MainSecurity {
                         .requestMatchers(HttpMethod.POST, "/api/management/speciality/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/api/management/speciality/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/api/management/speciality/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH, "/api/management/user/{id}").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/patient/profile/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.GET, "/api/doctor/profile/").hasAuthority(Roles.DOCTOR.name())
                         .requestMatchers(HttpMethod.GET, "/api/person/{id}").hasAnyAuthority(Roles.DOCTOR.name(), Roles.PATIENT.name())
