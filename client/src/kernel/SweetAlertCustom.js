@@ -2,8 +2,8 @@ import Swal from "sweetalert2";
 
 class SweetAlertCustom {
   static questionMessage(
-    title = "¿Está seguro de realizar esta acción?",
-    text
+    text,
+    title = "¿Está seguro de realizar esta acción?"
   ) {
     return Swal.fire({
       title: title,
@@ -30,7 +30,7 @@ class SweetAlertCustom {
     });
   }
 
-  static successMessage(title = "Éxito", text = "Acción realizada", timer) {
+  static successMessage(timer, title = "Éxito", text = "Acción realizada") {
     if (!timer) timer = 1500;
     Swal.fire({
       title: title,
@@ -42,11 +42,11 @@ class SweetAlertCustom {
   }
 
   static successMessageHtml(
-    title = "Éxito",
     html,
-    confirmButtonText = "Aceptar",
     data,
-    timer
+    timer,
+    title = "Éxito",
+    confirmButtonText = "Aceptar"
   ) {
     return Swal.fire({
       title: title,

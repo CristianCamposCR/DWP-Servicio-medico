@@ -1,5 +1,6 @@
 <template>
   <b-form @submit.prevent="submitForm">
+    <loading-custom :isLoading="isLoading" />
     <b-card-img
       src="/src/assets/Hospital.jpg"
       width="100px"
@@ -90,7 +91,7 @@
 <script>
 import Vue from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
+import { required, helpers } from "@vuelidate/validators";
 import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
 import { jwtDecode } from "jwt-decode";
 import authController from "../services/controller/auth.controller";
@@ -98,7 +99,10 @@ import SweetAlertCustom from "../../../kernel/SweetAlertCustom";
 import { ERoles } from "../../../kernel/types";
 export default Vue.extend({
   name: "LoginForm",
-  components: { CaptchaFriendly },
+  components: {
+    CaptchaFriendly,
+    LoadingCustom: () => import("../../../views/components/LoadingCustom.vue"),
+  },
   setup() {
     return {
       v$: useVuelidate(),
@@ -106,6 +110,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      isLoading: false,
       showPasswordState: false,
       isValidFriendlyCaptcha: false,
       signinPayload: {
@@ -124,6 +129,7 @@ export default Vue.extend({
     },
     async sigin() {
       try {
+        this.isLoading = true;
         if (
           this.signinPayload.email != "" &&
           this.signinPayload.password != ""
@@ -136,9 +142,9 @@ export default Vue.extend({
           }
         }
       } catch (error) {
-        // TODO
+        console.log(error);
       } finally {
-        // TODO
+        this.isLoading = false;
       }
     },
     async checkNextRedirect() {

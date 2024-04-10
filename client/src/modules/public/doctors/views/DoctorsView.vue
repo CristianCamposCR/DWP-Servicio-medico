@@ -161,7 +161,6 @@
 import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
 import { encrypt } from "../../../../kernel/hashFunctions";
-import DoctorModal from "./components/DoctorModal.vue";
 import doctorController from "../services/controller/doctor.controller"
 export default Vue.extend({
   components: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar/>
+    <Navbar />
     <div class="container-fluid mt-4">
       <loading-custom :isLoading="isLoading" />
       <section class="mx-2">
@@ -17,7 +17,7 @@
                 v-model="pagination.data.name"
                 @keyup.enter="getAllSpecialities"
               ></b-form-input>
-  
+
               <b-input-group-append>
                 <b-button variant="primary" block>Buscar</b-button>
               </b-input-group-append>
@@ -27,7 +27,7 @@
           </b-col>
         </b-row>
       </section>
-  
+
       <section class="mt-5">
         <b-row>
           <b-col
@@ -67,7 +67,10 @@
                     <b-card-text>
                       <div>
                         <span
-                          v-if="speciality.description && speciality.description.length > 50"
+                          v-if="
+                            speciality.description &&
+                            speciality.description.length > 50
+                          "
                           class="card-description"
                         >
                           {{
@@ -93,7 +96,6 @@
                   </b-card-body>
                 </b-col>
               </b-row>
-             
             </b-card>
           </b-col>
         </b-row>
@@ -121,7 +123,7 @@
               de {{ pagination.totalRows }} registros</b
             >
           </b-col>
-  
+
           <b-col
             cols="6"
             md="6"
@@ -141,141 +143,128 @@
           </b-col>
         </b-row>
       </section>
-  
     </div>
   </div>
-  </template>
-  
-  <script>
-  import Vue from "vue";
-  import { EStatus } from "../../../kernel/types";
-  export default Vue.extend({
-    name: "PublicSpecialitiesView",
-    components: {
-      LoadingCustom: () =>
-        import("../../../views/components/LoadingCustom.vue"),
-        Navbar: () => import('@/modules/public/components/Navbar.vue'),
+</template>
 
-    },
-    mounted() {
-      this.getAllSpecialities();
-    },
-    data() {
-      return {
-        isLoading: false,
-        showFullDescriptionIndex: -1,
-        specialities: [
+<script>
+import Vue from "vue";
+import { EStatus } from "../../../kernel/types";
+export default Vue.extend({
+  name: "PublicSpecialitiesView",
+  components: {
+    LoadingCustom: () => import("../../../views/components/LoadingCustom.vue"),
+    Navbar: () => import("@/modules/public/components/Navbar.vue"),
+  },
+  mounted() {
+    this.getAllSpecialities();
+  },
+  data() {
+    return {
+      isLoading: false,
+      showFullDescriptionIndex: -1,
+      specialities: [
         {
-            id:1,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
-        },
-        {
-            id:2,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
-        },
-        {
-            id:3,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
+          id: 1,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
         {
-            id:4,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
+          id: 2,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
         {
-            id:5,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
+          id: 3,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
         {
-            id:6,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
+          id: 4,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
         {
-            id:7,
-            name:"Hodontologia",
-            area:1,
-            description: "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
-            cost:0,
-            createAt: null,
-            bannerImage:'',
-            status:1
+          id: 5,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
-        ],
-        EStatus: EStatus,
-        pagination: {
-          page: 1,
-          sort: "id",
-          size: 8,
-          direction: "desc",
-          totalRows: 0,
-          data: {
-            name: null,
-          },
+        {
+          id: 6,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
         },
-        specialitiesSelected: {},
-      };
-    },
-    methods: {
-      toggleDescription(index, event) {
-        event.preventDefault();
-        this.showFullDescriptionIndex =
-          this.showFullDescriptionIndex === index ? -1 : index;
+        {
+          id: 7,
+          name: "Hodontologia",
+          area: 1,
+          description:
+            "Una comunicación abierta y transparente puede mejorar la cohesión y la coordinación dentro de la empresa. La comunicación vertical y horizontal puede facilitar el intercambio de información y la toma de decisiones ágil. Las barreras en la comunicación pueden obstaculizar la efectividad organizativa y generar malentendidos.",
+          cost: 0,
+          createAt: null,
+          bannerImage: "",
+          status: 1,
+        },
+      ],
+      EStatus: EStatus,
+      pagination: {
+        page: 1,
+        sort: "id",
+        size: 8,
+        direction: "desc",
+        totalRows: 0,
+        data: {
+          name: null,
+        },
       },
-      async getAllSpecialities() {
-        console.log("wachando specialidades");
-        // try {
-        //   this.isLoading = true;
-        //   const response = await specialitiesController.getAllSpecialities({
-        //     page: this.pagination.page - 1,
-        //     size: this.pagination.size,
-        //     sort: this.pagination.sort,
-        //     direction: this.pagination.direction,
-        //     data: this.pagination.data,
-        //   });
-        //   this.specialities = response.content;
-        //   this.pagination.totalRows = response.totalElements;
-        // } catch (error) {
-        //   console.log(error);
-        // } finally {
-        //   this.isLoading = false;
-        // }
-      },
+      specialitiesSelected: {},
+    };
+  },
+  methods: {
+    toggleDescription(index, event) {
+      event.preventDefault();
+      this.showFullDescriptionIndex =
+        this.showFullDescriptionIndex === index ? -1 : index;
     },
-  });
-  </script>
-  
+    async getAllSpecialities() {
+      // TODO
+    },
+  },
+});
+</script>
