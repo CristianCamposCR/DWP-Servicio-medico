@@ -83,7 +83,6 @@ export default {
   background-color: #10b981;
   border-color: #10b981;
   color: white;
-  font-size: 20px;
   padding: 10px 20px;
   margin-top: 20px;
   font-size: 16px;

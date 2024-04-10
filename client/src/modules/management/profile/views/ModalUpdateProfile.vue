@@ -275,9 +275,6 @@ import {
   helpers,
   minLength,
   maxLength,
-  requiredIf,
-  minValue,
-  maxValue,
 } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import moment from "moment/moment";

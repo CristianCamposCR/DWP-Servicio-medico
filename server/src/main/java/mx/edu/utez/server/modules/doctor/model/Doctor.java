@@ -26,7 +26,6 @@ import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.review.model.Review;
 import mx.edu.utez.server.modules.shift.model.Shift;
 import mx.edu.utez.server.modules.speciality.model.Speciality;
-import mx.edu.utez.server.modules.status.model.Status;
 
 import java.time.Instant;
 import java.util.Set;

@@ -70,8 +70,8 @@
                 <b-card-body :title="speciality.name">
                   <b-card-text>
                     <div class="mb-3">
-                      <font color="#848689"
-                        >Especialidad / Área {{ speciality.area.name }}</font
+                      <span class="speciality-font"
+                        >Especialidad / Área {{ speciality.area.name }}</span
                       >
                     </div>
                     <strong> Description: </strong>
@@ -250,22 +250,21 @@ export default Vue.extend({
       }
     },
 
-    async changeStatus(id){
+    async changeStatus(id) {
       try {
-        SweetAlertCustom.questionMessage().then(async (result) => {
-          if (result.isConfirmed) {
-            const cipherId = await encrypt(id);
-            const resp = await specialityController.changeStatus(cipherId);
-            const { error } = resp;
-            if (!error) {
-              this.getAllSpecialties();
-              setTimeout(() => {
-                SweetAlertCustom.successMessage();
-              }, 100);
-              return;
-            }
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await specialityController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllSpecialties();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
           }
-        });
+        }
       } catch (error) {
         console.log(error);
       }

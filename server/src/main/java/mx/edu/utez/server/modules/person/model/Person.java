@@ -42,6 +42,20 @@ public class Person {
         this.gender = gender;
     }
 
+    public Person(Long id, String name, String surname, String lastname, String email, String curp, String phoneNumber, String details, LocalDate birthday, String profilePhoto, Gender gender) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.lastname = lastname;
+        this.email = email;
+        this.curp = curp;
+        this.phoneNumber = phoneNumber;
+        this.details = details;
+        this.birthday = birthday;
+        this.profilePhoto = profilePhoto;
+        this.gender = gender;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

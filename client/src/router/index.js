@@ -1,8 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import managementRoute from "./management-route";
+import { jwtDecode } from "jwt-decode";
 
 Vue.use(VueRouter);
+const DEFAULT_TITLE = "CIMI";
 
 const router = new VueRouter({
   mode: "history",
@@ -39,20 +41,17 @@ const router = new VueRouter({
             import("../modules/public/doctors/views/DoctorsView.vue"),
           meta: {
             title: "Doctores",
-            requireAuth: false
+            requireAuth: false,
           },
-          
         },
         {
           path: "areas",
           name: "public areas",
-          component: () =>
-            import("../modules/public/views/AreasView.vue"),
+          component: () => import("../modules/public/views/AreasView.vue"),
           meta: {
             title: "Areas",
-            requireAuth: false
+            requireAuth: false,
           },
-          
         },
         {
           path: "specialities",
@@ -61,9 +60,8 @@ const router = new VueRouter({
             import("../modules/public/views/SpecialitiesView.vue"),
           meta: {
             title: "Especialidades",
-            requireAuth: false
+            requireAuth: false,
           },
-          
         },
         ...managementRoute,
       ],
@@ -71,6 +69,34 @@ const router = new VueRouter({
   ],
 });
 
+router.beforeEach((to, from, next) => {
+  if (localStorage.token) {
+    const rl = jwtDecode(localStorage.token);
+    const roles = rl.roles;
+    const role = roles[0].authority;
+    if (role && to.matched.some((route) => route.meta.requireAuth)) {
+      const allowedRoles = to.meta.role;
+      if (allowedRoles.includes(role)) {
+        next();
+        return;
+      }
+      next("/login");
+      return;
+    }
+    next();
+    return;
+  }
+  if (!to.matched.some((noAuth) => noAuth.meta.requireAuth)) {
+    next();
+    return;
+  }
+  next("/login");
+});
+
+router.afterEach((to, from) => {
+  Vue.nextTick(() => {
+    document.title = to.meta?.title || DEFAULT_TITLE;
+  });
+});
 
 export default router;
-

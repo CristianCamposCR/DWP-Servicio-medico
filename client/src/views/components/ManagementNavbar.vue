@@ -5,16 +5,39 @@
         <b-img src="https://picsum.photos/50/50/?image=41"></b-img>
         CIMI</b-navbar-brand
       >
-      <b-navbar-nav>
-        <b-nav-item
-          v-for="link in links"
-          :key="link.name"
-          :to="link.to"
-          class="custom-nav-font"
-        >
-          {{ link.name }}
-        </b-nav-item>
-      </b-navbar-nav>
+
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item
+            v-for="link in links"
+            :key="link.name"
+            :to="link.to"
+            class="custom-nav-font"
+          >
+            {{ link.name }}
+          </b-nav-item>
+        </b-navbar-nav>
+        <!-- Right aligned nav items -->
+
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown right>
+            <!-- Using 'button-content' slot -->
+            <template #button-content>
+              <b-avatar
+                variant="secondary"
+                size="md"
+                icon="person-fill"
+              ></b-avatar>
+            </template>
+            <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
+              >Perfil</b-dropdown-item
+            >
+            <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
   </div>
 </template>
@@ -31,6 +54,27 @@ export default Vue.extend({
         { name: "Perfil", to: "profile" },
       ],
     };
+  },
+  methods: {
+    logout() {
+      this.$swal
+        .fire({
+          text: "¿Seguro que desea realizar la acción?",
+          icon: "question",
+          showDenyButton: true,
+          denyButtonText: "Cancelar",
+          confirmButtonColor: "#0d8e66",
+          confirmButtonText: "Aceptar",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            localStorage.clear();
+
+            this.$router.replace({ name: "login" });
+          }
+        });
+    },
   },
 });
 </script>
