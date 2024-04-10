@@ -35,8 +35,5 @@ build/
 # Secrets
 secret.properties
 
-# Docker
-docker-compose.yml
-
 # logs
 /logs
