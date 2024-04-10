@@ -17,4 +17,19 @@ export default {
       };
     }
   },
+
+  async singup(payload) {
+    try {
+      const encryptPassword = await encrypt(payload.password);
+      const newPayload = { ...payload, password: encryptPassword };
+      const response = await axios.doPost("/auth/signup/", newPayload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };

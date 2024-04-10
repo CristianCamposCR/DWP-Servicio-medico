@@ -13,4 +13,16 @@ export default {
       };
     }
   },
+  async signup(payload) {
+    try {
+      const data = await ApiService.singup(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };
