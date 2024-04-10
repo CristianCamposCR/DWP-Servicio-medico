@@ -45,7 +45,7 @@
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                  src="https://via.placeholder.com/270"
+                :src="getImageSrc(patient)"
                   alt="Image"
                   class="rounded-0"
                   height="160"
@@ -90,14 +90,14 @@
               <div>
                 <b-button
                   v-if="patient.person.user.status.name === EStatus.ACTIVE"
-                  @click="changeStatus(patient.id)"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
                   v-else-if="patient.person.user.status.name === EStatus.INACTIVE"
-                  @click="changeStatus(patient.id)"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="danger"
                   >Activar</b-button
                 >
@@ -223,7 +223,6 @@ export default Vue.extend({
         const { error } = resp;
         if (!error) {
           this.patientSelected = resp;
-          console.log("DATAONE", resp);
           this.$bvModal.show("modal-patient-view");
         }
       } catch (error) {
@@ -232,26 +231,29 @@ export default Vue.extend({
     },
     async changeStatus(id) {
       try {
-        SweetAlertCustom.questionMessage().then(async (result) => {
-          if (result.isConfirmed) {
-            console.log(id);
-            const cipherId = await encrypt(id);
-            const resp = await boundary.userController.changeStatus(cipherId);
-            console.log(resp);
-            const { error } = resp;
-            if (!error) {
-              this.getAllPatients();
-              setTimeout(() => {
-                SweetAlertCustom.successMessage();
-              }, 100);
-              return;
-            }
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await boundary.userController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllPatients();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
           }
-        });
+        }
       } catch (error) {
         console.log(error);
       }
     },
+    getImageSrc(patient) {
+        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.lastname.charAt(0)).toUpperCase();
+        const textColor = "ffffff";
+        const backColor = "007bff";
+        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
+    }
   },
   mounted() {
     this.getAllPatients();

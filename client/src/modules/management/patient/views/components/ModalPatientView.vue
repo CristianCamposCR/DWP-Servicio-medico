@@ -7,7 +7,7 @@
       <main>
         <div class="container-fluid">
           <div class="text-center">
-            <img src="https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg" alt="Foto de Perfil" class="profile-pic">
+            <img :src="getImageSrc(patient)" alt="Foto de Perfil" class="profile-pic">
             <h4 class="profile-name">{{ patient.person.name }} {{ patient.person.surname }} {{ patient.person.lastname }}</h4>
           </div>
           <div class="row mt-4">
@@ -62,6 +62,12 @@ export default {
     onClose() {
       this.$bvModal.hide("modal-patient-view");
     },
+    getImageSrc(patient) {
+        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.surname.charAt(0)).toUpperCase();
+        const textColor = "ffffff";
+        const backColor = "007bff";
+        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
+    }
   },
 };
 </script>
