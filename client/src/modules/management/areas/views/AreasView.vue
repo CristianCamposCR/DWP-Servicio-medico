@@ -236,20 +236,19 @@ export default Vue.extend({
 
     async changeStatus(id) {
       try {
-        SweetAlertCustom.questionMessage().then(async (result) => {
-          if (result.isConfirmed) {
-            const cipherId = await encrypt(id);
-            const resp = await areaController.changeStatus(cipherId);
-            const { error } = resp;
-            if (!error) {
-              this.getAllAreas();
-              setTimeout(() => {
-                SweetAlertCustom.successMessage();
-              }, 100);
-              return;
-            }
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await areaController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllAreas();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
           }
-        });
+        }
       } catch (error) {
         console.log(error);
       }

@@ -359,7 +359,7 @@
       <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60394.41765076789!2d-99.25014595136717!3d18.90255320000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cddffcc87c2263%3A0x8f579b11f8a23d75!2sFarmacias%20Similares!5e0!3m2!1ses!2smx!4v1711500822061!5m2!1ses!2smx"
           width="100%" height="50%" style="border:0;" allowfullscreen="" loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"></iframe>
+          referrerpolicy="no-referrer-when-downgrade" title="maps"></iframe>
 
     </div>
 

@@ -21,7 +21,6 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import './assets/main.css'
 
 
 

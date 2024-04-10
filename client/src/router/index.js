@@ -70,27 +70,27 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  let hasPermission = false;
   if (localStorage.token) {
     const rl = jwtDecode(localStorage.token);
     const roles = rl.roles;
     const role = roles[0].authority;
-    if (role) {
-      if (to.matched.some((route) => route.meta.requireAuth)) {
-        const allowedRoles = to.meta.role;
-        allowedRoles.includes(role)
-          ? (hasPermission = true)
-          : (hasPermission = false);
-        hasPermission ? next() : next("/login");
-      } else {
+    if (role && to.matched.some((route) => route.meta.requireAuth)) {
+      const allowedRoles = to.meta.role;
+      if (allowedRoles.includes(role)) {
         next();
+        return;
       }
+      next("/login");
+      return;
     }
-  } else if (!to.matched.some((noAuth) => noAuth.meta.requireAuth)) {
     next();
-  } else {
-    next("/login");
+    return;
   }
+  if (!to.matched.some((noAuth) => noAuth.meta.requireAuth)) {
+    next();
+    return;
+  }
+  next("/login");
 });
 
 router.afterEach((to, from) => {
