@@ -45,7 +45,7 @@
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                  src="https://via.placeholder.com/270"
+                :src="getImageSrc(patient)"
                   alt="Image"
                   class="rounded-0"
                   height="160"
@@ -88,15 +88,15 @@
             <template #footer>
               <div>
                 <b-button
-                  v-if="patient.status === EStatus.ACTIVE"
-                  @click="patient.status = EStatus.INACTIVE"
+                  v-if="patient.person.user.status.name === EStatus.ACTIVE"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
-                  v-else-if="patient.status === EStatus.INACTIVE"
-                  @click="patient.status = EStatus.ACTIVE"
+                  v-else-if="patient.person.user.status.name === EStatus.INACTIVE"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="danger"
                   >Activar</b-button
                 >
@@ -342,6 +342,47 @@ export default Vue.extend({
     getAllPatients() {
       console.log("wachando pacientes");
     },
+    async getOne(id) {
+      try {
+        const cipherId = await encrypt(id);
+        const resp = await patienController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.patientSelected = resp;
+          this.$bvModal.show("modal-patient-view");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async changeStatus(id) {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await boundary.userController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllPatients();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getImageSrc(patient) {
+        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.lastname.charAt(0)).toUpperCase();
+        const textColor = "ffffff";
+        const backColor = "007bff";
+        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
+    }
+  },
+  mounted() {
+    this.getAllPatients();
   },
 });
 </script>
