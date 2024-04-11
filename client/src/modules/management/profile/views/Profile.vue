@@ -21,7 +21,8 @@
 
 
 <script>
-import ModalUpdateProfile from './ModalUpdateProfile.vue';
+import ModalUpdateProfile from './components/ModalUpdateProfile.vue';
+import profileController from '../services/controlller/profile.controller'
 export default {
   components:{ModalUpdateProfile},
   data() {
@@ -40,7 +41,17 @@ export default {
     editProfile() {
       this.$bvModal.show("modal-update-profile");
     },
-    getProfile() {
+    async getProfile() {
+      try {
+        this.isLoading = true;
+        const response = await profileController.getProfile();
+        console.log("HOLAAAA",response);
+        this.user = response.content;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
 
