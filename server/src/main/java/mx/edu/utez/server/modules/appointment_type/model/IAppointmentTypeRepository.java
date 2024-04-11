@@ -12,4 +12,6 @@ public interface IAppointmentTypeRepository extends JpaRepository<AppointmentTyp
     Optional<AppointmentType> findByName(String name);
 
     Set<AppointmentType> findAllByStatus_Name(Statuses statusName);
+
+    boolean existsByIdAndStatus_Name(Long id, Statuses statusName);
 }

@@ -3,6 +3,8 @@ package mx.edu.utez.server.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.modules.security.entities.UserDetailsImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.SecureRandom;
 import java.util.Random;
@@ -26,5 +28,11 @@ public class Methods {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
+    }
+
+    public static String getLoggedUsername() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userDetails.getUsername();
     }
 }

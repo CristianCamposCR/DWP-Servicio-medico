@@ -1,6 +1,7 @@
 package mx.edu.utez.server.modules.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,6 +57,7 @@ public class User {
     private boolean blocked;
 
     @Column(columnDefinition = "TEXT", nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
@@ -74,6 +76,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id",
             nullable = false)
+    @JsonIncludeProperties({"id", "name"})
     private Role role;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})

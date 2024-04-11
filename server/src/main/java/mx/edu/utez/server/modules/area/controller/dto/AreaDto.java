@@ -12,7 +12,7 @@ import mx.edu.utez.server.modules.status.model.Status;
 @Data
 public class AreaDto {
     @NotNull(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
-    @Positive(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class})
+    @Positive(groups = {AreaGroups.Update.class, SpecialityGroups.Save.class, SpecialityGroups.Update.class, SpecialityGroups.GetAll.class})
     private Long id;
 
     @NotBlank(groups = {AreaGroups.Update.class, AreaGroups.Save.class})

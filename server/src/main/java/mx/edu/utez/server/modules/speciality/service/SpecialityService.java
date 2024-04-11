@@ -41,8 +41,18 @@ public class SpecialityService {
     public ResponseApi<Page<Speciality>> findAll(SpecialityDto specialityDto, Pageable pageable) {
         try {
             Page<Speciality> specialities;
-            if (specialityDto != null && specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
-                specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCase(specialityDto.getName(), pageable);
+            if (specialityDto != null) {
+                if (specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
+                    if (specialityDto.getArea() != null && specialityDto.getArea().getId() != null) {
+                        specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCaseAndArea_Id(specialityDto.getName(), specialityDto.getArea().getId(), pageable);
+                    } else {
+                        specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCase(specialityDto.getName(), pageable);
+                    }
+                } else if (specialityDto.getArea() != null && specialityDto.getArea().getId() != null) {
+                    specialities = this.iSpecialityRepository.findAllByArea_Id(specialityDto.getArea().getId(), pageable);
+                } else {
+                    specialities = this.iSpecialityRepository.findAll(pageable);
+                }
             } else {
                 specialities = this.iSpecialityRepository.findAll(pageable);
             }
@@ -66,9 +76,18 @@ public class SpecialityService {
     public ResponseApi<Page<Speciality>> openFindAll(SpecialityDto specialityDto, Pageable pageable) {
         try {
             Page<Speciality> specialities;
-            if (specialityDto != null && specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
-                specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCaseAndStatus_Name(
-                        specialityDto.getName(), Statuses.ACTIVO, pageable);
+            if (specialityDto != null) {
+                if (specialityDto.getName() != null && !specialityDto.getName().isBlank()) {
+                    if (specialityDto.getArea() != null && specialityDto.getArea().getId() != null) {
+                        specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCaseAndStatus_NameAndArea_Id(specialityDto.getName(), Statuses.ACTIVO, specialityDto.getArea().getId(), pageable);
+                    } else {
+                        specialities = this.iSpecialityRepository.findAllByNameContainingIgnoreCaseAndStatus_Name(specialityDto.getName(), Statuses.ACTIVO, pageable);
+                    }
+                } else if (specialityDto.getArea() != null && specialityDto.getArea().getId() != null) {
+                    specialities = this.iSpecialityRepository.findAllByStatus_NameAndArea_Id(Statuses.ACTIVO, specialityDto.getArea().getId(), pageable);
+                } else {
+                    specialities = this.iSpecialityRepository.findAllByStatus_Name(Statuses.ACTIVO, pageable);
+                }
             } else {
                 specialities = this.iSpecialityRepository.findAllByStatus_Name(Statuses.ACTIVO, pageable);
             }

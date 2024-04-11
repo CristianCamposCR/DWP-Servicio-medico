@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mx.edu.utez.server.kernel.Shifts;
+import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.status.model.Status;
 
@@ -60,4 +61,8 @@ public class Shift {
     @OneToMany(mappedBy = "shift")
     @JsonIgnore
     private Set<Doctor> doctors;
+
+    @OneToMany(mappedBy = "preferentialShift")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 }

@@ -66,4 +66,18 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     boolean existsByProfessionalIdAndIdNot(String professionalId, Long id);
 
     Optional<Doctor> findByPerson_User_UsernameAndPerson_User_Status_Name_Not(String username, Statuses statusName);
+
+    @Query(value = """
+            SELECT (COUNT(*) * 6)
+            FROM doctors d
+                     INNER JOIN shifts sh ON d.shift_id = sh.id
+                     INNER JOIN people p ON d.person_id = p.id
+                     INNER JOIN users u ON p.id = u.person_id
+                     INNER JOIN statuses st ON st.id = u.status_id
+            WHERE d.speciality_id = ?1
+              AND d.shift_id = ?2
+              AND NOT d.is_aux
+              AND st.name = 'ACTIVO'
+            """, nativeQuery = true)
+    Long checkAvailability(Long specialityId, Long shiftId);
 }

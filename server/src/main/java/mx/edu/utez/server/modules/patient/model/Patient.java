@@ -45,7 +45,7 @@ public class Patient {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false, unique = true)
     private String patientCode;
 
-    @Column(columnDefinition = "VARCHAR(19)")
+    @Column(columnDefinition = "VARCHAR(200)")
     private String cardNumber;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)

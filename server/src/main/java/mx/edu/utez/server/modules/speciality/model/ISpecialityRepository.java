@@ -11,11 +11,19 @@ import java.util.Set;
 
 @Repository
 public interface ISpecialityRepository extends JpaRepository<Speciality, Long> {
+    Page<Speciality> findAllByNameContainingIgnoreCaseAndArea_Id(String name, Long areaId, Pageable pageable);
+
     Page<Speciality> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
-    Page<Speciality> findAllByStatus_Name(Statuses statusName, Pageable pageable);
+    Page<Speciality> findAllByArea_Id(Long areaId, Pageable pageable);
+
+    Page<Speciality> findAllByNameContainingIgnoreCaseAndStatus_NameAndArea_Id(String name, Statuses statusName, Long areaId, Pageable pageable);
 
     Page<Speciality> findAllByNameContainingIgnoreCaseAndStatus_Name(String name, Statuses statusName, Pageable pageable);
+
+    Page<Speciality> findAllByStatus_NameAndArea_Id(Statuses statusName, Long areaId, Pageable pageable);
+
+    Page<Speciality> findAllByStatus_Name(Statuses statusName, Pageable pageable);
 
     Optional<Speciality> findByIdAndStatus_Name(Long id, Statuses statusName);
 

@@ -2,6 +2,7 @@ package mx.edu.utez.server.modules.person.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -91,6 +92,7 @@ public class Person {
     @ManyToOne
     @JoinColumn(name = "gender_id", referencedColumnName = "id",
             nullable = false)
+    @JsonIncludeProperties({"id", "name"})
     private Gender gender;
 
     // Relationships ->

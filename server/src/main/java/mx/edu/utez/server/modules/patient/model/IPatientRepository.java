@@ -51,4 +51,6 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
             "   OR p.curp = ?2" +
             "   OR p.email = ?3) AND pa.id <> ?4", nativeQuery = true)
     Long existsByFullNameOrCurpOrEmailAndIdNot(String fullname, String curp, String email, Long id);
+
+    boolean existsByIdAndPerson_User_Status_Name(Long id, Statuses statusName);
 }
