@@ -3,8 +3,10 @@ package mx.edu.utez.server.modules.appointment.service;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.modules.appointment.controller.dto.RescheduleDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.SaveAppointmentDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
@@ -20,8 +22,11 @@ import mx.edu.utez.server.modules.shift.model.IShiftRepository;
 import mx.edu.utez.server.modules.speciality.model.ISpecialityRepository;
 import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
+import mx.edu.utez.server.modules.user.model.IUserRepository;
+import mx.edu.utez.server.modules.user.model.User;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.SearchDto;
+import mx.edu.utez.server.utils.Validations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -34,6 +39,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,6 +55,7 @@ public class AppointmentService {
     private final IShiftRepository iShiftRepository;
     private final IDoctorRepository iDoctorRepository;
     private final IStatusRepository iStatusRepository;
+    private final IUserRepository iUserRepository;
 
     private final EmailService emailService;
 
@@ -344,6 +351,79 @@ public class AppointmentService {
                     HttpStatus.OK,
                     false,
                     "Historial de citas."
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public ResponseApi<Boolean> rescheduleAppointment(Long id, String username, RescheduleDto dto) throws MessagingException {
+        try {
+            if (Validations.isInvalidId(id))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Appointment> optionalAppointment = this.iAppointmentRepository.findById(id);
+            if (optionalAppointment.isEmpty())
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, false, Errors.NO_APPOINTMENT_FOUND.name());
+
+            Optional<Appointment> relatedAppointment = this.iAppointmentRepository.findByIdAndPatient_Person_User_Username(id, username);
+            if (!Objects.equals(relatedAppointment.get().getId(), id))
+                return new ResponseApi<>(HttpStatus.FORBIDDEN, true, Errors.CANNOT_ACCESS_TO_RESOURCE.name());
+
+            Appointment existentAppointment = optionalAppointment.get();
+
+            if (existentAppointment.getRemainingReschedules() <= 0)
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_RESCHEDULES_REMAINING.name());
+
+            if (!(existentAppointment.getStatus().getName() == Statuses.AGENDADA || existentAppointment.getStatus().getName() == Statuses.CONFIRMADA))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.CANNOT_RESCHEDULE.name());
+
+            Long specialityId = existentAppointment.getSpeciality().getId();
+            Long shiftId = dto.getShift().getId();
+
+            if (!shiftExists(shiftId))
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SHIFT_FOUND.name());
+
+            if (!shiftIsActive(shiftId))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SHIFT_IS_INACTIVE.name());
+
+            if (!isAvailable(specialityId, shiftId, dto.getScheduledAt()))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_AVAILABILITY.name());
+
+            Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.REAGENDADA, StatusType.CITAS);
+            if (optionalStatus.isEmpty())
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
+
+            existentAppointment.setDoctor(null);
+            existentAppointment.setStatus(optionalStatus.get());
+            existentAppointment.setScheduledAt(dto.getScheduledAt());
+            existentAppointment.setPreferentialShift(dto.getShift());
+            existentAppointment.setRemainingReschedules(existentAppointment.getRemainingReschedules() - 1);
+
+            Optional<User> optionalUser = this.iUserRepository.findByRole_Name(Roles.ADMIN);
+
+            EmailDto emailDto = new EmailDto(
+                    optionalUser.get().getPerson().getEmail(),
+                    null,
+                    "Solicitud de reagenda.",
+                    "Reagenda de cita",
+                    "Se ha solicitado una reagenda para la cita con el folio: <strong>" + existentAppointment.getFolio() + "</strong>"
+            );
+
+            if (!this.emailService.sendMail(emailDto))
+                throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+
+            return new ResponseApi<>(
+                    true,
+                    HttpStatus.OK,
+                    false,
+                    "Solicitud de reagenda realizada."
             );
         } catch (Exception e) {
             logger.error(e.getMessage());

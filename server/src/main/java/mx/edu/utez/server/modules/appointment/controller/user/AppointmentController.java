@@ -5,9 +5,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.modules.appointment.controller.dto.CheckAvailabilityDto;
+import mx.edu.utez.server.modules.appointment.controller.dto.RescheduleDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.SaveAppointmentDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.service.AppointmentService;
+import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.Methods;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.SearchDto;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppointmentController {
     Logger logger = LoggerFactory.getLogger(AppointmentController.class);
     private final AppointmentService appointmentService;
+    private final HashService hashService;
 
     @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("/check-availability/")
@@ -114,6 +118,24 @@ public class AppointmentController {
     public ResponseEntity<ResponseApi<Boolean>> save(@Valid @RequestBody SaveAppointmentDto dto) {
         try {
             ResponseApi<Boolean> responseApi = this.appointmentService.save(dto);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (MessagingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, e.getMessage()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @PostMapping("/reschedule/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> reschedule(@PathVariable("id") String encryptedId,
+                                                           @Valid @RequestBody RescheduleDto dto) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            String username = Methods.getLoggedUsername();
+            ResponseApi<Boolean> responseApi = this.appointmentService.rescheduleAppointment(id, username, dto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());
