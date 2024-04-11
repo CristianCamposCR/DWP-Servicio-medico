@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mt-4">
+    <loading-custom :isLoading="isLoading" />
     <section class="mx-2">
       <b-row>
         <b-col>
@@ -11,6 +12,8 @@
           <b-input-group>
             <b-form-input
               placeholder="Escribe el nombre del paciente"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllPatients"
             ></b-form-input>
 
             <b-input-group-append>
@@ -30,7 +33,6 @@
           sm="6"
           md="4"
           lg="3"
-          xl="2"
           class="d-flex justify-content-center"
         >
           <b-card
@@ -43,27 +45,31 @@
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                  src="https://via.placeholder.com/270"
+                :src="getImageSrc(patient)"
                   alt="Image"
                   class="rounded-0"
                   height="160"
                 ></b-card-img>
               </b-col>
               <b-col md="12">
-                <b-card-body :title="patient.name">
+                <b-card-body>
+                  <b-card-title class="card-title"
+                    >{{ patient.person.name }} {{ patient.person.surname }}
+                    {{ patient.person.lastname }}</b-card-title
+                  >
                   <b-card-text>
                     <div class="mb-3">Paciente</div>
                     <div class="mb-3">
-                      <b>No. Telefono: {{ patient.phone }}</b>
+                      <b>No. Telefono: {{ patient.person.phoneNumber }}</b>
                     </div>
                     <div>
                       <b>
                         Correo:
-                        <span v-if="patient.email.length > 17">
+                        <span v-if="patient.person.email.length > 17">
                           {{
                             showFullDescriptionIndex === index
-                              ? patient.email
-                              : patient.email.substring(0, 10) + "..."
+                              ? patient.person.email
+                              : patient.person.email.substring(0, 10) + "..."
                           }}
                           <a href="#" @click="toggleDescription(index, $event)">
                             {{
@@ -73,7 +79,7 @@
                             }}
                           </a>
                         </span>
-                        <span v-else>{{ patient.email }}</span>
+                        <span v-else>{{ patient.person.email }}</span>
                       </b>
                     </div>
                   </b-card-text>
@@ -83,28 +89,28 @@
             <template #footer>
               <div>
                 <b-button
-                  v-if="patient.status === EStatus.ACTIVE"
-                  @click="patient.status = EStatus.INACTIVE"
+                  v-if="patient.person.user.status.name === EStatus.ACTIVE"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="primary"
                 >
                   Desactivar
                 </b-button>
                 <b-button
-                  v-else-if="patient.status === EStatus.INACTIVE"
-                  @click="patient.status = EStatus.ACTIVE"
+                  v-else-if="patient.person.user.status.name === EStatus.INACTIVE"
+                  @click="changeStatus(patient.person.user.id)"
                   variant="danger"
                   >Activar</b-button
                 >
-                <b-button v-b-modal.modal-patient-view class="ml-2" variant="primary">
-      <b-icon icon="eye"></b-icon>
-    </b-button>
+                <b-button class="ml-1" variant="primary"
+                  ><b-icon icon="eye" @click="getOne(patient.id)"></b-icon
+                ></b-button>
               </div>
             </template>
           </b-card>
         </b-col>
       </b-row>
     </section>
-    <section>
+    <section class="mt-4">
       <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
         <b-col
           cols="12"
@@ -147,196 +153,110 @@
         </b-col>
       </b-row>
     </section>
-    <ModalPatientView :patient="patient" />
+    <ModalPatientView :patient="patientSelected" />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { EStatus } from "../../../../kernel/types";
-import ModalPatientView from "./ModalPatientView.vue";
+import ModalPatientView from "./components/ModalPatientView.vue";
+import { encrypt } from "../../../../kernel/hashFunctions";
+import boundary from "../boundary"
+import patienController from "../services/controller/patient.controller";
+import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 export default Vue.extend({
-  components: { ModalPatientView },
+  components: {
+    ModalPatientView,
+    LoadingCustom: () =>
+      import("../../../../views/components/LoadingCustom.vue"),
+  },
   name: "PatientView",
   data() {
     return {
+      isLoading: false,
       docState: "saved",
       showFullDescriptionIndex: -1,
-      patient:
-        {
-          id: null,
-          name: "",
-          phone: "",
-          email: "",
-          status: "",
-        },
-      patients: [
-        {
-          id: 1,
-          name: "Maycon Manuel Carmona",
-          phone: "7772002582",
-          email: "maycon@grupoeimsa.com.mx",
-          status: "ACTIVO",
-        },
-        {
-          id: 2,
-          name: "Laura González",
-          phone: "5551234567",
-          email: "20213tn004@utez.edu.mx",
-          status: "ACTIVO",
-        },
-        {
-          id: 3,
-          name: "Juan Pérez",
-          phone: "3339876543",
-          email: "juan@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 4,
-          name: "María Rodríguez",
-          phone: "4442345678",
-          email: "maria@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 5,
-          name: "Carlos García",
-          phone: "6668765432",
-          email: "carlos@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 6,
-          name: "Ana Martínez",
-          phone: "7777654321",
-          email: "ana@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 7,
-          name: "Pedro López",
-          phone: "9991122334",
-          email: "pedro@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 8,
-          name: "Sofía Hernández",
-          phone: "8883344556",
-          email: "sofia@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 9,
-          name: "Diego Díaz",
-          phone: "1114445566",
-          email: "diego@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 10,
-          name: "Luisa Sánchez",
-          phone: "2227778888",
-          email: "luisa@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 11,
-          name: "Martín Ramírez",
-          phone: "3339990001",
-          email: "martin@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 12,
-          name: "Elena Vázquez",
-          phone: "7771112222",
-          email: "elena@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 13,
-          name: "Héctor González",
-          phone: "5554443333",
-          email: "hector@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 14,
-          name: "Marta Fernández",
-          phone: "7777777777",
-          email: "marta@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 15,
-          name: "Javier Torres",
-          phone: "9993332222",
-          email: "javier@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 16,
-          name: "Natalia Gómez",
-          phone: "7775551111",
-          email: "natalia@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 17,
-          name: "Gabriel Ruiz",
-          phone: "8887776666",
-          email: "gabriel@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 18,
-          name: "Anaí Jiménez",
-          phone: "7774449999",
-          email: "anai@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 19,
-          name: "Roberto Mendoza",
-          phone: "5557779999",
-          email: "roberto@example.com",
-          status: "ACTIVO",
-        },
-        {
-          id: 20,
-          name: "Sara Martínez",
-          phone: "7773331111",
-          email: "sara@example.com",
-          status: "ACTIVO",
-        },
-      ],
+      patients: [],
       EStatus: EStatus,
       pagination: {
         page: 1,
         sort: "id",
-        size: 10,
+        size: 8,
         direction: "desc",
-        totalRows: 25,
+        totalRows: 0,
+        data: {
+          name: null,
+        },
       },
+      patientSelected: {},
     };
   },
   methods: {
-    enable(){
-        
-    },
-    disable(){
-
-    },
     toggleDescription(index, event) {
       event.preventDefault();
       this.showFullDescriptionIndex =
         this.showFullDescriptionIndex === index ? -1 : index;
     },
-    getAllPatients() {
-      console.log("wachando pacientes");
+    async getAllPatients() {
+      try {
+        this.isLoading = true;
+        const response = await patienController.getAllPatients({
+          page: this.pagination.page - 1,
+          size: this.pagination.size,
+          sort: this.pagination.sort,
+          direction: this.pagination.direction,
+          data: this.pagination.data,
+        });
+        this.patients = response.content;
+        this.pagination.totalRows = response.totalElements;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
+    async getOne(id) {
+      try {
+        const cipherId = await encrypt(id);
+        const resp = await patienController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.patientSelected = resp;
+          this.$bvModal.show("modal-patient-view");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async changeStatus(id) {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await boundary.userController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllPatients();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getImageSrc(patient) {
+        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.lastname.charAt(0)).toUpperCase();
+        const textColor = "ffffff";
+        const backColor = "007bff";
+        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
+    }
+  },
+  mounted() {
+    this.getAllPatients();
   },
 });
 </script>
