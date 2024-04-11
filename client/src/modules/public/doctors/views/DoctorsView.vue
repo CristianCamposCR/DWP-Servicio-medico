@@ -58,7 +58,6 @@
                   class="rounded-0"
                   height="160"
                 ></b-card-img>
-
               </b-col>
               <b-col md="12">
                 <b-card-body>
