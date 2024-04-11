@@ -37,3 +37,6 @@ secret.properties
 
 # logs
 /logs
+
+# Docker
+docker-compose.yml

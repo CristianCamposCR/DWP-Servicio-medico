@@ -8,10 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
     boolean existsBySpeciality_Id(Long id);
+
+    Optional<Appointment> findByIdAndPatient_Person_User_Username(Long id, String username);
 
     @Query(value = """
             SELECT COUNT(*)
