@@ -6,7 +6,7 @@
       height="140px"
     ></b-card-img>
     <div v-if="step === 0">
-      <b-row class="mx-4 mt-5">
+      <b-row class="mx-4 mt-3">
         <b-col cols="12" sm="12" md="6">
           <b-form-group>
             <b-form-input
@@ -23,11 +23,25 @@
             >
             </b-form-input>
             <b-form-invalid-feedback
-              v-for="error in v$.newAccount.name.$errors"
-              :key="error.$uid"
+              v-if="!v$.newAccount.name.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.name.valid.$response"
+              >{{ errorMessagges.valid }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.name.notScript.$response"
+              >{{ errorMessagges.noneScripts }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.name.minLength.$response"
+              >{{ errorMessagges.minLength }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.name.maxLength.$response"
+              >{{ errorMessagges.maxLength }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
         <b-col cols="12" sm="12" md="6">
@@ -48,11 +62,25 @@
             >
             </b-form-input>
             <b-form-invalid-feedback
-              v-for="error in v$.newAccount.surname.$errors"
-              :key="error.$uid"
+              v-if="!v$.newAccount.surname.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.surname.valid.$response"
+              >{{ errorMessagges.valid }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.surname.notScript.$response"
+              >{{ errorMessagges.noneScripts }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.surname.minLength.$response"
+              >{{ errorMessagges.minLength }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.surname.maxLength.$response"
+              >{{ errorMessagges.maxLength }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
       </b-row>
@@ -64,8 +92,24 @@
               placeholder="Segundo apellido"
               type="text"
               required
+              v-model.trim="v$.newAccount.lastname.$model"
+              trim
+              :state="
+                v$.newAccount.lastname.$dirty
+                  ? !v$.newAccount.lastname.$error
+                  : null
+              "
+              @blur="v$.newAccount.lastname.$touch()"
             >
             </b-form-input>
+            <b-form-invalid-feedback
+              v-if="!v$.newAccount.lastname.valid.$response"
+              >{{ errorMessagges.valid }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.lastname.notScript.$response"
+              >{{ errorMessagges.noneScripts }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
         <b-col cols="12" sm="12" md="6">
@@ -75,14 +119,15 @@
               placeholder="Teléfono"
               type="text"
               required
-              v-model.trim="v$.newAccount.phoneNumber.$model"
-              trim
+              @keypress="onlynumbers"
+              v-model="v$.newAccount.phoneNumber.$model"
               :state="
                 v$.newAccount.phoneNumber.$dirty
                   ? !v$.newAccount.phoneNumber.$error
                   : null
               "
               @blur="v$.newAccount.phoneNumber.$touch()"
+              maxlength="10"
             >
             </b-form-input>
             <b-form-invalid-feedback
@@ -113,11 +158,21 @@
             >
             </b-form-input>
             <b-form-invalid-feedback
-              v-for="error in v$.newAccount.username.$errors"
-              :key="error.$uid"
+              v-if="!v$.newAccount.username.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.username.valid.$response"
+              >{{ errorMessagges.username.valid }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.username.notScript.$response"
+              >{{ errorMessagges.noneScripts }}</b-form-invalid-feedback
+            >
+            <b-form-invalid-feedback
+              v-else-if="!v$.newAccount.username.minLength.$response"
+              >{{ errorMessagges.username.minLength }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
       </b-row>
@@ -154,11 +209,13 @@
                 </span>
               </b-input-group-prepend>
               <b-form-invalid-feedback
-                v-for="error in v$.newAccount.password.$errors"
-                :key="error.$uid"
+                v-if="!v$.newAccount.password.required.$response"
+                >{{ errorMessagges.required }}</b-form-invalid-feedback
               >
-                {{ error.$message }}
-              </b-form-invalid-feedback>
+              <b-form-invalid-feedback
+                v-else-if="!v$.newAccount.password.valid.$response"
+                >{{ errorMessagges.password.valid }}</b-form-invalid-feedback
+              >
             </b-input-group>
           </b-form-group>
         </b-col>
@@ -172,6 +229,12 @@
                 :type="showConfirmPasswordState ? 'text' : 'password'"
                 placeholder="Confirmar contraseña"
                 style="border-right: none !important"
+                v-model="v$.confirmPassword.$model"
+                required
+                :state="
+                  v$.confirmPassword.$dirty ? !v$.confirmPassword.$error : null
+                "
+                @blur="v$.confirmPassword.$touch()"
               >
               </b-form-input>
               <b-input-group-prepend>
@@ -186,6 +249,16 @@
                   ></b-icon>
                 </span>
               </b-input-group-prepend>
+              <b-form-invalid-feedback
+                v-if="!v$.confirmPassword.required.$response"
+              >
+                {{ errorMessagges.required }}
+              </b-form-invalid-feedback>
+              <b-form-invalid-feedback
+                v-else-if="!v$.confirmPassword.sameAsPassword.$response"
+              >
+                {{ errorMessagges.passwordMissmatch }}
+              </b-form-invalid-feedback>
             </b-input-group>
           </b-form-group>
         </b-col>
@@ -193,14 +266,13 @@
     </div>
 
     <div v-if="step !== 0">
-      <b-row class="mx-4 mt-5">
+      <b-row class="mx-4 mt-3">
         <b-col cols="12" sm="12">
           <b-form-group>
             <b-form-datepicker
               id="example-datepicker"
-              class="mb-2"
               placeholder="Fecha de nacimiento"
-              v-model="personalNewAccount.birthday"
+              v-model="v$.personalNewAccount.birthday.$model"
               hide-header
               label-no-date-selected="Selecciona tu fecha de nacimiento"
               label-help=""
@@ -213,22 +285,31 @@
               :max="todayDate()"
             ></b-form-datepicker>
             <b-form-invalid-feedback
-              v-for="error in v$.newAccount.name.$errors"
-              :key="error.$uid"
+              v-if="!v$.personalNewAccount.birthday.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
+            <b-form-invalid-feedback
+              v-else-if="!v$.personalNewAccount.birthday.maxValue.$response"
+              >{{ errorMessagges.maxValue }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
         <b-col cols="12" sm="12">
           <b-form-group>
-            <b-form-select></b-form-select>
+            <b-form-select
+              v-model="v$.personalNewAccount.gender.$model"
+              :options="genreOptions"
+              :state="
+                v$.personalNewAccount.gender.$dirty
+                  ? !v$.personalNewAccount.gender.$error
+                  : null
+              "
+              @touch="v$.personalNewAccount.gender.$touch()"
+            ></b-form-select>
             <b-form-invalid-feedback
-              v-for="error in v$.newAccount.surname.$errors"
-              :key="error.$uid"
+              v-if="!v$.personalNewAccount.gender.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
       </b-row>
@@ -251,11 +332,13 @@
             >
             </b-form-input>
             <b-form-invalid-feedback
-              v-for="error in v$.personalNewAccount.curp.$errors"
-              :key="error.$uid"
+              v-if="!v$.personalNewAccount.curp.required.$response"
+              >{{ errorMessagges.required }}</b-form-invalid-feedback
             >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
+            <b-form-invalid-feedback
+              v-if="!v$.personalNewAccount.curp.valid.$response"
+              >{{ errorMessagges.curp.valid }}</b-form-invalid-feedback
+            >
           </b-form-group>
         </b-col>
       </b-row>
@@ -287,32 +370,34 @@
         </b-col>
       </b-row>
       <b-row class="mx-4">
-        <b-col class="d-flex justify-content-center mb-3" v-if="step !== 0">
+        <b-col class="d-flex justify-content-center mb-2" v-if="step !== 0">
           <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" />
         </b-col>
       </b-row>
     </div>
     <b-row
-      class="d-flex justify-content-center mb-5 mx-4 mt-2"
+      class="d-flex justify-content-center mx-4 mb-4 mt-2"
       v-if="step === 0"
     >
       <b-col cols="12" sm="12" md="6">
         <b-button
           class="custom-button"
           block
-          :disabled="v$.newAccount.$invalid"
+          :disabled="v$.newAccount.$invalid || v$.confirmPassword.$invalid"
           @click="handleNextStep"
         >
           Siguiente
         </b-button>
       </b-col>
     </b-row>
-    <b-row
-      class="d-flex justify-content-center mb-5 mx-4 mt-2"
-      v-if="step !== 0"
-    >
-      <b-col cols="12" sm="12" md="6">
-        <b-button class="custom-button" block @click="handlePreviousStep">
+    <b-row class="d-flex justify-content-center mb-4 mt-2" v-if="step !== 0">
+      <b-col
+        cols="12"
+        sm="12"
+        md="6"
+        class="d-flex justify-content-between mx-4"
+      >
+        <b-button class="custom-button mr-2" @click="handlePreviousStep">
           Regresar
         </b-button>
         <b-button
@@ -323,23 +408,38 @@
             !isValidFriendlyCaptcha ||
             v$.personalNewAccount.$invalid
           "
+          @click="signup"
         >
           Crear cuenta
         </b-button>
       </b-col>
     </b-row>
+    <confirm-signup />
   </div>
 </template>
 
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers } from "@vuelidate/validators";
+import {
+  required,
+  email,
+  helpers,
+  minLength,
+  maxLength,
+  sameAs,
+} from "@vuelidate/validators";
 import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
 import moment from "moment";
+import { signal } from "../../../kernel/functions";
+import SweetAlertCustom from "../../../kernel/SweetAlertCustom";
+import authController from "../services/controller/auth.controller";
 export default Vue.extend({
   name: "CreateAccount",
-  components: { CaptchaFriendly },
+  components: {
+    CaptchaFriendly,
+    ConfirmSignup: defineAsyncComponent(() => import("./ConfirmSignup.vue")),
+  },
   setup() {
     return {
       v$: useVuelidate(),
@@ -347,7 +447,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      step: 1,
+      step: 0,
       isValidFriendlyCaptcha: false,
       showPasswordState: false,
       showConfirmPasswordState: false,
@@ -363,18 +463,45 @@ export default Vue.extend({
         email: "",
         curp: "",
         birthday: null,
-        gender: {
-          id: 0,
-        },
+        gender: null,
       },
       confirmPassword: "",
       errorMessagges: {
         required: "Campo obligatorio",
         invalidEmail: "Correo inválido",
+        minLength: "Mínimo 2 caracteres",
+        maxLength: "Máximo 45 caracteres",
+        noneScripts: "Campo inválido no se aceptan scripts",
+        valid: "Campos inválido - caracteres inválidos",
+        password: {
+          valid:
+            "La contraseña debe tener mínimo una mayúscula, un caracter especial (# . _) y un número (longitud de 3 a 16 car.)",
+        },
+        username: {
+          valid:
+            "Favor de ingresar un correo o un nombre de usuario válido (caracteres aceptados: . _)",
+          minLength: "Mínimo 3 caracteres",
+        },
+        passwordMissmatch: "Las contraseñas no coinciden",
+        birthday: {
+          maxValue: "La fecha es inválida debes cumplir con la mayoría de edad",
+        },
+        curp: {
+          valid: "CURP inválida",
+        },
       },
+      genreOptions: [
+        { value: null, text: "Selecciona un género" },
+        { value: { id: 1 }, text: "Masculino" },
+        { value: { id: 2 }, text: "Femenino" },
+        { value: { id: 3 }, text: "Otro" },
+      ],
     };
   },
   methods: {
+    onlynumbers(evt) {
+      signal(evt);
+    },
     todayDate() {
       return moment().subtract(18, "years").format("YYYY-MM-DD");
     },
@@ -390,24 +517,134 @@ export default Vue.extend({
     handlePreviousStep() {
       this.step = 0;
     },
+    async signup() {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const payload = {
+            ...this.newAccount,
+            ...this.personalNewAccount,
+          };
+          console.log("Payload", payload);
+          const response = await authController.signup(payload);
+          if (!response.error) {
+            this.$bvModal.show("modal-confirm-signup");
+            this.v$.newAccount.$reset();
+            this.v$.personalNewAccount.$reset();
+            this.v$.confirmPassword.$reset();
+            this.newAccount = {
+              name: "",
+              surname: "",
+              lastname: "",
+              phoneNumber: "",
+              username: "",
+              password: "",
+            };
+            this.personalNewAccount = {
+              email: "",
+              curp: "",
+              birthday: null,
+              gender: null,
+            };
+            this.confirmPassword = "";
+            this.step = 0;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   validations() {
     return {
       newAccount: {
         name: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          minLength: helpers.withMessage(
+            this.errorMessagges.minLength,
+            minLength(2)
+          ),
+          maxLength: helpers.withMessage(
+            this.errorMessagges.maxLength,
+            maxLength(45)
+          ),
+          notScript: helpers.withMessage(
+            this.errorMessagges.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
+          valid: helpers.withMessage(this.errorMessagges.valid, (value) =>
+            /^[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
+          ),
         },
         surname: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          minLength: helpers.withMessage(
+            this.errorMessagges.minLength,
+            minLength(2)
+          ),
+          maxLength: helpers.withMessage(
+            this.errorMessagges.maxLength,
+            maxLength(45)
+          ),
+          notScript: helpers.withMessage(
+            this.errorMessagges.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
+          valid: helpers.withMessage(this.errorMessagges.valid, (value) =>
+            /^[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
+          ),
+        },
+        lastname: {
+          valid: helpers.withMessage(this.errorMessagges.valid, (value) => {
+            if (value === "" || value === null) return true;
+            else
+              return /^[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(
+                value
+              );
+          }),
+          notScript: helpers.withMessage(
+            this.errorMessagges.noneScripts,
+            (value) => {
+              if (value === "" || value === null) return true;
+              else return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
         },
         phoneNumber: {
           required: helpers.withMessage(this.errorMessagges.required, required),
         },
-        password: {
-          required: helpers.withMessage(this.errorMessagges.required, required),
-        },
         username: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          valid: helpers.withMessage(this.errorMessagges.valid, (value) =>
+            /^[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
+          ),
+          notScript: helpers.withMessage(
+            this.errorMessagges.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
+          minLength: helpers.withMessage(
+            this.errorMessagges.minLength,
+            minLength(2)
+          ),
+        },
+        password: {
+          required: helpers.withMessage(this.errorMessagges.required, required),
+          valid: (value) =>
+            /^(?=.*[A-Z]+)(?=.*[._#]+)(?=.*[0-9]+)[a-zA-Z0-9._#]{3,16}$/g.test(
+              value
+            ),
+          notScript: helpers.withMessage(
+            this.errorMessagges.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
+          ),
         },
       },
       personalNewAccount: {
@@ -417,15 +654,34 @@ export default Vue.extend({
         },
         curp: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          valid: (value) => {
+            if (!value) return true;
+            else return /^[A-Z0-9]{18,18}$/g.test(value);
+          },
         },
         birthday: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          maxValue: helpers.withMessage(
+            "Sobrepasa la fecha máxima",
+            (value) => {
+              return moment(value).isSameOrBefore(
+                new Date(
+                  new Date().getFullYear() - 18,
+                  new Date().getMonth(),
+                  new Date().getDate()
+                )
+              );
+            }
+          ),
         },
         gender: {
           required: helpers.withMessage(this.errorMessagges.required, required),
         },
       },
-      confirmPassword: {},
+      confirmPassword: {
+        required: helpers.withMessage(this.errorMessagges.required, required),
+        sameAsPassword: sameAs(this.newAccount.password),
+      },
     };
   },
 });

@@ -94,7 +94,7 @@ public class VerificationCodeService {
             verificationCode.setWasUsed(true);
             this.iVerificationCodeRepository.saveAndFlush(verificationCode);
 
-            return new ResponseApi<>(true, HttpStatus.ACCEPTED, false, "Cuenta activada.");
+            return new ResponseApi<>(true, HttpStatus.OK, false, "Cuenta activada.");
         } catch (Exception e) {
             logger.error(e.getMessage());
             return new ResponseApi<>(
@@ -127,7 +127,7 @@ public class VerificationCodeService {
             verificationCode.setWasUsed(true);
             this.iVerificationCodeRepository.saveAndFlush(verificationCode);
 
-            return new ResponseApi<>(true, HttpStatus.ACCEPTED, false, "Código verificado");
+            return new ResponseApi<>(true, HttpStatus.OK, false, "Código verificado");
         } catch (Exception e) {
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,

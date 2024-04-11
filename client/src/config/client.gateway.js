@@ -7,7 +7,10 @@ import SweetAlertCustom from "@/kernel/SweetAlertCustom";
 AxiosClient.interceptors.request.use(
   function (config) {
     const auth_token = localStorage.token;
-    if (auth_token && !config.url.includes("auth")) {
+    if (
+      auth_token &&
+      (!config.url.includes("auth") || !config.url.includes("open"))
+    ) {
       config.headers.Authorization = `Bearer ${auth_token}`;
     }
     return config;

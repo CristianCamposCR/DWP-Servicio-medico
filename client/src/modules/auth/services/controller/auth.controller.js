@@ -25,4 +25,17 @@ export default {
       };
     }
   },
+  async activateAccount(payload) {
+    try {
+      const data = await ApiService.activateAccount(payload);
+      console.log("controller",data)
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };
