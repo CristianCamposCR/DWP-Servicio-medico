@@ -4,5 +4,7 @@ export const EStatus = {
 };
 
 export const ERoles = {
-  ADMIN: "ADMIN"
-}
+  ADMIN: "ADMIN",
+  PATIENT: "PATIENT",
+  DOCTOR: "DOCTOR",
+};

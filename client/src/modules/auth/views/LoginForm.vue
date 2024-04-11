@@ -152,6 +152,16 @@ export default Vue.extend({
         if (jwtDecode(localStorage.token).roles[0].authority === ERoles.ADMIN) {
           await this.$router.replace("/management");
           return true;
+        } else if (
+          jwtDecode(localStorage.token).roles[0].authority === ERoles.DOCTOR
+        ) {
+          await this.$router.replace("/doctor");
+          return true;
+        } else if (
+          jwtDecode(localStorage.token).roles[0].authority === ERoles.PATIENT
+        ) {
+          await this.$router.replace("/patient");
+          return true;
         }
       }
     },
