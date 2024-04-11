@@ -33,7 +33,6 @@ public class DoctorController {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String email = userDetails.getUsername();
-            logger.info(email);
             ResponseApi<Doctor> responseApi = this.doctorService.loadProfileByEmail(email);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {

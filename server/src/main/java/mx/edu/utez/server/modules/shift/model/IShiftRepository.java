@@ -14,4 +14,6 @@ public interface IShiftRepository extends JpaRepository<Shift, Long> {
 
     Set<Shift> findAllByStatus_Name(Statuses statusName);
 
+    boolean existsByIdAndStatus_Name(Long id, Statuses statusName);
+
 }

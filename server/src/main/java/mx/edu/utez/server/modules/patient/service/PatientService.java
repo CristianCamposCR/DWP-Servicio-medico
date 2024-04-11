@@ -190,7 +190,6 @@ public class PatientService {
         }
     }
 
-
     public String generatePatientCode(String name, String surname, LocalDate yearBirth) {
         String namePart = name.substring(0, Math.min(name.length(), 2)).toUpperCase();
         String surnamePart = surname.substring(0, Math.min(surname.length(), 2)).toUpperCase();

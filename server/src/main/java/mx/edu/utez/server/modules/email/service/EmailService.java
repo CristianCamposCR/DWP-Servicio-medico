@@ -83,6 +83,19 @@ public class EmailService {
                 "        p {\n" +
                 "            margin-bottom: 20px;\n" +
                 "        }\n" +
+                "       .separator {\n" +
+                "            border-top: 1px solid #ddd;\n" +
+                "            margin-top: 20px;\n" +
+                "            margin-bottom: 20px;\n" +
+                "        }\n" +
+                "        .ticket {\n" +
+                "            background-color: #f3f3f3;\n" +
+                "            padding: 15px;\n" +
+                "            border-radius: 5px;\n" +
+                "        }\n" +
+                "        .ticket p {\n" +
+                "            margin-bottom: 5px;\n" +
+                "        }" +
                 "\n" +
                 "        /* Estilos específicos para dispositivos móviles */\n" +
                 "        @media only screen and (max-width: 600px) {\n" +
@@ -106,6 +119,8 @@ public class EmailService {
                 "            <p>" + email.getBody() + "</p>\n" +
                 "        </div>\n" +
                 "\n" +
+                "        <!-- Separator -->\n" +
+                "        <div class=\"separator\"></div>\n" +
                 "        <!-- Footer -->\n" +
                 "        <div class=\"footer\">\n" +
                 "            <p>Este es un correo electrónico generado automáticamente. Por favor, no responda a este mensaje.</p>\n" +

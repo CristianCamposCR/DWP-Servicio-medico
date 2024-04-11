@@ -1,6 +1,7 @@
 package mx.edu.utez.server.modules.doctor.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -85,11 +86,13 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "shift_id", referencedColumnName = "id",
             nullable = false)
+    @JsonIncludeProperties({"id", "name"})
     private Shift shift;
 
     @ManyToOne
     @JoinColumn(name = "speciality_id", referencedColumnName = "id",
             nullable = false)
+    @JsonIncludeProperties({"id", "name"})
     private Speciality speciality;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
