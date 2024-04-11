@@ -19,14 +19,14 @@
                       placeholder="Nombre"
                       type="text"
                       required
-                      v-model.trim="v$.patient.person.name.$model"
+                      v-model.trim="v$.doctor.person.name.$model"
                       trim
-                      :state="v$.patient.person.name.$dirty ? !v$.patient.person.name.$error : null"
-                      @blur="v$.patient.person.name.$touch()"
+                      :state="v$.doctor.person.name.$dirty ? !v$.doctor.person.name.$error : null"
+                      @blur="v$.doctor.person.name.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.name.$errors"
+                      v-for="error in v$.doctor.person.name.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -41,16 +41,16 @@
                       placeholder="Apellido materno"
                       type="text"
                       required
-                      v-model.trim="v$.patient.person.surname.$model"
+                      v-model.trim="v$.doctor.person.surname.$model"
                       trim
                       :state="
-                        v$.patient.person.surname.$dirty ? !v$.patient.person.surname.$error : null
+                        v$.doctor.person.surname.$dirty ? !v$.doctor.person.surname.$error : null
                       "
-                      @blur="v$.patient.person.surname.$touch()"
+                      @blur="v$.doctor.person.surname.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.surname.$errors"
+                      v-for="error in v$.doctor.person.surname.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -65,18 +65,18 @@
                       placeholder="Apellido paterno"
                       type="text"
                       required
-                      v-model.trim="v$.patient.person.lastname.$model"
+                      v-model.trim="v$.doctor.person.lastname.$model"
                       trim
                       :state="
-                        v$.patient.person.lastname.$dirty
-                          ? !v$.patient.person.lastname.$error
+                        v$.doctor.person.lastname.$dirty
+                          ? !v$.doctor.person.lastname.$error
                           : null
                       "
-                      @blur="v$.patient.person.lastname.$touch()"
+                      @blur="v$.doctor.person.lastname.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.lastname.$errors"
+                      v-for="error in v$.doctor.person.lastname.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -89,10 +89,10 @@
                     <multi-select
                       id="gender"
                       :class="{
-                        'is-invalid': v$.patient.person.gender.$error,
-                        'is-valid': !v$.patient.person.gender.$invalid,
+                        'is-invalid': v$.doctor.person.gender.$error,
+                        'is-valid': !v$.doctor.person.gender.$invalid,
                       }"
-                      v-model="v$.patient.person.gender.$model"
+                      v-model="v$.doctor.person.gender.$model"
                       placeholder="Selecciona un género"
                       label="name"
                       :options="genders"
@@ -101,7 +101,7 @@
                       selectLabel="Presiona enter para seleccionar"
                       deselectLabel="Presiona enter para eliminar"
                       selectedLabel="Seleccionado"
-                      @close="v$.patient.person.gender.$touch()"
+                      @close="v$.doctor.person.gender.$touch()"
                     >
                       <template slot="noResult">No hay resultados</template>
                       <template slot="noOptions"
@@ -109,7 +109,7 @@
                       ></multi-select
                     >
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.gender.$errors"
+                      v-for="error in v$.doctor.person.gender.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -122,14 +122,14 @@
                       placeholder="SIIN012345MHNRDYA7"
                       type="text"
                       required
-                      v-model.trim="v$.patient.person.curp.$model"
+                      v-model.trim="v$.doctor.person.curp.$model"
                       trim
-                      :state="v$.patient.person.curp.$dirty ? !v$.patient.person.curp.$error : null"
-                      @blur="v$.patient.person.curp.$touch()"
+                      :state="v$.doctor.person.curp.$dirty ? !v$.doctor.person.curp.$error : null"
+                      @blur="v$.doctor.person.curp.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.curp.$errors"
+                      v-for="error in v$.doctor.person.curp.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -144,16 +144,16 @@
                       placeholder="Calle 0 col 3243"
                       type="text"
                       required
-                      v-model.trim="v$.patient.person.details.$model"
+                      v-model.trim="v$.doctor.person.details.$model"
                       trim
                       :state="
-                        v$.patient.person.details.$dirty ? !v$.patient.person.details.$error : null
+                        v$.doctor.person.details.$dirty ? !v$.doctor.person.details.$error : null
                       "
-                      @blur="v$.patient.person.details.$touch()"
+                      @blur="v$.doctor.person.details.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.details.$errors"
+                      v-for="error in v$.doctor.person.details.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -175,13 +175,13 @@
                       id="birthdate"
                       placeholder="Selecciona una fecha"
                       :label-help="null"
-                      v-model="v$.patient.person.birthday.$model"
+                      v-model="v$.doctor.person.birthday.$model"
                       :state="
-                        v$.patient.person.birthday.$dirty
-                          ? !v$.patient.person.birthday.$error
+                        v$.doctor.person.birthday.$dirty
+                          ? !v$.doctor.person.birthday.$error
                           : null
                       "
-                      @blur="v$.patient.person.birthday.$touch()"
+                      @blur="v$.doctor.person.birthday.$touch()"
                       label-current-month="Fecha máxima"
                       hide-header
                       :date-format-options="{
@@ -190,10 +190,10 @@
                         day: 'numeric',
                       }"
                       :max="maxDate"
-                      @hide="v$.patient.person.birthday.$touch()"
+                      @hide="v$.doctor.person.birthday.$touch()"
                     ></b-form-datepicker>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.birthday.$errors"
+                      v-for="error in v$.doctor.person.birthday.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -207,16 +207,16 @@
                       placeholder="111-122-8347"
                       type="tel"
                       required
-                      v-model.trim="v$.patient.person.phoneNumber.$model"
+                      v-model.trim="v$.doctor.person.phoneNumber.$model"
                       trim
                       :state="
-                        v$.patient.person.phoneNumber.$dirty ? !v$.patient.person.phoneNumber.$error : null
+                        v$.doctor.person.phoneNumber.$dirty ? !v$.doctor.person.phoneNumber.$error : null
                       "
-                      @blur="v$.patient.person.phoneNumber.$touch()"
+                      @blur="v$.doctor.person.phoneNumber.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.phoneNumber.$errors"
+                      v-for="error in v$.doctor.person.phoneNumber.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -233,16 +233,16 @@
                       placeholder="example@example.com"
                       type="email"
                       required
-                      v-model.trim="v$.patient.person.email.$model"
+                      v-model.trim="v$.doctor.person.email.$model"
                       trim
                       :state="
-                        v$.patient.person.email.$dirty ? !v$.patient.person.email.$error : null
+                        v$.doctor.person.email.$dirty ? !v$.doctor.person.email.$error : null
                       "
-                      @blur="v$.patient.person.email.$touch()"
+                      @blur="v$.doctor.person.email.$touch()"
                     >
                     </b-form-input>
                     <b-form-invalid-feedback
-                      v-for="error in v$.patient.person.email.$errors"
+                      v-for="error in v$.doctor.person.email.$errors"
                       :key="error.$uid"
                     >
                       {{ error.$message }}
@@ -285,7 +285,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "ModalUpdateProfile",
   props: {
-    patients: {
+    doctors: {
       type: Object,
       required: true,
     },
@@ -306,20 +306,20 @@ export default Vue.extend({
         { name: "Masculino", id: 1 },
         { name: "Femenino", id: 2 },
       ],
-      patient: {
+      doctor: {
         person: {
-        id: this.patients.person.id,
-        name: this.patients.person.name,
-        lastname: this.patients.person.lastname,
-        surname: this.patients.person.surname,
-        curp: this.patients.person.curp,
+        id: this.doctors.person.id,
+        name: this.doctors.person.name,
+        lastname: this.doctors.person.lastname,
+        surname: this.doctors.person.surname,
+        curp: this.doctors.person.curp,
         gender: {
-          id: this.patients.person.gender.id
+          id: this.doctors.person.gender.id
         },
-        phoneNumber: this.patients.person.phoneNumber,
-        details: this.patients.person.details,
-        email: this.patients.person.email,
-        birthday: this.patients.person.birthday,
+        phoneNumber: this.doctors.person.phoneNumber,
+        details: this.doctors.person.details,
+        email: this.doctors.person.email,
+        birthday: this.doctors.person.birthday,
       }
       },
       errorMessagges: {
@@ -338,7 +338,7 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
-          const resp = await boundary.personController.update(this.patient.person);
+          const resp = await boundary.personController.update(this.doctor.person);
           const { error } = resp;
           if (!error) {
             this.$emit("reloadProfile");
@@ -356,7 +356,7 @@ export default Vue.extend({
   },
   validations() {
     return {
-      patient: {
+      doctor: {
         person:{
         name: {
           required: helpers.withMessage(this.errorMessagges.required, required),

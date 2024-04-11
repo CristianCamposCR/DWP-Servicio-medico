@@ -6,17 +6,16 @@
         <div class="profile-image"></div>
       </div>
       <div class="profile-section">
-        <div class="patient-info">
-          <h2>{{ patient.person.name}} {{ patient.person.surname  }} {{ patient.person.lastname }}</h2>
-          <p><b>Codigo:</b>  {{ patient.patientCode }}</p>
-          <p><b>Email: </b>{{ patient.person.email }}</p>
-          <p><b>Teléfono: </b>{{ patient.person.phoneNumber }}</p>
-          <p><b>Dirección: </b>{{ patient.person.details ? patient.person.details : 'N/A' }}</p>
+        <div class="user-info">
+          <h2>{{ doctor.person.name}} {{ doctor.person.surname  }} {{ doctor.person.lastname }}</h2>
+          <p><b>Email: </b>{{ doctor.person.email }}</p>
+          <p><b>Teléfono: </b>{{ doctor.person.phoneNumber }}</p>
+          <p><b>Dirección: </b>{{ doctor.person.details ? doctor.person.details : 'N/A' }}</p>
         </div>
         <b-button class="custom-button" @click="editProfile">Editar Perfil</b-button>
       </div>
     </div>
-    <ModalUpdateProfile :patients="patient" @reloadProfile="getProfile"/>
+    <ModalUpdateProfile :doctors="doctor" @reloadProfile="getProfile"/>
   </div>
 </template>
 
@@ -28,7 +27,7 @@ export default {
   components:{ModalUpdateProfile},
   data() {
     return {
-      patient: {},
+      doctor: {},
     };
   },
   methods: {
@@ -40,7 +39,7 @@ export default {
         this.isLoading = true;
         const response = await profileController.getProfile();
         console.log("HOLAAAA",response);
-        this.patient = response;
+        this.doctor = response;
       } catch (error) {
         console.log(error);
       } finally {
@@ -102,7 +101,7 @@ export default {
 
 }
 
-.patient-info {
+.user-info {
   text-align: left;
   margin-top: 20px;
 }
