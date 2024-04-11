@@ -45,9 +45,9 @@ export default [
         name: 'profile',
         component: () => import('../modules/management/profile/views/Profile.vue'),
         meta: {
-          title: "Áreas",
+          title: "Perfil",
           requireAuth: true,
-          role: rolesAllowed,
+          role: ["PATIENT"],
         },
       },
     ],
