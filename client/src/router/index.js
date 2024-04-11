@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import managementRoute from "./management-route";
 import { jwtDecode } from "jwt-decode";
+import doctorRoute from "./doctor-route";
 
 Vue.use(VueRouter);
 const DEFAULT_TITLE = "CIMI";
@@ -64,6 +65,7 @@ const router = new VueRouter({
           },
         },
         ...managementRoute,
+        ...doctorRoute
       ],
     },
   ],
