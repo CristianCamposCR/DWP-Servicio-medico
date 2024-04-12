@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import managementRoute from "./management-route";
+import patientRoute from "./patient-router";
 import { jwtDecode } from "jwt-decode";
 import doctorRoute from "./doctor-route";
 
@@ -65,7 +66,8 @@ const router = new VueRouter({
           },
         },
         ...managementRoute,
-        ...doctorRoute
+        ...doctorRoute,
+        ...patientRoute
       ],
     },
   ],

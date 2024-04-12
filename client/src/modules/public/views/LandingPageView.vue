@@ -370,7 +370,7 @@
           <div class="col-12 col-md-3">
             <h3 class="text-white" >Acerca de nosotros</h3>
             <!--          logo-->
-            <img src="@/assets/image/doctor_3584957.png" alt="CIMI" height="40" class="my-3">
+            <img src="@/assets/image/doctor_3584957.png" alt="CIMI" height="40" class="my-3 img-fluid" style="max-width: 20%"  >
             <p class="text-white">
               CIMI es una plataforma de gestión de información médica que te permite llevar un control de tus citas médicas, historial clínico y mucho más.
             </p>
@@ -495,7 +495,7 @@ export default {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 991px) {
   .custom-button {
     width: 100%;
   }
