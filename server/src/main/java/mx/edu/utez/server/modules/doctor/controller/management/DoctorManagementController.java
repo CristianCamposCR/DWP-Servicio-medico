@@ -3,7 +3,11 @@ package mx.edu.utez.server.modules.doctor.controller.management;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.kernel.OptionsDto;
+import mx.edu.utez.server.modules.appointment.controller.dto.CheckAvailabilityDto;
 import mx.edu.utez.server.modules.doctor.controller.dto.DoctorDto;
+import mx.edu.utez.server.modules.doctor.controller.dto.GetAvailableHoursDto;
+import mx.edu.utez.server.modules.doctor.controller.dto.IDoctorListView;
 import mx.edu.utez.server.modules.doctor.controller.dto.UpdateDoctorDto;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.doctor.service.DoctorService;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/api/management/doctor")
@@ -81,6 +89,47 @@ public class DoctorManagementController {
     public ResponseEntity<ResponseApi<Doctor>> update(@RequestBody @Valid UpdateDoctorDto updateDoctorDto) {
         try {
             ResponseApi<Doctor> responseApi = this.doctorService.update(updateDoctorDto);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
+            );
+        }
+    }
+
+    @PostMapping("/available/")
+    public ResponseEntity<ResponseApi<Set<IDoctorListView>>> findAllAvailableDoctors(
+            @Validated(CheckAvailabilityDto.Assingning.class) @RequestBody CheckAvailabilityDto dto) {
+        try {
+            ResponseApi<Set<IDoctorListView>> responseApi = this.doctorService.findAllAvailable(dto, false);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
+            );
+        }
+    }
+
+    @PostMapping("/aux/available/")
+    public ResponseEntity<ResponseApi<Set<IDoctorListView>>> findAllAvailableAuxDoctors(
+            @Validated(CheckAvailabilityDto.Assingning.class) @RequestBody CheckAvailabilityDto dto) {
+        try {
+            ResponseApi<Set<IDoctorListView>> responseApi = this.doctorService.findAllAvailable(dto, true);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
+            );
+        }
+    }
+
+    @PostMapping("/available-hours/")
+    public ResponseEntity<ResponseApi<List<OptionsDto<Integer>>>> getAvailableHours(@Valid @RequestBody GetAvailableHoursDto dto) {
+        try {
+            ResponseApi<List<OptionsDto<Integer>>> responseApi = this.doctorService.getAvailableHours(dto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());

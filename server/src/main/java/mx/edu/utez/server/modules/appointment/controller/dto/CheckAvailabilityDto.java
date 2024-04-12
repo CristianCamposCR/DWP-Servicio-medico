@@ -1,6 +1,7 @@
 package mx.edu.utez.server.modules.appointment.controller.dto;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,10 +17,14 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CheckAvailabilityDto {
-    @Future
+    @Future(groups = {Scheduling.class})
+    @FutureOrPresent(groups = {Assingning.class})
     private LocalDate scheduledAt;
-    @NotNull
+    @NotNull(groups = {Scheduling.class, Assingning.class})
     private Speciality speciality;
-    @NotNull
+    @NotNull(groups = {Scheduling.class, Assingning.class})
     private Shift shift;
+
+    public interface Scheduling{}
+    public interface Assingning{}
 }
