@@ -12,7 +12,13 @@ import java.util.Optional;
 
 @Repository
 public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
-    boolean existsBySpeciality_Id(Long id);
+    @Query(value = """
+            SELECT COUNT(*)
+            FROM appointments
+            WHERE speciality_id = ?1
+              AND scheduled_at >= ?2
+            """, nativeQuery = true)
+    Long existBySpecialityId(Long id, LocalDate currentDate);
 
     Optional<Appointment> findByIdAndPatient_Person_User_Username(Long id, String username);
 

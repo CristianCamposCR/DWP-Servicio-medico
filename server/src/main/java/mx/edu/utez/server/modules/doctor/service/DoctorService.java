@@ -1,9 +1,16 @@
 package mx.edu.utez.server.modules.doctor.service;
 
 import lombok.RequiredArgsConstructor;
-import mx.edu.utez.server.kernel.*;
+import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.kernel.OptionsDto;
+import mx.edu.utez.server.kernel.Roles;
+import mx.edu.utez.server.kernel.StatusType;
+import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.modules.appointment.controller.dto.CheckAvailabilityDto;
 import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
 import mx.edu.utez.server.modules.doctor.controller.dto.DoctorDto;
+import mx.edu.utez.server.modules.doctor.controller.dto.GetAvailableHoursDto;
+import mx.edu.utez.server.modules.doctor.controller.dto.IDoctorListView;
 import mx.edu.utez.server.modules.doctor.controller.dto.UpdateDoctorDto;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.doctor.model.IDoctorRepository;
@@ -19,7 +26,10 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
-import mx.edu.utez.server.utils.*;
+import mx.edu.utez.server.utils.HashService;
+import mx.edu.utez.server.utils.ResponseApi;
+import mx.edu.utez.server.utils.SearchDto;
+import mx.edu.utez.server.utils.Validations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +43,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -270,7 +283,7 @@ public class DoctorService {
             if (optionalDoctor.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_DOCTOR_FOUND.name());
 
-            if(this.iAppointmentRepository.existByDoctorId(dto.getId(), Instant.now()) > 0)
+            if (this.iAppointmentRepository.existByDoctorId(dto.getId(), Instant.now()) > 0)
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DOCTOR_HAS_DEPENDENCIES.name());
 
             if (this.iDoctorRepository.existsByProfessionalIdAndIdNot(dto.getProfessionalId(), dto.getId()))
@@ -315,6 +328,69 @@ public class DoctorService {
                     new ResponseApi<>(doctor, HttpStatus.OK, false, "Doctor profile.")
             ).orElseGet(() ->
                     new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_DOCTOR_FOUND.name())
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Set<IDoctorListView>> findAllAvailable(CheckAvailabilityDto dto, boolean isAux) {
+        try {
+            LocalDate scheduledAt = dto.getScheduledAt();
+            Long specialityId = dto.getSpeciality().getId();
+            Long shiftId = dto.getShift().getId();
+
+            Set<IDoctorListView> doctors;
+            if (isAux) {
+                doctors = this.iDoctorRepository.findAllAvailableAuxDoctors(scheduledAt, specialityId, shiftId);
+            } else {
+                doctors = this.iDoctorRepository.findAllAvailableDoctors(scheduledAt, specialityId, shiftId);
+            }
+
+            return new ResponseApi<>(
+                    doctors,
+                    HttpStatus.OK,
+                    false,
+                    "Doctores disponibles."
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<List<OptionsDto<Integer>>> getAvailableHours(GetAvailableHoursDto dto) {
+        try {
+            Optional<Doctor> optionalDoctor = this.iDoctorRepository.findByIdAndPerson_User_StatusNameNot(dto.getId(), Statuses.INACTIVO);
+            if (optionalDoctor.isEmpty())
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_DOCTOR_FOUND.name());
+
+            List<Integer> busyHours = this.iDoctorRepository.getBusyHours(dto.getScheduledAt(), dto.getId());
+            Integer entryHour = optionalDoctor.get().getShift().getEntryHour();
+            Integer departureHour = optionalDoctor.get().getShift().getDepartureHour();
+
+            List<OptionsDto<Integer>> availableHours = new ArrayList<>();
+            for (Integer i = entryHour; i < departureHour; i++) {
+                if (!busyHours.contains(i))
+                    availableHours.add(new OptionsDto<>(i, i + ":00 HRS"));
+            }
+
+            return new ResponseApi<>(
+                    availableHours,
+                    HttpStatus.OK,
+                    false,
+                    "Horas disponibles."
             );
         } catch (Exception e) {
             logger.error(e.getMessage());

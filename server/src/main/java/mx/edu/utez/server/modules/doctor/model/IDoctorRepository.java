@@ -1,13 +1,17 @@
 package mx.edu.utez.server.modules.doctor.model;
 
 import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.modules.doctor.controller.dto.IDoctorListView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
@@ -78,6 +82,43 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
               AND d.shift_id = ?2
               AND NOT d.is_aux
               AND st.name = 'ACTIVO'
+              AND d.available_days LIKE CONCAT('%', ?3, '%');
             """, nativeQuery = true)
-    Long checkAvailability(Long specialityId, Long shiftId);
+    Long checkAvailability(Long specialityId, Long shiftId, String dayName);
+
+    @Query(value = """
+            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, ' ', p.lastname)) as 'fullName' 
+            FROM appointments a
+                     INNER JOIN doctors d ON a.doctor_id = d.id
+                     INNER JOIN people p on d.person_id = p.id
+            WHERE a.scheduled_at = ?1
+              AND a.speciality_id = ?2
+              AND a.shift_id = ?3
+              AND NOT d.is_aux
+            GROUP BY d.id
+            HAVING COUNT(*) < 6
+            """, nativeQuery = true)
+    Set<IDoctorListView> findAllAvailableDoctors(LocalDate scheduledAt, Long specialityId, Long shiftId);
+
+    @Query(value = """
+            SELECT d.id,TRIM(CONCAT(p.name, ' ', p.surname, ' ', p.lastname)) as 'fullName' 
+            FROM appointments a
+                     INNER JOIN doctors d ON a.doctor_id = d.id
+                     INNER JOIN people p on d.person_id = p.id
+            WHERE a.scheduled_at = ?1
+              AND a.speciality_id = ?2
+              AND a.shift_id = ?3
+              AND d.is_aux
+            GROUP BY d.id
+            HAVING COUNT(*) < 6
+            """, nativeQuery = true)
+    Set<IDoctorListView> findAllAvailableAuxDoctors(LocalDate scheduledAt, Long specialityId, Long shiftId);
+
+    @Query(value = """
+            SELECT scheduled_hour
+            FROM appointments
+            WHERE scheduled_at = '2024-04-12'
+              AND doctor_id = 1
+            """, nativeQuery = true)
+    List<Integer> getBusyHours(LocalDate scheduledAt, Long doctorId);
 }

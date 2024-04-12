@@ -31,7 +31,7 @@ public class VerificationCodeController {
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
-    @PostMapping("/activate_account/")
+    @PostMapping("/activate-account/")
     public ResponseEntity<ResponseApi<Boolean>> activateAccount(@Valid @RequestBody VerificationCodeDto dto) {
         try {
             ResponseApi<Boolean> responseApi = this.verificationCodeService.activateAccount(dto);

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -254,7 +255,7 @@ public class SpecialityService {
             if (optionalSpeciality.isEmpty())
                 return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name());
 
-            if (this.iAppointmentRepository.existsBySpeciality_Id(id) || this.iDoctorRepository.existsBySpeciality_Id(id))
+            if (this.iAppointmentRepository.existBySpecialityId(id, LocalDate.now()) > 0 || this.iDoctorRepository.existsBySpeciality_Id(id))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SPECIALITY_HAS_DEPENDENCIES.name());
 
             Statuses newStatus = optionalSpeciality.get().getStatus().getName().equals(Statuses.ACTIVO) ?

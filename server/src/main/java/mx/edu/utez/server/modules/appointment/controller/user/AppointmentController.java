@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class AppointmentController {
 
     @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("/check-availability/")
-    public ResponseEntity<ResponseApi<Boolean>> checkAvailability(@Valid @RequestBody CheckAvailabilityDto dto) {
+    public ResponseEntity<ResponseApi<Boolean>> checkAvailability(@Validated(CheckAvailabilityDto.Scheduling.class) @RequestBody CheckAvailabilityDto dto) {
         if (this.appointmentService.isAvailable(dto.getSpeciality().getId(), dto.getShift().getId(), dto.getScheduledAt()))
             return ResponseEntity.ok(new ResponseApi<>(true, HttpStatus.OK, false, "Hay disponibilidad."));
         return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_AVAILABILITY.name()));

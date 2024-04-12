@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -147,7 +148,8 @@ public class AppointmentService {
     }
 
     public boolean isAvailable(Long specialityId, Long shiftId, LocalDate scheduledAt) {
-        Long availableAppointments = this.iDoctorRepository.checkAvailability(specialityId, shiftId);
+        String dayName = scheduledAt.getDayOfWeek().toString();
+        Long availableAppointments = this.iDoctorRepository.checkAvailability(specialityId, shiftId, dayName);
         Long countAppointments = this.iAppointmentRepository.countByScheduledAtAndSpeciality_Id(scheduledAt, specialityId);
         long remainingAppointments = availableAppointments - countAppointments;
         logger.info(String.valueOf(remainingAppointments));
