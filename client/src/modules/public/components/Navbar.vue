@@ -70,6 +70,17 @@ export default {
   scale: 1.1;
 }
 
+
+@media (max-width: 1000px) {
+  .custom-link{
+
+    &:hover{
+      scale: 1.01;
+    }
+  }
+}
+
+
 </style>
 
 

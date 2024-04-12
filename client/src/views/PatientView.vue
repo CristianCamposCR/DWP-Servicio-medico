@@ -1,16 +1,15 @@
 <template>
   <div>
-    <management-navbar/>
+    <patient-navbar />
     <router-view></router-view>
   </div>
 </template>
 <script>
 import Vue, { defineAsyncComponent } from "vue";
 export default Vue.extend({
-  name: "ManagementView",
+  name: "PatientView",
   components: {
-    ManagementNavbar: defineAsyncComponent(() => import("../views/components/ManagementNavbar.vue")
-    ),
+    PatientNavbar: defineAsyncComponent(() => import("../views/components/PatientNavbar.vue")),
   },
 });
 </script>
