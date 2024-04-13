@@ -50,7 +50,7 @@ const router = new VueRouter({
         {
           path: "areas",
           name: "public areas",
-          component: () => import("../modules/public/views/AreasView.vue"),
+          component: () => import("../modules/public/areas/views/AreasView.vue"),
           meta: {
             title: "Areas",
             requireAuth: false,
@@ -60,7 +60,7 @@ const router = new VueRouter({
           path: "specialities",
           name: "public specialities",
           component: () =>
-            import("../modules/public/views/SpecialitiesView.vue"),
+            import("../modules/public/speciality/views/SpecialitiesView.vue"),
           meta: {
             title: "Especialidades",
             requireAuth: false,

@@ -38,7 +38,6 @@ export default {
       try {
         this.isLoading = true;
         const response = await profileController.getProfile();
-        console.log("HOLAAAA",response);
         this.doctor = response;
       } catch (error) {
         console.log(error);

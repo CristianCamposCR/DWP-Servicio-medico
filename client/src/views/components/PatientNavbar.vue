@@ -31,8 +31,8 @@
                 icon="person-fill"
               ></b-avatar>
             </template>
-            <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
-              >Perfiles</b-dropdown-item
+            <b-dropdown-item @click="profile()"
+              >Perfil</b-dropdown-item
             >
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
           </b-nav-item-dropdown>
@@ -48,10 +48,8 @@ export default Vue.extend({
   data() {
     return {
       links: [
-        { name: "Áreas", to: "areas-management" },
-        { name: "Especialidades", to: "specialties-management" },
-        { name: "Pacientes", to: "patient-management" },
-        { name: "Perfil", to: "profile" },
+        { name: "Citas", to: "appointment-patient" },
+
       ],
     };
   },
@@ -75,6 +73,9 @@ export default Vue.extend({
           }
         });
     },
+    profile() {
+              this.$router.push({ name: "profile-patient" });
+      },
   },
 });
 </script>

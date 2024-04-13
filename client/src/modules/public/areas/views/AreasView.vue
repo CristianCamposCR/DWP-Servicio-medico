@@ -148,13 +148,13 @@
   
   <script>
   import Vue from "vue";
-  import { EStatus } from "../../../kernel/types";
-  import areaController from "../../management/areas/services/controller/area.controller";  
+  import { EStatus } from "../../../../kernel/types";
+  import areaController from "../services/controller/area.controller";
   export default Vue.extend({
     name: "PublicAreasView",
     components: {
       LoadingCustom: () =>
-        import("../../../views/components/LoadingCustom.vue"),
+        import("../../../../views/components/LoadingCustom.vue"),
       Navbar: () => import('@/modules/public/components/Navbar.vue'),
     },
     mounted() {

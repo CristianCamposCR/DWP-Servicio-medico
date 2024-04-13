@@ -31,8 +31,8 @@
                   icon="person-fill"
                 ></b-avatar>
               </template>
-              <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
-                >Perfiles</b-dropdown-item
+              <b-dropdown-item @click="profile()"
+                >Perfil</b-dropdown-item
               >
               <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
             </b-nav-item-dropdown>
@@ -48,7 +48,7 @@
     data() {
       return {
         links: [
-          { name: "Perfil", to: "profile-doctor" },
+
         ],
       };
     },
@@ -71,6 +71,9 @@
               this.$router.replace({ name: "login" });
             }
           });
+      },
+      profile() {
+              this.$router.push({ name: "profile-doctor" });
       },
     },
   });

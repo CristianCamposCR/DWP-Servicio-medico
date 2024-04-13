@@ -279,7 +279,7 @@ import {
 } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import SweetAlertCustom from "../../../../../kernel/SweetAlertCustom";
-import boundary from "../../boundary"
+import boundary from "../../../../patient/profile/boundary"
 import moment from "moment/moment";
 import Vue from "vue";
 export default Vue.extend({
