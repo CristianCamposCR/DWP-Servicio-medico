@@ -62,6 +62,8 @@ import { maxLength, minLength } from '@vuelidate/validators';
           required
           rows="3"
           max-rows="6"
+          maxlength="200"
+          trim
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.speciality.description.$errors"
@@ -82,6 +84,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
           @blur="v$.speciality.cost.$touch()"
           required
           trim
+          min="0"
         ></b-form-input>
         <b-form-invalid-feedback
           v-if="!v$.speciality.cost.required.$response"
@@ -163,7 +166,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
             class="ml-2"
             :disabled="v$.speciality.$invalid"
             @click="updateSpeciality"
-            >Registrar</b-button
+            >Actualizar</b-button
           >
         </div>
       </b-form>
@@ -205,6 +208,9 @@ export default Vue.extend({
           maxLength: "Máximo 45 caracteres",
           noneScripts: "Campo inválido no se aceptar scripts",
           valid: "Campos inválidos - caracteres inválidos",
+        },
+        description: {
+          maxLength: "Máximo 200 caracteres",
         },
         bannerImage: {
           validFile: "El archivo no es una imagen PNG o JPEG",
@@ -339,8 +345,8 @@ export default Vue.extend({
             minLength(0)
           ),
           maxLength: helpers.withMessage(
-            this.errorMessages.name.maxLength,
-            maxLength(100)
+            this.errorMessages.description.maxLength,
+            maxLength(200)
           ),
           notScript: helpers.withMessage(
             this.errorMessages.name.noneScripts,

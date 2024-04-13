@@ -1,4 +1,3 @@
-import { maxLength, minLength } from '@vuelidate/validators';
 <template>
   <div>
     <b-modal
@@ -62,6 +61,8 @@ import { maxLength, minLength } from '@vuelidate/validators';
           required
           rows="3"
           max-rows="6"
+          maxlenth="200"
+          trim
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.speciality.description.$errors"
@@ -82,6 +83,8 @@ import { maxLength, minLength } from '@vuelidate/validators';
           @blur="v$.speciality.cost.$touch()"
           required
           trim
+          @keypress="onlynumbers"
+          min="0"
         ></b-form-input>
         <b-form-invalid-feedback
           v-if="!v$.speciality.cost.required.$response"
@@ -180,6 +183,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import specialityController from "../../services/controller/speciality.controller";
 import SweetAlertCustom from "../../../../../kernel/SweetAlertCustom";
+import { signal } from "../../../../../kernel/functions";
 
 export default Vue.extend({
   name: "SaveSpeciality",
@@ -207,6 +211,9 @@ export default Vue.extend({
           noneScripts: "Campo inválido no se aceptar scripts",
           valid: "Campos inválidos - caracteres inválidos",
         },
+        description: {
+          maxLength: "Máximo 200 caracteres",
+        },
         bannerImage: {
           validFile: "El archivo no es una imagen PNG o JPEG",
         },
@@ -216,6 +223,9 @@ export default Vue.extend({
     };
   },
   methods: {
+    onlynumbers(evt) {
+      signal(evt);
+    },
     async getAreas() {
       try {
         const areas = await specialityController.getAreas();
@@ -335,8 +345,8 @@ export default Vue.extend({
             minLength(0)
           ),
           maxLength: helpers.withMessage(
-            this.errorMessages.name.maxLength,
-            maxLength(100)
+            this.errorMessages.description.maxLength,
+            maxLength(200)
           ),
           notScript: helpers.withMessage(
             this.errorMessages.name.noneScripts,

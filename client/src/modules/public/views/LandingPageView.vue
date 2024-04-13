@@ -421,12 +421,13 @@
   </div>
 </template>
 <script>
-
+import { jwtDecode } from "jwt-decode";
+import { ERoles } from "../../../kernel/types";
 export default {
   name: 'LandingPageView',
   components: {
     Navbar: () => import('@/modules/public/components/Navbar.vue'),
-  }
+  },
 }
 </script>
 

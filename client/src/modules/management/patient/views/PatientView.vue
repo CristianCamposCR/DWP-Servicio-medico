@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid mt-4">
     <loading-custom :isLoading="isLoading" />
-    <section class="mx-2">
+    <section class="mx-2 px-5">
       <b-row>
         <b-col>
-          <h1>Pacientes</h1>
+          <h1 class="title-views">Pacientes</h1>
         </b-col>
       </b-row>
       <b-row>
@@ -14,6 +14,7 @@
               placeholder="Escribe el nombre del paciente"
               v-model="pagination.data.name"
               @keyup.enter="getAllPatients"
+              class="custom-placeholder"
             ></b-form-input>
 
             <b-input-group-append>
@@ -24,7 +25,7 @@
       </b-row>
     </section>
 
-    <section class="mt-5">
+    <section class="mt-4 px-5">
       <b-row>
         <b-col
           v-for="(patient, index) in patients"
@@ -41,46 +42,37 @@
             style="max-width: 270px; max-height: 800px"
             footer-bg-variant="transparent"
             footer-border-variant="white"
+            rounded
           >
             <b-row no-gutters>
               <b-col md="12">
                 <b-card-img
-                :src="getImageSrc(patient)"
+                  :src="getImageSrc(patient)"
                   alt="Image"
                   class="rounded-0"
                   height="160"
+                  style="object-fit: cover; object-position: center"
                 ></b-card-img>
               </b-col>
               <b-col md="12">
                 <b-card-body>
-                  <b-card-title class="card-title"
+                  <b-card-title class="card-title mb-0"
                     >{{ patient.person.name }} {{ patient.person.surname }}
                     {{ patient.person.lastname }}</b-card-title
                   >
+                  <span class="area-indicator"> Paciente</span>
                   <b-card-text>
-                    <div class="mb-3">Paciente</div>
-                    <div class="mb-3">
-                      <b>No. Telefono: {{ patient.person.phoneNumber }}</b>
+                    <div class="mt-3">
+                      <b-icon icon="phone" class="mr-1"></b-icon>
+                      <span class="card-description">{{
+                        patient.person.phoneNumber
+                      }}</span>
                     </div>
-                    <div>
-                      <b>
-                        Correo:
-                        <span v-if="patient.person.email.length > 17">
-                          {{
-                            showFullDescriptionIndex === index
-                              ? patient.person.email
-                              : patient.person.email.substring(0, 10) + "..."
-                          }}
-                          <a href="#" @click="toggleDescription(index, $event)">
-                            {{
-                              showFullDescriptionIndex === index
-                                ? "Ver menos"
-                                : "Ver más"
-                            }}
-                          </a>
-                        </span>
-                        <span v-else>{{ patient.person.email }}</span>
-                      </b>
+                    <div class="mt-2">
+                      <b-icon icon="envelope" class="mr-1"></b-icon>
+                      <span class="card-description">{{
+                        patient.person.email
+                      }}</span>
                     </div>
                   </b-card-text>
                 </b-card-body>
@@ -91,18 +83,30 @@
                 <b-button
                   v-if="patient.person.user.status.name === EStatus.ACTIVE"
                   @click="changeStatus(patient.person.user.id)"
-                  variant="primary"
+                  v-b-tooltip.hover.v-info
+                  title="Desactivar"
+                  variant="outline-primary"
                 >
-                  Desactivar
+                  <b-icon icon="toggle-on"></b-icon>
                 </b-button>
                 <b-button
-                  v-else-if="patient.person.user.status.name === EStatus.INACTIVE"
+                  v-else-if="
+                    patient.person.user.status.name === EStatus.INACTIVE
+                  "
                   @click="changeStatus(patient.person.user.id)"
-                  variant="danger"
-                  >Activar</b-button
+                  v-b-tooltip.hover.v-info
+                  title="Activar"
+                  variant="outline-danger"
                 >
-                <b-button class="ml-1" variant="primary"
-                  ><b-icon icon="eye" @click="getOne(patient.id)"></b-icon
+                  <b-icon icon="toggle-off"></b-icon>
+                </b-button>
+                <b-button
+                  class="ml-3"
+                  variant="outline-secondary"
+                  v-b-tooltip.hover.v-info
+                  title="Editar"
+                  @click="getOne(patient.id)"
+                  ><b-icon icon="pencil"></b-icon
                 ></b-button>
               </div>
             </template>
@@ -162,7 +166,7 @@ import Vue from "vue";
 import { EStatus } from "../../../../kernel/types";
 import ModalPatientView from "./components/ModalPatientView.vue";
 import { encrypt } from "../../../../kernel/hashFunctions";
-import boundary from "../boundary"
+import boundary from "../boundary";
 import patienController from "../services/controller/patient.controller";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 export default Vue.extend({
@@ -249,11 +253,33 @@ export default Vue.extend({
       }
     },
     getImageSrc(patient) {
-        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.lastname.charAt(0)).toUpperCase();
-        const textColor = "ffffff";
-        const backColor = "007bff";
-        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
-    }
+      const initials = (
+        patient.person.name.charAt(0) +
+        patient.person.surname.charAt(0).toUpperCase() +
+        patient.person.lastname.charAt(0)
+      ).toUpperCase();
+
+      // Array de colores disponibles
+      const colors = [
+        "b3e0ff",
+        "a2c4c9",
+        "a2d2ff",
+        "aed6f1",
+        "add8e6",
+        "b2d8b2",
+        "c7ea46",
+        "d4d4dc",
+      ];
+
+      // Seleccionar un color aleatorio del array
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+      // Color de texto blanco para que contraste con el color de fondo
+      const textColor = "ffffff";
+
+      // Generar URL de la imagen con el color aleatorio
+      return `https://via.placeholder.com/270/${randomColor}/${textColor}/?text=${initials}`;
+    },
   },
   mounted() {
     this.getAllPatients();

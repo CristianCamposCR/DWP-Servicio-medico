@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading-custom :isLoading="isLoading" />
     <b-modal
       id="modal-confirm-signup"
       title="Confirmación de cuenta"
@@ -31,7 +32,7 @@
         }}</b-form-invalid-feedback>
         <div class="col-12 mt-4 px-5 d-flex justify-content-center">
           <b-button
-            variant="success"
+            variant="primary"
             class="ml-2"
             :disabled="v$.code.$invalid"
             @click="activateAccount"
@@ -58,8 +59,12 @@ export default Vue.extend({
       v$: useVuelidate(),
     };
   },
+  components: {
+    LoadingCustom: () => import("../../../views/components/LoadingCustom.vue"),
+  },
   data() {
     return {
+      isLoading: false,
       code: "",
       errorMessages: {
         required: "Campo obligatorio",
@@ -69,14 +74,17 @@ export default Vue.extend({
   methods: {
     async activateAccount() {
       try {
+        this.isLoading = true;
         const response = await authController.activateAccount(this.code);
-        console.log(response)
+        console.log(response);
         if (!response.error) {
           SweetAlertCustom.successMessage();
           this.$bvModal.hide("modal-confirm-signup");
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
     cleanForm() {

@@ -7,10 +7,26 @@
   scale: 102%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.goBack:hover {
+  scale: 110%;
+}
 .custom-nav-font{
   font-weight: bold;
 }
 
+.edit-animation:hover {
+  scale: 130%;
+}
+.green-on-hover{
+  color: #10b981;
+  border: 0;
+}
+.green-on-hover:hover {
+  color: #0b885e !important;
+  scale: 110%;
+  border: 0;
+}
 
 .custom-swal-buttons .swal2-actions {
   justify-content: space-between; /* Esto separará los botones */
@@ -27,4 +43,25 @@
 
 .speciality-font{
   color: #848689;
+}
+
+.area-indicator{
+  font-size: 14px;
+  color: #a2a4a8;
+  font-weight: bold;
+}
+.area-description-title{
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.title-views{
+  font-weight: bold;
+}
+
+
+.custom-placeholder::placeholder {
+  font-size: 14px;
+  color: #a2a4a8 !important;
+  font-weight: bold;
 }

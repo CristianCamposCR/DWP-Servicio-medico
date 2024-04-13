@@ -4,6 +4,7 @@ import managementRoute from "./management-route";
 import patientRoute from "./patient-router";
 import { jwtDecode } from "jwt-decode";
 import doctorRoute from "./doctor-route";
+import { ERoles } from "../kernel/types";
 
 Vue.use(VueRouter);
 const DEFAULT_TITLE = "CIMI";
@@ -78,6 +79,8 @@ router.beforeEach((to, from, next) => {
     const rl = jwtDecode(localStorage.token);
     const roles = rl.roles;
     const role = roles[0].authority;
+    if((role === ERoles.ADMIN && to.matched.some((route) => route.path === "/landing")) ||(role === ERoles.ADMIN && to.matched.some((route) => route.path === "/login"))) next("/management")
+    if((role === ERoles.DOCTOR && to.matched.some((route) => route.path === "/landing")) ||(role === ERoles.DOCTOR && to.matched.some((route) => route.path === "/login"))) next("/doctor")
     if (role && to.matched.some((route) => route.meta.requireAuth)) {
       const allowedRoles = to.meta.role;
       if (allowedRoles.includes(role)) {
@@ -96,6 +99,7 @@ router.beforeEach((to, from, next) => {
   }
   next("/login");
 });
+
 
 router.afterEach((to, from) => {
   Vue.nextTick(() => {
