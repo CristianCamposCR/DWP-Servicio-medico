@@ -32,7 +32,7 @@
               ></b-avatar>
             </template>
             <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
-              >Perfil</b-dropdown-item
+              >Perfiles</b-dropdown-item
             >
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
           </b-nav-item-dropdown>

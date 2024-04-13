@@ -1,42 +1,53 @@
 <template>
   <div>
     <b-modal hide-footer hide-header centered id="modal-patient-view">
-      <header class="text-center border-bottom" style="margin-bottom: 20px;">
-        <h4 style="font-family: 'Arial', sans-serif; color: #333;">Detalles del Paciente</h4>
+      <header class="text-center border-bottom" style="margin-bottom: 20px">
+        <h4 style="font-family: 'Arial', sans-serif; color: #333">
+          Detalles del Paciente
+        </h4>
       </header>
       <main>
         <div class="container-fluid">
           <div class="text-center">
-            <img :src="getImageSrc(patient)" alt="Foto de Perfil" class="profile-pic">
-            <h4 class="profile-name">{{ patient.person.name }} {{ patient.person.surname }} {{ patient.person.lastname }}</h4>
+            <img
+              :src="srcImageSelected ? srcImageSelected : ''"
+              alt="Foto de Perfil"
+              class="profile-pic"
+            />
+            <h4 class="profile-name">
+              {{ patient.person?.name }} {{ patient.person?.surname }}
+              {{ patient.person?.lastname }}
+            </h4>
           </div>
           <div class="row mt-4">
             <div class="col-md-6">
               <div class="detail-item">
                 <p class="detail-label">Estado:</p>
-                <p class="detail-value">{{ patient.person.user.status.name }}</p>
+                <p class="detail-value">
+                  {{ patient.person?.user?.status.name }}
+                </p>
               </div>
               <div class="detail-item">
                 <p class="detail-label">Género:</p>
-                <p class="detail-value">{{ patient.person.gender.name }}</p>
+                <p class="detail-value">{{ patient.person?.gender.name }}</p>
               </div>
               <div class="detail-item">
                 <p class="detail-label">CURP:</p>
-                <p class="detail-value">{{ patient.person.curp }}</p>
+                <p class="detail-value">{{ patient.person?.curp }}</p>
               </div>
             </div>
             <div class="col-md-6">
               <div class="detail-item">
                 <p class="detail-label">Fecha de Nacimiento:</p>
-                <p class="detail-value">{{ patient.person.birthday }}</p>
+                <p class="detail-value">{{ patient.person?.birthday }}</p>
               </div>
               <div class="detail-item">
                 <p class="detail-label">Teléfono:</p>
-                <p class="detail-value">{{ patient.person.phoneNumber }}</p>
+                <p class="detail-value">{{ patient.person?.phoneNumber }}</p>
               </div>
               <div class="detail-item">
                 <p class="detail-label">Correo Electrónico:</p>
-                <p class="detail-value">{{ patient.person.email }}</p>
+                <p class="detail-value">{{ patient.person?.email }}</p>
               </div>
             </div>
           </div>
@@ -55,19 +66,17 @@ export default {
   props: {
     patient: {
       type: Object,
-      required: true
+      required: true,
+    },
+    srcImageSelected:{
+      type: String,
+      required: true,
     }
   },
   methods: {
     onClose() {
       this.$bvModal.hide("modal-patient-view");
     },
-    getImageSrc(patient) {
-        const initials = (patient.person.name.charAt(0) + patient.person.surname.charAt(0).toUpperCase() + patient.person.surname.charAt(0)).toUpperCase();
-        const textColor = "ffffff";
-        const backColor = "007bff";
-        return `https://via.placeholder.com/270/${backColor}/${textColor}/?text=${initials}`;
-    }
   },
 };
 </script>
@@ -83,7 +92,7 @@ export default {
 }
 
 .profile-name {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   color: #333;
   margin-bottom: 20px;
 }

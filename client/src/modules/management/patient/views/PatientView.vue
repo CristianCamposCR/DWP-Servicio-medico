@@ -104,9 +104,9 @@
                   class="ml-3"
                   variant="outline-secondary"
                   v-b-tooltip.hover.v-info
-                  title="Editar"
-                  @click="getOne(patient.id)"
-                  ><b-icon icon="pencil"></b-icon
+                  title="Ver detalles"
+                  @click="getOne(patient)"
+                  ><b-icon icon="eye"></b-icon
                 ></b-button>
               </div>
             </template>
@@ -115,29 +115,7 @@
       </b-row>
     </section>
     <section class="mt-4">
-      <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
-        <b-col
-          cols="12"
-          md="3"
-          class="d-flex justify-content-center justify-content-md-start"
-        >
-          <b class="fw-bold"
-            >Mostrando
-            {{
-              pagination.totalRows === 0
-                ? 0
-                : (pagination.page - 1) * pagination.size + 1
-            }}
-            a
-            {{
-              pagination.page * pagination.size > pagination.totalRows
-                ? pagination.totalRows
-                : pagination.page * pagination.size
-            }}
-            de {{ pagination.totalRows }} registros</b
-          >
-        </b-col>
-
+      <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
         <b-col
           cols="6"
           md="6"
@@ -157,27 +135,32 @@
         </b-col>
       </b-row>
     </section>
-    <ModalPatientView :patient="patientSelected" />
+    <ModalPatientView
+      :patient="patientSelected"
+      :srcImageSelected="srcImageSelected"
+    />
   </div>
 </template>
 
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
-import ModalPatientView from "./components/ModalPatientView.vue";
 import { encrypt } from "../../../../kernel/hashFunctions";
 import boundary from "../boundary";
 import patienController from "../services/controller/patient.controller";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 export default Vue.extend({
   components: {
-    ModalPatientView,
     LoadingCustom: () =>
       import("../../../../views/components/LoadingCustom.vue"),
+    ModalPatientView: defineAsyncComponent(() =>
+      import("./components/ModalPatientView.vue")
+    ),
   },
   name: "PatientView",
   data() {
     return {
+      isVisible: false,
       isLoading: false,
       docState: "saved",
       showFullDescriptionIndex: -1,
@@ -193,7 +176,27 @@ export default Vue.extend({
           name: null,
         },
       },
-      patientSelected: {},
+      srcImageSelected: "",
+      patientSelected: {
+        person: {
+          birthday: "",
+          curp: "",
+          email: "",
+          gender: "",
+          id: 0,
+          lastname: "",
+          name: "",
+          surname: "",
+          phoneNumber: "",
+        },
+        user: {
+          status: {
+            id: 0,
+            name: "",
+            statusType: "",
+          },
+        },
+      },
     };
   },
   methods: {
@@ -220,13 +223,14 @@ export default Vue.extend({
         this.isLoading = false;
       }
     },
-    async getOne(id) {
+    async getOne(patient) {
       try {
-        const cipherId = await encrypt(id);
+        const cipherId = await encrypt(patient.id);
         const resp = await patienController.getOne(cipherId);
         const { error } = resp;
         if (!error) {
           this.patientSelected = resp;
+          this.srcImageSelected = this.getImageSrc(patient);
           this.$bvModal.show("modal-patient-view");
         }
       } catch (error) {
@@ -253,32 +257,33 @@ export default Vue.extend({
       }
     },
     getImageSrc(patient) {
-      const initials = (
-        patient.person.name.charAt(0) +
-        patient.person.surname.charAt(0).toUpperCase() +
-        patient.person.lastname.charAt(0)
-      ).toUpperCase();
+      if (patient.imageUrl) {
+        return patient.imageUrl;
+      } else {
+        const initials = (
+          patient?.person?.name.charAt(0) +
+          patient?.person?.surname.charAt(0).toUpperCase() +
+          patient?.person?.lastname.charAt(0)
+        ).toUpperCase();
 
-      // Array de colores disponibles
-      const colors = [
-        "b3e0ff",
-        "a2c4c9",
-        "a2d2ff",
-        "aed6f1",
-        "add8e6",
-        "b2d8b2",
-        "c7ea46",
-        "d4d4dc",
-      ];
+        const colors = [
+          "b3e0ff",
+          "a2c4c9",
+          "a2d2ff",
+          "aed6f1",
+          "add8e6",
+          "b2d8b2",
+          "c7ea46",
+          "d4d4dc",
+        ];
 
-      // Seleccionar un color aleatorio del array
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const textColor = "ffffff";
+        const imageUrl = `https://via.placeholder.com/270/${randomColor}/${textColor}/?text=${initials}`;
+        patient.imageUrl = imageUrl;
 
-      // Color de texto blanco para que contraste con el color de fondo
-      const textColor = "ffffff";
-
-      // Generar URL de la imagen con el color aleatorio
-      return `https://via.placeholder.com/270/${randomColor}/${textColor}/?text=${initials}`;
+        return imageUrl;
+      }
     },
   },
   mounted() {
