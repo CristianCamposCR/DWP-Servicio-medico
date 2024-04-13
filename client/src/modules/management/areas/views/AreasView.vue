@@ -266,7 +266,6 @@ export default Vue.extend({
         const { error } = resp;
         if (!error) {
           this.areaSelected = resp;
-          console.log("DATAONE", resp);
           this.$bvModal.show("modal-update-area");
         }
       } catch (error) {

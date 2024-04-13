@@ -1,3 +1,5 @@
+const rolesAllowed = ["PATIENT"];
+
 export default [
     {
         path: "/patient",
@@ -12,10 +14,21 @@ export default [
                     import("@/modules/patient/appointment/views/AppointmentViews.vue"),
                 meta: {
                     title: "Citas",
-                    requireAuth: false
+                    requireAuth: true,
+                    role: rolesAllowed,
                 },
 
             },
+            {
+                path: 'profile-patient',
+                name: 'profile-patient',
+                component: () => import('../modules/patient/profile/views/Profile.vue'),
+                meta: {
+                  title: "Perfil",
+                  requireAuth: true,
+                  role: rolesAllowed,
+                },
+              },
 
         ],
     },

@@ -204,7 +204,6 @@ export default Vue.extend({
         const { error } = resp;
         if (!error) {
           this.doctorSelected = resp;
-          console.log("DATAONE", resp);
           this.$bvModal.show("modal-doctor");
         }
       } catch (error) {
@@ -212,7 +211,6 @@ export default Vue.extend({
       }
     },
     async getAllDoctors() {
-      console.log("wachando doctors");
       try {
           this.isLoading = true;
           const response = await doctorController.getAllDoctors({
