@@ -37,7 +37,7 @@
             :disabled="v$.code.$invalid"
             @click="activateAccount"
           >
-            Registrar
+            Activar cuenta
           </b-button>
         </div>
       </b-form>
