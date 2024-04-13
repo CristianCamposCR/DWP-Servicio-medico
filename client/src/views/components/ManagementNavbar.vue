@@ -1,10 +1,10 @@
 <template>
   <div class="sticky-top">
-    <b-navbar type="light " variant="white" class="shadow-sm">
+    <b-navbar toggleable="md" type="light" variant="white" class="shadow-sm">
       <b-navbar-brand to="/" class="custom-nav-font">
         <b-img src="https://cdn-icons-png.flaticon.com/512/1055/1055685.png" style="height: 40px"></b-img>
-        &nbsp; CIMI</b-navbar-brand
-      >
+        &nbsp; CIMI
+      </b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -20,20 +20,15 @@
           </b-nav-item>
         </b-navbar-nav>
         <!-- Right aligned nav items -->
-
         <b-navbar-nav class="ml-auto">
+          <div class="mt-3">Administrador</div>
+
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template #button-content>
-              <b-avatar
-                variant="secondary"
-                size="md"
-                icon="person-fill"
-              ></b-avatar>
+              <b-avatar variant="secondary" size="md" icon="person-fill"></b-avatar>
             </template>
-            <b-dropdown-item @click="SweetAlertCustom.notImplemented()"
-              >Perfil</b-dropdown-item
-            >
+            <b-dropdown-item disabled>Rol: Administrador</b-dropdown-item>
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -51,8 +46,6 @@ export default Vue.extend({
         { name: "Áreas", to: "areas-management" },
         { name: "Especialidades", to: "specialties-management" },
         { name: "Pacientes", to: "patient-management" },
-        { name: "Doctores", to: "doctors-management" },
-        { name: "Perfil", to: "profile" },
       ],
     };
   },

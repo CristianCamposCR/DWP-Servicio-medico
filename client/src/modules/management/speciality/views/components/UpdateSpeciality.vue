@@ -50,27 +50,17 @@ import { maxLength, minLength } from '@vuelidate/validators';
           {{ errorMessages.name.maxLength }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2">Descripción :&nbsp;</label>
-        <b-form-textarea
-          v-model="v$.speciality.description.$model"
-          :state="
-            v$.speciality.description.$dirty
-              ? !v$.speciality.description.$error
-              : null
-          "
-          @blur="v$.speciality.description.$touch()"
-          required
-          rows="3"
-          max-rows="6"
-          maxlength="200"
-          trim
-        ></b-form-textarea>
-        <b-form-invalid-feedback
-          v-for="error in v$.speciality.description.$errors"
-          :key="error.$uid"
-        >
-          {{ error.$message }}
-        </b-form-invalid-feedback>
+        <label class="mt-2">
+          Selecciona el área de la especialidad :&nbsp;
+          <span class="text-danger">*</span>
+        </label>
+        <b-form-select v-model="speciality.area.id" :options="areasOptions">
+          <template #first>
+            <b-form-select-option :value="null">
+              Selecciona un Área
+            </b-form-select-option>
+          </template>
+        </b-form-select>
 
         <label class="mt-2">
           Costo :&nbsp;
@@ -101,7 +91,29 @@ import { maxLength, minLength } from '@vuelidate/validators';
           {{ errorMessages.name.noneScripts }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2"> Selecciona una imagen :&nbsp; </label>
+        <label class="mt-2">Descripción :&nbsp;</label>
+        <b-form-textarea
+          v-model="v$.speciality.description.$model"
+          :state="
+            v$.speciality.description.$dirty
+              ? !v$.speciality.description.$error
+              : null
+          "
+          @blur="v$.speciality.description.$touch()"
+          required
+          rows="3"
+          max-rows="6"
+          maxlength="200"
+          trim
+        ></b-form-textarea>
+        <b-form-invalid-feedback
+          v-for="error in v$.speciality.description.$errors"
+          :key="error.$uid"
+        >
+          {{ error.$message }}
+        </b-form-invalid-feedback>
+
+        <label class="mt-2">Imagen:</label>
         <b-form-file
           @change="handleFileChange"
           browse-text="Buscar"
@@ -146,18 +158,6 @@ import { maxLength, minLength } from '@vuelidate/validators';
             </b-form>
           </b-col>
         </b-row>
-
-        <label class="mt-2">
-          Selecciona el área de la especialidad :&nbsp;
-          <span class="text-danger">*</span>
-        </label>
-        <b-form-select v-model="speciality.area.id" :options="areasOptions">
-          <template #first>
-            <b-form-select-option :value="null">
-              Selecciona un Área
-            </b-form-select-option>
-          </template>
-        </b-form-select>
 
         <div class="col-12 mt-4 px-5 d-flex justify-content-between">
           <b-button variant="danger" @click="closeModal">Cancelar</b-button>

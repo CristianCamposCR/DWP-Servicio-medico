@@ -52,6 +52,7 @@
           rows="3"
           max-rows="6"
           maxlength="200"
+          trim
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.area.description.$errors"
@@ -60,7 +61,7 @@
           {{ error.$message }}
         </b-form-invalid-feedback>
 
-        <label class="mt-2"> Selecciona una imagen :</label>
+        <label class="mt-2"> Imagen:</label>
         <b-form-file
           @change="handleFileChange"
           browse-text="Buscar"
