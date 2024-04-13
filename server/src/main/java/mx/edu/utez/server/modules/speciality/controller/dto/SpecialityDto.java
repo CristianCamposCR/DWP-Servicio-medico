@@ -27,6 +27,7 @@ public class SpecialityDto {
     @Size(max = 200, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     private String description;
 
+    @NotNull(groups = {SpecialityGroups.Update.class, SpecialityGroups.Save.class})
     @Min(value = 0, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     @Max(value = 10000, groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})
     @PositiveOrZero(groups = {SpecialityGroups.Save.class, SpecialityGroups.Update.class})

@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -33,7 +31,6 @@ import mx.edu.utez.server.modules.status.model.Status;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "appointments")
@@ -114,13 +111,10 @@ public class Appointment {
     @JsonIncludeProperties({"id", "name"})
     private Shift preferentialShift;
 
-    @ManyToMany
-    @JoinTable(
-            name = "appointment_cancellations",
-            joinColumns = @JoinColumn(name = "appointment_id"),
-            inverseJoinColumns = @JoinColumn(name = "cancellation_reason_id"))
-    @JsonIgnore
-    Set<CancellationReason> cancellationReasons;
+    @ManyToOne
+    @JoinColumn(name = "cancellation_reason_id", referencedColumnName = "id")
+    @JsonIncludeProperties({"id", "name"})
+    private CancellationReason cancellationReason;
 
     // Relationships ->
     @OneToOne(mappedBy = "appointment")

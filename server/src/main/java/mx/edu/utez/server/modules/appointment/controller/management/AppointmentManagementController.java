@@ -3,10 +3,12 @@ package mx.edu.utez.server.modules.appointment.controller.management;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.server.kernel.CancellationReasons;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.modules.appointment.controller.dto.AssignDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.service.AppointmentService;
+import mx.edu.utez.server.modules.cancellation_reason.controller.dto.CancellationReasonDto;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.SearchDto;
@@ -74,11 +76,27 @@ public class AppointmentManagementController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/confirm/{id}")
-    public ResponseEntity<ResponseApi<Boolean>> reschedule(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
+    @PostMapping("/assign-doctor/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> assignDoctor(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id);
+            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id, true);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (MessagingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, e.getMessage()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/reassign-doctor/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> reassignDoctor(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id, false);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());

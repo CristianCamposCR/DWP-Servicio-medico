@@ -1,6 +1,7 @@
 package mx.edu.utez.server.config;
 
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.server.kernel.CancellationReasons;
 import mx.edu.utez.server.kernel.Genders;
 import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.kernel.Shifts;
@@ -59,10 +60,10 @@ public class InitialConfig implements CommandLineRunner {
         this.appointmentTypeService.findOrSave("Cita por dolencia", "Se agenda cuando el paciente presenta síntomas que requieren atención médica especializada.", activeStatusG);
         this.appointmentTypeService.findOrSave("Cita de urgencia", "Se proporciona atención inmediata para afecciones que requieren intervención médica urgente, sin necesidad de cita previa.", activeStatusG);
         // CANCELLATION REASON
-        this.cancellationReasonService.findOrSave("Sin disponibilidad", 100, activeStatusG);
-        this.cancellationReasonService.findOrSave("No atendida", 100, activeStatusG);
-        this.cancellationReasonService.findOrSave("Ausencia", 0, activeStatusG);
-        this.cancellationReasonService.findOrSave("Paciente", 50, activeStatusG);
+        this.cancellationReasonService.findOrSave(CancellationReasons.SIN_DISPONIBILIDAD, 100, activeStatusG);
+        this.cancellationReasonService.findOrSave(CancellationReasons.NO_ATENDIDA, 100, activeStatusG);
+        this.cancellationReasonService.findOrSave(CancellationReasons.AUSENCIA, 0, activeStatusG);
+        this.cancellationReasonService.findOrSave(CancellationReasons.VOLUNTARIA, 50, activeStatusG);
         // GENDER
         Gender genderM = this.genderService.findOrSave(Genders.MASCULINO, activeStatusG);
         this.genderService.findOrSave(Genders.FEMENINO, activeStatusG);

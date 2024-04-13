@@ -3,12 +3,14 @@ package mx.edu.utez.server.modules.appointment.controller.user;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.server.kernel.CancellationReasons;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.modules.appointment.controller.dto.CheckAvailabilityDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.RescheduleDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.SaveAppointmentDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.service.AppointmentService;
+import mx.edu.utez.server.modules.cancellation_reason.controller.dto.CancellationReasonDto;
 import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.Methods;
 import mx.edu.utez.server.utils.ResponseApi;
@@ -24,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/appointment")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyAuthority('DOCTOR', 'PATIENT')")
+@PreAuthorize("hasAnyAuthority('DOCTOR', 'PATIENT', 'ADMIN')")
 public class AppointmentController {
     Logger logger = LoggerFactory.getLogger(AppointmentController.class);
     private final AppointmentService appointmentService;
@@ -137,6 +140,40 @@ public class AppointmentController {
             Long id = hashService.decryptId(encryptedId);
             String username = Methods.getLoggedUsername();
             ResponseApi<Boolean> responseApi = this.appointmentService.rescheduleAppointment(id, username, dto);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (MessagingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, e.getMessage()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @GetMapping("/doctor/non-availability/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> notifyNonAvailability(@PathVariable("id") String encryptedId) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            String username = Methods.getLoggedUsername();
+            ResponseApi<Boolean> responseApi = this.appointmentService.notifyNonAvailability(id, username);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (MessagingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, e.getMessage()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @PreAuthorize("hasAnyAuthority('PATIENT', 'DOCTOR','ADMIN')")
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> cancelAppointment(@PathVariable("id") String encryptedId, @Valid @RequestBody CancellationReasonDto dto) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            CancellationReasons reason = CancellationReasons.valueOf(dto.getReason());
+            ResponseApi<Boolean> responseApi = this.appointmentService.cancelAppointment(id, reason);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());
