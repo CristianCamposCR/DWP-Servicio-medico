@@ -8,8 +8,6 @@ import mx.edu.utez.server.modules.auth.controller.dto.SignupDto;
 import mx.edu.utez.server.modules.auth.controller.dto.UserSignInDto;
 import mx.edu.utez.server.modules.auth.service.AuthService;
 import mx.edu.utez.server.modules.patient.service.PatientService;
-import mx.edu.utez.server.modules.verification_code.controller.dto.VerificationCodeDto;
-import mx.edu.utez.server.modules.verification_code.service.VerificationCodeService;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
