@@ -6,11 +6,13 @@ import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.modules.appointment.controller.dto.AssignDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.RescheduleDto;
 import mx.edu.utez.server.modules.appointment.controller.dto.SaveAppointmentDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
 import mx.edu.utez.server.modules.appointment_type.model.IAppointmentTypeRepository;
+import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.doctor.model.IDoctorRepository;
 import mx.edu.utez.server.modules.email.controller.dto.EmailDto;
 import mx.edu.utez.server.modules.email.service.EmailService;
@@ -24,6 +26,7 @@ import mx.edu.utez.server.modules.status.model.IStatusRepository;
 import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.modules.user.model.IUserRepository;
 import mx.edu.utez.server.modules.user.model.User;
+import mx.edu.utez.server.utils.Methods;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.SearchDto;
 import mx.edu.utez.server.utils.Validations;
@@ -36,10 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -113,20 +113,9 @@ public class AppointmentService {
         payment.setStatus(paymentStatus.get());
 
         Payment savedPayment = this.iPaymentRepository.saveAndFlush(payment);
-
-        DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("dd-MM-yyyy HH:mm")
-                .withZone(ZoneId.of("America/Mexico_City"));
-
-        String operationTime = formatter.format(savedPayment.getCreatedAt());
-
         Optional<Patient> optionalPatient = this.iPatientRepository.findById(dto.getPatient().getId());
-        String body = "<p>Gracias por tu compra para la cita del díá: " + savedAppointment.getScheduledAt().toString() + "</p>\n" +
-                "            <div class=\"ticket\">\n" +
-                "                <p><strong>Folio de cita:</strong> " + savedAppointment.getFolio() + "</p>\n" +
-                "                <p><strong>Total:</strong> " + savedPayment.getTotalPaid() + "</p>\n" +
-                "                <p><strong>Fecha y hora de operación:</strong> " + operationTime + " </p>\n" +
-                "            </div>";
+
+        String body = generateCreationAppointmentEmailBody(savedAppointment, savedPayment);
 
         EmailDto emailDto = new EmailDto(
                 optionalPatient.get().getPerson().getEmail(),
@@ -435,6 +424,80 @@ public class AppointmentService {
                     Errors.SERVER_ERROR.name()
             );
         }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public ResponseApi<Boolean> confirmAppointment(AssignDto dto, Long appointmentId) throws MessagingException {
+        if (Validations.isInvalidId(appointmentId))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+        Optional<Appointment> optionalAppointment = iAppointmentRepository.findById(appointmentId);
+        if (optionalAppointment.isEmpty())
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name());
+
+        Appointment appointment = optionalAppointment.get();
+
+        if (appointment.getStatus().getName() == Statuses.CONFIRMADA)
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_WAS_ALREADY_CONFIRMED.name());
+
+        if (appointment.getStatus().getName() != Statuses.AGENDADA || appointment.getStatus().getName() != Statuses.REAGENDADA)
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_IS_NOT_PENDING.name());
+
+        Doctor doctor = getDoctor(dto.getDoctor().getId());
+        if (doctor == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_DOCTOR_FOUND.name());
+
+        Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.CONFIRMADA, StatusType.CITAS);
+        if (optionalStatus.isEmpty())
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
+
+        appointment.setStatus(optionalStatus.get());
+        appointment.setDoctor(doctor);
+        appointment.setScheduledHour(dto.getScheduledHour());
+
+        String body = generateConfirmationAppointmentEmailBody(appointment);
+        EmailDto emailDto = new EmailDto(
+                appointment.getPatient().getPerson().getEmail(),
+                null,
+                "Confirmación de cita.",
+                "¡Tu cita fue confirmada!",
+                body);
+
+        if (!emailService.sendMail(emailDto))
+            throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+
+        iAppointmentRepository.saveAndFlush(appointment);
+        return new ResponseApi<>(true, HttpStatus.OK, false, "Cita confirmada.");
+    }
+
+    private String generateConfirmationAppointmentEmailBody(Appointment appointment) {
+        String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
+        String scheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+
+        return "<p>Se ha confirmado tu cita para el díá: " + scheduledAt + "</p>\n" +
+                "            <div class=\"ticket\">\n" +
+                "                <p><strong>Tipo de cita:</strong> " + appointment.getAppointmentType().getName() + "</p>\n" +
+                "                <p><strong>Doctor que atenderá:</strong> " + fullName + "</p>\n" +
+                "                <p><strong>Especialidad:</strong> " + appointment.getDoctor().getSpeciality().getName() + "</p>\n" +
+                "                <p><strong>Hora:</strong> " + appointment.getScheduledHour() + ":00 HRS </p>\n" +
+                "            </div>";
+    }
+
+    private String generateCreationAppointmentEmailBody(Appointment appointment, Payment payment) {
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+        String operationTime = Methods.formatLocalDateTime(payment.getCreatedAt(), "dd-MM-yyyy HH:mm", "America/Mexico_City");
+
+        return "<p>Gracias por tu compra para la cita del díá: " + formattedScheduledAt + "</p>\n" +
+                "            <div class=\"ticket\">\n" +
+                "                <p><strong>Folio de cita:</strong> " + appointment.getFolio() + "</p>\n" +
+                "                <p><strong>Total:</strong> " + payment.getTotalPaid() + "</p>\n" +
+                "                <p><strong>Fecha y hora de operación:</strong> " + operationTime + " </p>\n" +
+                "            </div>";
+    }
+
+    private Doctor getDoctor(Long doctorId) {
+        Optional<Doctor> optionalDoctor = iDoctorRepository.findByIdAndPerson_User_StatusNameNot(doctorId, Statuses.INACTIVO);
+        return optionalDoctor.orElse(null);
     }
 
     private boolean patientExists(Long specialityId) {

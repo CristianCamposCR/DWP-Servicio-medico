@@ -18,13 +18,13 @@ import java.time.LocalDate;
 @Setter
 public class CheckAvailabilityDto {
     @Future(groups = {Scheduling.class})
-    @FutureOrPresent(groups = {Assingning.class})
+    @FutureOrPresent(groups = {Assigning.class})
     private LocalDate scheduledAt;
-    @NotNull(groups = {Scheduling.class, Assingning.class})
+    @NotNull(groups = {Scheduling.class, Assigning.class})
     private Speciality speciality;
-    @NotNull(groups = {Scheduling.class, Assingning.class})
+    @NotNull(groups = {Scheduling.class, Assigning.class})
     private Shift shift;
 
     public interface Scheduling{}
-    public interface Assingning{}
+    public interface Assigning{}
 }

@@ -96,6 +96,7 @@ public class MainSecurity {
                         .requestMatchers(HttpMethod.POST, "/api/appointment/management/pending/paged/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/management/active/paged/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/management/history/paged/").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/api/appointment/management/confirm/{id}").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/pending/paged/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/active/paged/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/history/paged/").hasAuthority(Roles.PATIENT.name())

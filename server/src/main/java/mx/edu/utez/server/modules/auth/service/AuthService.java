@@ -2,6 +2,7 @@ package mx.edu.utez.server.modules.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.auth.controller.dto.SignedDto;
 import mx.edu.utez.server.modules.auth.controller.dto.UserSignInDto;
 import mx.edu.utez.server.modules.security.jwt.JwtProvider;
@@ -42,6 +43,8 @@ public class AuthService {
             if (optionalUser.isEmpty())
                 return new ResponseApi<>(null, HttpStatus.NOT_FOUND, true, Errors.CREDENTIALS_MISMATCH.name());
             User user = optionalUser.get();
+            if (user.getStatus().getName() == Statuses.NO_VERIFICADO)
+                return new ResponseApi<>(null, HttpStatus.OK, true, Errors.USER_IS_NOT_VERIFIED.name());
             if (user.isBlocked())
                 return new ResponseApi<>(null, HttpStatus.UNAUTHORIZED, true, Errors.USER_IS_BLOCKED.name());
 
