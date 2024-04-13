@@ -48,6 +48,9 @@ public class Payment {
     @Column(columnDefinition = "DOUBLE", nullable = false)
     private Double discount;
 
+    @Column(columnDefinition = "DOUBLE")
+    private Double refundedAmount;
+
     @Column(columnDefinition = "MEDIUMTEXT", nullable = false)
     private String charge;
 

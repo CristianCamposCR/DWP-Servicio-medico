@@ -2,6 +2,7 @@ package mx.edu.utez.server.modules.appointment.service;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.server.kernel.CancellationReasons;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.kernel.Roles;
 import mx.edu.utez.server.kernel.StatusType;
@@ -12,6 +13,8 @@ import mx.edu.utez.server.modules.appointment.controller.dto.SaveAppointmentDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
 import mx.edu.utez.server.modules.appointment_type.model.IAppointmentTypeRepository;
+import mx.edu.utez.server.modules.cancellation_reason.module.CancellationReason;
+import mx.edu.utez.server.modules.cancellation_reason.module.ICancellationReasonRepository;
 import mx.edu.utez.server.modules.doctor.model.Doctor;
 import mx.edu.utez.server.modules.doctor.model.IDoctorRepository;
 import mx.edu.utez.server.modules.email.controller.dto.EmailDto;
@@ -57,6 +60,7 @@ public class AppointmentService {
     private final IDoctorRepository iDoctorRepository;
     private final IStatusRepository iStatusRepository;
     private final IUserRepository iUserRepository;
+    private final ICancellationReasonRepository iCancellationReasonRepository;
 
     private final EmailService emailService;
 
@@ -115,7 +119,7 @@ public class AppointmentService {
         Payment savedPayment = this.iPaymentRepository.saveAndFlush(payment);
         Optional<Patient> optionalPatient = this.iPatientRepository.findById(dto.getPatient().getId());
 
-        String body = generateCreationAppointmentEmailBody(savedAppointment, savedPayment);
+        String body = genCreationAppointmentEmailBody(savedAppointment, savedPayment);
 
         EmailDto emailDto = new EmailDto(
                 optionalPatient.get().getPerson().getEmail(),
@@ -355,92 +359,83 @@ public class AppointmentService {
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Boolean> rescheduleAppointment(Long id, String username, RescheduleDto dto) throws MessagingException {
-        try {
-            if (Validations.isInvalidId(id))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+        if (Validations.isInvalidId(id))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
-            Optional<Appointment> optionalAppointment = this.iAppointmentRepository.findById(id);
-            if (optionalAppointment.isEmpty())
-                return new ResponseApi<>(HttpStatus.NOT_FOUND, false, Errors.NO_APPOINTMENT_FOUND.name());
+        Optional<Appointment> optionalAppointment = this.iAppointmentRepository.findById(id);
+        if (optionalAppointment.isEmpty())
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, false, Errors.NO_APPOINTMENT_FOUND.name());
 
-            Optional<Appointment> relatedAppointment = this.iAppointmentRepository.findByIdAndPatient_Person_User_Username(id, username);
-            if (!Objects.equals(relatedAppointment.get().getId(), id))
-                return new ResponseApi<>(HttpStatus.FORBIDDEN, true, Errors.CANNOT_ACCESS_TO_RESOURCE.name());
+        Optional<Appointment> relatedAppointment = this.iAppointmentRepository.findByIdAndPatient_Person_User_Username(id, username);
+        if (!Objects.equals(relatedAppointment.get().getId(), id))
+            return new ResponseApi<>(HttpStatus.FORBIDDEN, true, Errors.CANNOT_ACCESS_TO_RESOURCE.name());
 
-            Appointment existentAppointment = optionalAppointment.get();
+        Appointment existentAppointment = optionalAppointment.get();
 
-            if (existentAppointment.getRemainingReschedules() <= 0)
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_RESCHEDULES_REMAINING.name());
+        if (existentAppointment.getRemainingReschedules() <= 0)
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_RESCHEDULES_REMAINING.name());
 
-            if (!(existentAppointment.getStatus().getName() == Statuses.AGENDADA || existentAppointment.getStatus().getName() == Statuses.CONFIRMADA))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.CANNOT_RESCHEDULE.name());
+        if (!(existentAppointment.getStatus().getName() == Statuses.AGENDADA || existentAppointment.getStatus().getName() == Statuses.CONFIRMADA))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.CANNOT_RESCHEDULE.name());
 
-            Long specialityId = existentAppointment.getSpeciality().getId();
-            Long shiftId = dto.getShift().getId();
+        Long specialityId = existentAppointment.getSpeciality().getId();
+        Long shiftId = dto.getShift().getId();
 
-            if (!shiftExists(shiftId))
-                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SHIFT_FOUND.name());
+        if (!shiftExists(shiftId))
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SHIFT_FOUND.name());
 
-            if (!shiftIsActive(shiftId))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SHIFT_IS_INACTIVE.name());
+        if (!shiftIsActive(shiftId))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SHIFT_IS_INACTIVE.name());
 
-            if (!isAvailable(specialityId, shiftId, dto.getScheduledAt()))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_AVAILABILITY.name());
+        if (!isAvailable(specialityId, shiftId, dto.getScheduledAt()))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_AVAILABILITY.name());
 
-            Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.REAGENDADA, StatusType.CITAS);
-            if (optionalStatus.isEmpty())
-                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
+        Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(Statuses.REAGENDADA, StatusType.CITAS);
+        if (optionalStatus.isEmpty())
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
 
-            existentAppointment.setDoctor(null);
-            existentAppointment.setStatus(optionalStatus.get());
-            existentAppointment.setScheduledAt(dto.getScheduledAt());
-            existentAppointment.setPreferentialShift(dto.getShift());
-            existentAppointment.setRemainingReschedules(existentAppointment.getRemainingReschedules() - 1);
+        existentAppointment.setDoctor(null);
+        existentAppointment.setStatus(optionalStatus.get());
+        existentAppointment.setScheduledAt(dto.getScheduledAt());
+        existentAppointment.setPreferentialShift(dto.getShift());
+        existentAppointment.setRemainingReschedules(existentAppointment.getRemainingReschedules() - 1);
 
-            Optional<User> optionalUser = this.iUserRepository.findByRole_Name(Roles.ADMIN);
+        User user = getAdmin();
+        if (user == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_USER_FOUND.name());
 
-            EmailDto emailDto = new EmailDto(
-                    optionalUser.get().getPerson().getEmail(),
-                    null,
-                    "Solicitud de reagenda.",
-                    "Reagenda de cita",
-                    "Se ha solicitado una reagenda para la cita con el folio: <strong>" + existentAppointment.getFolio() + "</strong>"
-            );
+        EmailDto emailDto = new EmailDto(
+                user.getPerson().getEmail(),
+                null,
+                "Solicitud de reagenda.",
+                "Reagenda de cita",
+                "Se ha solicitado una reagenda para la cita con el folio: <strong>" + existentAppointment.getFolio() + "</strong>"
+        );
 
-            if (!this.emailService.sendMail(emailDto))
-                throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+        if (!this.emailService.sendMail(emailDto))
+            throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
 
-            return new ResponseApi<>(
-                    true,
-                    HttpStatus.OK,
-                    false,
-                    "Solicitud de reagenda realizada."
-            );
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseApi<>(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    true,
-                    Errors.SERVER_ERROR.name()
-            );
-        }
+        return new ResponseApi<>(
+                true,
+                HttpStatus.OK,
+                false,
+                "Solicitud de reagenda realizada."
+        );
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> confirmAppointment(AssignDto dto, Long appointmentId) throws MessagingException {
+    public ResponseApi<Boolean> confirmAppointment(AssignDto dto, Long appointmentId, boolean isAssignment) throws MessagingException {
         if (Validations.isInvalidId(appointmentId))
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
-        Optional<Appointment> optionalAppointment = iAppointmentRepository.findById(appointmentId);
-        if (optionalAppointment.isEmpty())
+        Appointment appointment = getAppointment(appointmentId);
+        if (appointment == null)
             return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name());
 
-        Appointment appointment = optionalAppointment.get();
-
-        if (appointment.getStatus().getName() == Statuses.CONFIRMADA)
+        if (isAssignment && appointment.getStatus().getName() == Statuses.CONFIRMADA)
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_WAS_ALREADY_CONFIRMED.name());
 
-        if (appointment.getStatus().getName() != Statuses.AGENDADA || appointment.getStatus().getName() != Statuses.REAGENDADA)
+        if (isAssignment && appointment.getStatus().getName() != Statuses.AGENDADA && appointment.getStatus().getName() != Statuses.REAGENDADA)
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_IS_NOT_PENDING.name());
 
         Doctor doctor = getDoctor(dto.getDoctor().getId());
@@ -455,12 +450,13 @@ public class AppointmentService {
         appointment.setDoctor(doctor);
         appointment.setScheduledHour(dto.getScheduledHour());
 
-        String body = generateConfirmationAppointmentEmailBody(appointment);
+        String fullName = Methods.getFullName(appointment.getPatient().getPerson());
+        String body = genConfirmationAppointmentEmailBody(appointment);
         EmailDto emailDto = new EmailDto(
                 appointment.getPatient().getPerson().getEmail(),
-                null,
-                "Confirmación de cita.",
-                "¡Tu cita fue confirmada!",
+                fullName,
+                isAssignment ? "Confirmación de cita." : "Reasignación de cita.",
+                isAssignment ? "¡Tu cita fue confirmada!" : "¡Tu cita fue reasignada!",
                 body);
 
         if (!emailService.sendMail(emailDto))
@@ -470,11 +466,88 @@ public class AppointmentService {
         return new ResponseApi<>(true, HttpStatus.OK, false, "Cita confirmada.");
     }
 
-    private String generateConfirmationAppointmentEmailBody(Appointment appointment) {
-        String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
-        String scheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+    @Transactional(readOnly = true)
+    public ResponseApi<Boolean> notifyNonAvailability(Long appointmentId, String username) throws MessagingException {
+        if (Validations.isInvalidId(appointmentId))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
-        return "<p>Se ha confirmado tu cita para el díá: " + scheduledAt + "</p>\n" +
+        Appointment appointment = getAppointment(appointmentId);
+        if (appointment == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name());
+
+        if (appointment.getStatus().getName() != Statuses.CONFIRMADA)
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_IS_NOT_ACTIVE.name());
+
+        if (!appointment.getDoctor().getPerson().getUser().getUsername().equals(username))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.CANNOT_ACCESS_TO_RESOURCE.name());
+
+        User user = getAdmin();
+        if (user == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_USER_FOUND.name());
+
+        String body = genNonAvAppEmailBody(appointment);
+        EmailDto emailDto = new EmailDto(
+                user.getPerson().getEmail(),
+                null,
+                "Doctor no disponible",
+                "Notificación de no disponibilidad",
+                body
+        );
+
+        if (!this.emailService.sendMail(emailDto))
+            throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+
+        return new ResponseApi<>(true, HttpStatus.OK, false, "Notificación enviada.");
+    }
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class, MessagingException.class})
+    public ResponseApi<Boolean> cancelAppointment(Long appointmentId, CancellationReasons reason) throws MessagingException {
+        if (Validations.isInvalidId(appointmentId))
+            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+        Appointment appointment = getAppointment(appointmentId);
+        if (appointment == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name());
+
+        CancellationReason cancellationReason = getCancellationReason(reason);
+        if (cancellationReason == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_CANCELLATION_REASON_FOUND.name());
+
+        appointment.setCancellationReason(cancellationReason);
+
+        if (cancellationReason.getRefundPercent() > 0) {
+            Payment payment = appointment.getPayment();
+            Status paymentStatus = getStatus(Statuses.REEMBOLSADO, StatusType.PAGOS);
+            if (paymentStatus == null)
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
+
+            Double refundedAmount = payment.getTotalPaid() * cancellationReason.getRefundPercent() / 100;
+            payment.setRefundedAmount(refundedAmount);
+            payment.setStatus(paymentStatus);
+            this.iPaymentRepository.saveAndFlush(payment);
+        }
+
+        String patientFullName = Methods.getFullName(appointment.getPatient().getPerson());
+        String body = genCancellationAppEmailBody(appointment, getCancellationReasonMessage(cancellationReason.getReason()));
+        EmailDto emailDto = new EmailDto(
+                appointment.getPatient().getPerson().getEmail(),
+                patientFullName,
+                "Cita cancelata",
+                "Tu cita ha sido cancelada",
+                body
+        );
+
+        if (!this.emailService.sendMail(emailDto))
+            throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
+
+        return new ResponseApi<>(true, HttpStatus.OK, false, "Notificación de cancelación enviada.");
+    }
+
+    private String genConfirmationAppointmentEmailBody(Appointment appointment) {
+        String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+
+        return "<p>Se ha confirmado tu cita para el díá: " + formattedScheduledAt + "</p>\n" +
                 "            <div class=\"ticket\">\n" +
                 "                <p><strong>Tipo de cita:</strong> " + appointment.getAppointmentType().getName() + "</p>\n" +
                 "                <p><strong>Doctor que atenderá:</strong> " + fullName + "</p>\n" +
@@ -483,7 +556,7 @@ public class AppointmentService {
                 "            </div>";
     }
 
-    private String generateCreationAppointmentEmailBody(Appointment appointment, Payment payment) {
+    private String genCreationAppointmentEmailBody(Appointment appointment, Payment payment) {
         String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
         String operationTime = Methods.formatLocalDateTime(payment.getCreatedAt(), "dd-MM-yyyy HH:mm", "America/Mexico_City");
 
@@ -495,13 +568,74 @@ public class AppointmentService {
                 "            </div>";
     }
 
+    private String genNonAvAppEmailBody(Appointment appointment) {
+        String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+
+        return "<p>El doctor ha notificado que no estará disponible para la cita.</p>\n" +
+                "            <div class=\"ticket\">\n" +
+                "                <p><strong>Folio de cita: </strong> " + appointment.getFolio() + "</p>\n" +
+                "                <p><strong>Tipo de cita: </strong> " + appointment.getAppointmentType().getName() + "</p>\n" +
+                "                <p><strong>Doctor asignado: </strong> " + fullName + "</p>\n" +
+                "                <p><strong>Especialidad: </strong> " + appointment.getDoctor().getSpeciality().getName() + "</p>\n" +
+                "                <p><strong>Fecha: </strong> " + formattedScheduledAt + "</p>\n" +
+                "                <p><strong>Hora: </strong> " + appointment.getScheduledHour() + ":00 HRS </p>\n" +
+                "            </div>";
+    }
+
+    private String genCancellationAppEmailBody(Appointment appointment, String reason) {
+        String doctorFullName = Methods.getFullName(appointment.getDoctor().getPerson());
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+
+        return "<p>Información de la cita cancelada.</p>\n" +
+                "            <div class=\"ticket\">\n" +
+                "                <p><strong>Razón de cancelación: </strong> " + reason + "</p>\n" +
+                "                <p><strong>Tipo de cita: </strong> " + appointment.getAppointmentType().getName() + "</p>\n" +
+                "                <p><strong>Folio de cita: </strong> " + appointment.getFolio() + "</p>\n" +
+                "                <p><strong>Doctor asignado: </strong> " + doctorFullName + "</p>\n" +
+                "                <p><strong>Especialidad: </strong> " + appointment.getDoctor().getSpeciality().getName() + "</p>\n" +
+                "                <p><strong>Fecha: </strong> " + formattedScheduledAt + "</p>\n" +
+                "                <p><strong>Hora: </strong> " + appointment.getScheduledHour() + ":00 HRS </p>\n" +
+                "            </div>";
+    }
+
     private Doctor getDoctor(Long doctorId) {
         Optional<Doctor> optionalDoctor = iDoctorRepository.findByIdAndPerson_User_StatusNameNot(doctorId, Statuses.INACTIVO);
         return optionalDoctor.orElse(null);
     }
 
+    private Appointment getAppointment(Long appointmentId) {
+        Optional<Appointment> optionalAppointment = iAppointmentRepository.findById(appointmentId);
+        return optionalAppointment.orElse(null);
+    }
+
+    private User getAdmin() {
+        Optional<User> optionalUser = this.iUserRepository.findByRole_Name(Roles.ADMIN);
+        return optionalUser.orElse(null);
+    }
+
+    private CancellationReason getCancellationReason(CancellationReasons cancellationReason) {
+        Optional<CancellationReason> optionalCancellationReason = this.iCancellationReasonRepository.findByReason(cancellationReason);
+        return optionalCancellationReason.orElse(null);
+    }
+
+    private Status getStatus(Statuses statusName, StatusType statusType) {
+        Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(statusName, statusType);
+        return optionalStatus.orElse(null);
+    }
+
     private boolean patientExists(Long specialityId) {
         return this.iPatientRepository.existsById(specialityId);
+    }
+
+    private String getCancellationReasonMessage(CancellationReasons reason) {
+        return switch (reason.ordinal()) {
+            case 0 -> "Sin doctores disponibles.";
+            case 1 -> "Cita no atendida.";
+            case 2 -> "Paciente ausente.";
+            case 3 -> "Cancelación por paciente.";
+            default -> "No espcificada";
+        };
     }
 
     private boolean patientIsActive(Long specialityId) {
