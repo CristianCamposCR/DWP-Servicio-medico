@@ -299,7 +299,7 @@ export default Vue.extend({
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const maxDate = new Date(today);
-    maxDate.setFullYear(maxDate.getFullYear());
+    maxDate.setFullYear(maxDate.getFullYear()-18);
     return {
       maxDate: maxDate,
       genders: [
@@ -406,7 +406,7 @@ export default Vue.extend({
             (value) => {
               return moment(value).isSameOrBefore(
                 new Date(
-                  new Date().getFullYear(),
+                  new Date().getFullYear()-18,
                   new Date().getMonth(),
                   new Date().getDate()
                 )

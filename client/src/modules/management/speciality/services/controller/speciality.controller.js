@@ -78,4 +78,16 @@ export default {
       };
     }
   },
+  async getSpecialties() {
+    try {
+      const data = await ApiService.getSpeciality();
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };
