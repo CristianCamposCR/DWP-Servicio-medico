@@ -3,16 +3,22 @@ package mx.edu.utez.server.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.security.entities.UserDetailsImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Random;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Methods {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final int LENGTH = 10;
+    private static final int LENGTH = 5;
 
     public static String convertToString(Object data) {
         if (data == null)
@@ -28,6 +34,22 @@ public class Methods {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
+    }
+
+    public static String getFullName(Person person) {
+        return (person.getName() + " " + person.getSurname() + " " + (person.getLastname() != null ? person.getLastname() : "")).trim();
+    }
+
+    public static String formatScheduledAt(LocalDate localDate, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern(format, new Locale("es", "ES"));
+        String formatDate = formatter.format(localDate);
+        return formatDate.substring(0, 1).toUpperCase() + formatDate.substring(1);
+    }
+
+    public static String formatLocalDateTime(Instant localTime, String format, String zonedId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format).withZone(ZoneId.of(zonedId));
+        return formatter.format(localTime);
     }
 
     public static String getLoggedUsername() {

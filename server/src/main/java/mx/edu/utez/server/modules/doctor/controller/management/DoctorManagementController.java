@@ -100,7 +100,7 @@ public class DoctorManagementController {
 
     @PostMapping("/available/")
     public ResponseEntity<ResponseApi<Set<IDoctorListView>>> findAllAvailableDoctors(
-            @Validated(CheckAvailabilityDto.Assingning.class) @RequestBody CheckAvailabilityDto dto) {
+            @Validated(CheckAvailabilityDto.Assigning.class) @RequestBody CheckAvailabilityDto dto) {
         try {
             ResponseApi<Set<IDoctorListView>> responseApi = this.doctorService.findAllAvailable(dto, false);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
@@ -114,7 +114,7 @@ public class DoctorManagementController {
 
     @PostMapping("/aux/available/")
     public ResponseEntity<ResponseApi<Set<IDoctorListView>>> findAllAvailableAuxDoctors(
-            @Validated(CheckAvailabilityDto.Assingning.class) @RequestBody CheckAvailabilityDto dto) {
+            @Validated(CheckAvailabilityDto.Assigning.class) @RequestBody CheckAvailabilityDto dto) {
         try {
             ResponseApi<Set<IDoctorListView>> responseApi = this.doctorService.findAllAvailable(dto, true);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());

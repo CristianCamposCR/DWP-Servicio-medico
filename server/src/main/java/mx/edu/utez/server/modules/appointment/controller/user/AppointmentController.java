@@ -46,7 +46,7 @@ public class AppointmentController {
     public ResponseEntity<ResponseApi<Boolean>> checkAvailability(@Validated(CheckAvailabilityDto.Scheduling.class) @RequestBody CheckAvailabilityDto dto) {
         if (this.appointmentService.isAvailable(dto.getSpeciality().getId(), dto.getShift().getId(), dto.getScheduledAt()))
             return ResponseEntity.ok(new ResponseApi<>(true, HttpStatus.OK, false, "Hay disponibilidad."));
-        return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_AVAILABILITY.name()));
+        return ResponseEntity.ok(new ResponseApi<>(false, HttpStatus.OK, true, Errors.NO_AVAILABILITY.name()));
     }
 
     @PreAuthorize("hasAuthority('PATIENT')")

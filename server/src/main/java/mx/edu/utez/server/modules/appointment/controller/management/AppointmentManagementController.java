@@ -1,9 +1,13 @@
 package mx.edu.utez.server.modules.appointment.controller.management;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.modules.appointment.controller.dto.AssignDto;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.service.AppointmentService;
+import mx.edu.utez.server.utils.HashService;
 import mx.edu.utez.server.utils.ResponseApi;
 import mx.edu.utez.server.utils.SearchDto;
 import org.slf4j.Logger;
@@ -12,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppointmentManagementController {
     Logger logger = LoggerFactory.getLogger(AppointmentManagementController.class);
     private final AppointmentService appointmentService;
+    private final HashService hashService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/pending/paged/")
@@ -64,5 +71,21 @@ public class AppointmentManagementController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
         ResponseApi<Page<Appointment>> responseApi = this.appointmentService.findAllHistory(searchDto, pageable);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/confirm/{id}")
+    public ResponseEntity<ResponseApi<Boolean>> reschedule(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (MessagingException e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new ResponseApi<>(HttpStatus.BAD_REQUEST, true, e.getMessage()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
     }
 }
