@@ -5,6 +5,7 @@
       centered
       hide-footer
       scrollable
+      title="Actualizar área"
       :no-close-on-backdrop="true"
       @hidden="cleanForm"
       @close="cleanForm"
@@ -50,6 +51,8 @@
           required
           rows="3"
           max-rows="6"
+          maxlength="200"
+          trim
         ></b-form-textarea>
         <b-form-invalid-feedback
           v-for="error in v$.area.description.$errors"
@@ -107,12 +110,12 @@
         <div class="col-12 mt-4 px-5 d-flex justify-content-between">
           <b-button variant="danger" @click="closeModal">Cancelar</b-button>
           <b-button
-            variant="success"
+            variant="primary"
             class="ml-2"
             :disabled="v$.area.$invalid"
             @click="updateArea"
           >
-            Registrar
+            Actualizar
           </b-button>
         </div>
       </b-form>
@@ -145,7 +148,10 @@ export default Vue.extend({
           minLength: "Mínimo 2 caracteres",
           maxLength: "Máximo 45 caracteres",
           noneScripts: "Campo inválido no se aceptan scripts",
-          valid: "Campos inválido - caracteres inválidos",
+          valid: "Campos inválidos - caracteres inválidos",
+        },
+        description: {
+          maxLength: "Máximo 200 caracteres",
         },
         bannerImage: {
           validFile: "El archivo seleccionado no es una imagen PNG o JPEG.",
@@ -262,8 +268,8 @@ export default Vue.extend({
             minLength(0)
           ),
           maxLength: helpers.withMessage(
-            this.errorMessages.name.maxLength,
-            maxLength(100)
+            this.errorMessages.description.maxLength,
+            maxLength(200)
           ),
           notScript: helpers.withMessage(
             this.errorMessages.name.noneScripts,

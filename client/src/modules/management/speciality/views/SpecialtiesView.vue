@@ -1,9 +1,10 @@
 <template>
   <div class="container-fluid mt-4">
-    <section class="mx-2">
+    <loading-custom :isLoading="isLoading" />
+    <section class="mx-2 px-5">
       <b-row>
         <b-col>
-          <h1>Especialidades</h1>
+          <h1 class="title-views">Especialidades</h1>
         </b-col>
       </b-row>
       <b-row>
@@ -13,6 +14,7 @@
               placeholder="Escribe el nombre de la especialidad"
               v-model="pagination.data.name"
               @keyup.enter="getAllSpecialties"
+              class="custom-placeholder"
             ></b-form-input>
 
             <b-input-group-append>
@@ -22,7 +24,8 @@
         </b-col>
         <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
           <div class="d-flex align-items-center mt-2 mt-md-0">
-            <span class="mr-1">Agregar nueva especialidad</span> &nbsp;
+            <span class="mr-1 area-indicator">Agregar nueva especialidad</span>
+            &nbsp;
             <b-button variant="primary" v-b-modal.modal-save-speciality>
               <b-icon icon="plus" />
             </b-button>
@@ -34,7 +37,7 @@
     <save-speciality @reloadRegisters="getAllSpecialties" />
 
     <!-- listato -->
-    <section class="mt-5">
+    <section class="mt-4 px-5">
       <b-row>
         <b-col
           v-for="(speciality, index) in specialties"
@@ -47,10 +50,11 @@
         >
           <b-card
             no-body
-            class="overflow-hidden mt-3 mx-2 shadow card-animation"
+            class="overflow-hidden mt-3 shadow card-animation"
             style="max-width: 270px; max-height: 800px"
             footer-bg-variant="transparent"
             footer-border-variant="white"
+            rounded
           >
             <b-row no-gutters>
               <b-col md="12">
@@ -63,23 +67,34 @@
                   alt="Image"
                   class="rounded-0"
                   height="160"
+                  style="object-fit: cover; object-position: center"
                 ></b-card-img>
               </b-col>
               <b-col md="12">
-                <b-card-body :title="speciality.name">
+                <b-card-body>
+                  <b-card-title class="card-title mb-0">{{
+                    speciality.name
+                  }}</b-card-title>
                   <b-card-text>
-                    <div class="mb-3">
-                      <span class="speciality-font"
-                        >Especialidad / Área {{ speciality.area.name }}</span
+                    <span class="area-indicator">
+                      Área: {{ speciality.area.name }} / Especialidad</span
+                    >
+                    <div>
+                      <span class="area-description-title">Costo:</span>
+                      <span class="card-description"
+                        >${{ speciality.cost }}</span
                       >
                     </div>
-                    <strong> Description: </strong>
+                    <div class="mt-3">
+                      <span class="area-description-title">Descripción</span>
+                    </div>
                     <div>
                       <span
                         v-if="
                           speciality.description &&
-                          speciality.description.length > 10
+                          speciality.description.length > 50
                         "
+                        class="card-description"
                       >
                         {{
                           showFullDescriptionIndex === index
@@ -94,15 +109,11 @@
                           }}
                         </a>
                       </span>
-                      <span v-else-if="speciality.description">{{
-                        speciality.description
-                      }}</span>
-                      <div class="mb-3">
-                        <strong>Costo: </strong> {{ speciality.cost }}
-                      </div>
-                      <div class="mb-3">
-                        <strong>Área: </strong>{{ speciality.area.name }}
-                      </div>
+                      <span
+                        v-else-if="speciality.description"
+                        class="card-description"
+                        >{{ speciality.description }}</span
+                      >
                     </div>
                   </b-card-text>
                 </b-card-body>
@@ -113,18 +124,28 @@
                 <b-button
                   v-if="speciality.status.name === EStatus.ACTIVE"
                   @click="changeStatus(speciality.id)"
-                  variant="primary"
+                  v-b-tooltip.hover.v-info
+                  title="Desactivar"
+                  variant="outline-primary"
                 >
-                  Desactivar
+                  <b-icon icon="toggle-on"></b-icon>
                 </b-button>
                 <b-button
                   v-else-if="speciality.status.name === EStatus.INACTIVE"
                   @click="changeStatus(speciality.id)"
-                  variant="danger"
-                  >Activar</b-button
+                  v-b-tooltip.hover.v-info
+                  title="Activar"
+                  variant="outline-danger"
                 >
-                <b-button class="ml-1" variant="primary"
-                  ><b-icon icon="eye" @click="getOne(speciality.id)"></b-icon
+                  <b-icon icon="toggle-off"></b-icon>
+                </b-button>
+                <b-button
+                  class="ml-3"
+                  variant="outline-secondary"
+                  v-b-tooltip.hover.v-info
+                  title="Editar"
+                  @click="getOne(speciality.id)"
+                  ><b-icon icon="pencil"></b-icon
                 ></b-button>
               </div>
             </template>
@@ -133,29 +154,9 @@
       </b-row>
     </section>
     <section class="mt-4">
-      <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
-        <b-col
-          cols="12"
-          md="3"
-          class="d-flex justify-content-center justify-content-md-start"
-        >
-          <b class="fw-bold"
-            >Mostrando
-            {{
-              pagination.totalRows === 0
-                ? 0
-                : (pagination.page - 1) * pagination.size + 1
-            }}
-            a
-            {{
-              pagination.page * pagination.size > pagination.totalRows
-                ? pagination.totalRows
-                : pagination.page * pagination.size
-            }}
-            de {{ pagination.totalRows }} registros</b
-          >
-        </b-col>
-
+      <b-row
+        class="bg-light m-0 py-3 py-sm-2 py-lg-1 d-flex justify-content-center"
+      >
         <b-col
           cols="6"
           md="6"
@@ -163,8 +164,8 @@
         >
           <b-pagination
             align="center"
-            size="sm"
-            class="my-0"
+            size="md"
+            class="my-0 mb-2"
             v-model="pagination.page"
             :total-rows="pagination.totalRows"
             :per-page="pagination.size"

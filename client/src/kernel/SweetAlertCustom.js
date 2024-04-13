@@ -10,7 +10,7 @@ class SweetAlertCustom {
       text: text,
       showCancelButton: true,
       confirmButtonText: "Aceptar",
-      confirmButtonColor: "#10b981",
+      confirmButtonColor: "#10B981",
       cancelButtonText: "Cancelar",
       cancelButtonColor: "#dc2626",
       reverseButtons: true,

@@ -1,9 +1,21 @@
 <template>
   <div>
+    <loading-custom :isLoading="isLoading" />
+    <div>
+      <bu-button
+        class="btn btn-transparent position-absolute start-0 top-0 goBack"
+        @click="goBack"
+        v-b-tooltip.hover.v-info
+        title="Regresar"
+      >
+        <b-icon icon="arrow-left"></b-icon>
+      </bu-button>
+    </div>
     <b-card-img
       src="/src/assets/Hospital.jpg"
       width="100px"
       height="140px"
+      style="object-fit: cover; object-position: center"
     ></b-card-img>
     <div v-if="step === 0">
       <b-row class="mx-4 mt-3">
@@ -385,6 +397,7 @@
           block
           :disabled="v$.newAccount.$invalid || v$.confirmPassword.$invalid"
           @click="handleNextStep"
+          variant="secondary"
         >
           Siguiente
         </b-button>
@@ -397,8 +410,12 @@
         md="6"
         class="d-flex justify-content-between mx-4"
       >
-        <b-button class="custom-button mr-2" @click="handlePreviousStep">
-          Regresar
+        <b-button
+          class="custom-button mr-2"
+          @click="handlePreviousStep"
+          variant="secondary"
+        >
+          Anterior
         </b-button>
         <b-button
           class="custom-button"
@@ -409,6 +426,7 @@
             v$.personalNewAccount.$invalid
           "
           @click="signup"
+          variant="primary"
         >
           Crear cuenta
         </b-button>
@@ -439,6 +457,7 @@ export default Vue.extend({
   components: {
     CaptchaFriendly,
     ConfirmSignup: defineAsyncComponent(() => import("./ConfirmSignup.vue")),
+    LoadingCustom: () => import("../../../views/components/LoadingCustom.vue"),
   },
   setup() {
     return {
@@ -447,6 +466,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      isLoading: false,
       step: 0,
       isValidFriendlyCaptcha: false,
       showPasswordState: false,
@@ -502,6 +522,9 @@ export default Vue.extend({
     onlynumbers(evt) {
       signal(evt);
     },
+    async goBack() {
+      await this.$router.push("/landing");
+    },
     todayDate() {
       return moment().subtract(18, "years").format("YYYY-MM-DD");
     },
@@ -521,6 +544,7 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
+          this.isLoading = true;
           const payload = {
             ...this.newAccount,
             ...this.personalNewAccount,
@@ -548,10 +572,14 @@ export default Vue.extend({
             };
             this.confirmPassword = "";
             this.step = 0;
+          } else {
+            this.isValidFriendlyCaptcha = false;
           }
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
   },

@@ -9,6 +9,7 @@ import Multiselect from 'vue-multiselect';
 import VueSweetalert2 from 'vue-sweetalert2';
 import Loading from 'vue-loading-overlay';
 
+import "../src/assets/scss/styles.css"
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'vue-multiselect/dist/vue-multiselect.min.css';

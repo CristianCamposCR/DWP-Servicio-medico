@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid mt-4">
     <loading-custom :isLoading="isLoading" />
-    <section class="mx-2">
+    <section class="mx-2 px-5">
       <b-row>
         <b-col>
-          <h1>Áreas</h1>
+          <h1 class="title-views">Áreas</h1>
         </b-col>
       </b-row>
       <b-row>
@@ -14,6 +14,7 @@
               placeholder="Escribe el nombre del área"
               v-model="pagination.data.name"
               @keyup.enter="getAllAreas"
+              class="custom-placeholder"
             ></b-form-input>
 
             <b-input-group-append>
@@ -23,7 +24,7 @@
         </b-col>
         <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
           <div class="d-flex align-items-center mt-2 mt-md-0">
-            <span class="mr-1">Agregar nueva área</span> &nbsp;
+            <span class="mr-1 area-indicator">Agregar nueva área</span> &nbsp;
             <b-button variant="primary" v-b-modal.modal-save-area>
               <b-icon icon="plus" />
             </b-button>
@@ -33,7 +34,7 @@
     </section>
 
     <save-area @reloadRegisters="getAllAreas" />
-    <section class="mt-5">
+    <section class="mt-4 px-5">
       <b-row>
         <b-col
           v-for="(area, index) in areas"
@@ -46,10 +47,11 @@
         >
           <b-card
             no-body
-            class="overflow-hidden mt-3 mx-2 shadow card-animation"
+            class="overflow-hidden mt-3 shadow card-animation"
             style="max-width: 270px; max-height: 800px"
             footer-bg-variant="transparent"
             footer-border-variant="white"
+            rounded
           >
             <b-row no-gutters>
               <b-col md="12">
@@ -62,15 +64,20 @@
                   alt="Image"
                   class="rounded-0"
                   height="160"
+                  style="object-fit: cover; object-position: center;"
                 ></b-card-img>
               </b-col>
               <b-col md="12">
                 <b-card-body>
-                  <b-card-title class="card-title">{{
+                  <b-card-title class="card-title mb-0">{{
                     area.name
                   }}</b-card-title>
+                  <span class="area-indicator">Área</span>
                   <b-card-text>
-                    <div>
+                    <div class="mt-3">
+                      <div>
+                        <span class="area-description-title">Descripción</span>
+                      </div>
                       <span
                         v-if="area.description && area.description.length > 50"
                         class="card-description"
@@ -103,18 +110,28 @@
                 <b-button
                   v-if="area.status.name === EStatus.ACTIVE"
                   @click="changeStatus(area.id)"
-                  variant="primary"
+                  v-b-tooltip.hover.v-info title="Desactivar"
+                  variant="outline-primary"
                 >
-                  Desactivar
+                  
+                  <b-icon
+                  icon="toggle-on"
+                ></b-icon>
                 </b-button>
                 <b-button
                   v-else-if="area.status.name === EStatus.INACTIVE"
                   @click="changeStatus(area.id)"
-                  variant="danger"
-                  >Activar</b-button
+                  v-b-tooltip.hover.v-info title="Activar"
+                  variant="outline-danger"
+                  >
+                  <b-icon
+                  icon="toggle-off"
+                ></b-icon>
+                  
+                  </b-button
                 >
-                <b-button class="ml-1" variant="primary"
-                  ><b-icon icon="eye" @click="getOne(area.id)"></b-icon
+                <b-button class="ml-3" variant="outline-secondary" v-b-tooltip.hover.v-info title="Editar"
+                  ><b-icon icon="pencil" @click="getOne(area.id)"></b-icon
                 ></b-button>
               </div>
             </template>
@@ -123,29 +140,7 @@
       </b-row>
     </section>
     <section class="mt-4">
-      <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
-        <b-col
-          cols="12"
-          md="3"
-          class="d-flex justify-content-center justify-content-md-start"
-        >
-          <b class="fw-bold"
-            >Mostrando
-            {{
-              pagination.totalRows === 0
-                ? 0
-                : (pagination.page - 1) * pagination.size + 1
-            }}
-            a
-            {{
-              pagination.page * pagination.size > pagination.totalRows
-                ? pagination.totalRows
-                : pagination.page * pagination.size
-            }}
-            de {{ pagination.totalRows }} registros</b
-          >
-        </b-col>
-
+      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
         <b-col
           cols="6"
           md="6"
@@ -153,7 +148,7 @@
         >
           <b-pagination
             align="center"
-            size="sm"
+            size="md"
             class="my-0"
             v-model="pagination.page"
             :total-rows="pagination.totalRows"

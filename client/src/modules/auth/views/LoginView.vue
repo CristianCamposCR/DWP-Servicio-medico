@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="mx-3">
-      <b-card no-body class="overflow-hidden shadow" style="width: 30rem;">
+      <b-card no-body class="overflow-hidden shadow" style="width: 30rem">
         <b-tabs
           content-class="mt-3"
           fill
