@@ -63,6 +63,7 @@ public class AppointmentService {
     private final ICancellationReasonRepository iCancellationReasonRepository;
 
     private final EmailService emailService;
+    final String DATE_TEXT_FORMAT = "EEEE dd 'de' MMMM 'del' yyyy";
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Boolean> save(SaveAppointmentDto dto) throws MessagingException {
@@ -145,7 +146,6 @@ public class AppointmentService {
         Long availableAppointments = this.iDoctorRepository.checkAvailability(specialityId, shiftId, dayName);
         Long countAppointments = this.iAppointmentRepository.countByScheduledAtAndSpeciality_Id(scheduledAt, specialityId);
         long remainingAppointments = availableAppointments - countAppointments;
-        logger.info(String.valueOf(remainingAppointments));
         return remainingAppointments > 0;
     }
 
@@ -545,7 +545,7 @@ public class AppointmentService {
 
     private String genConfirmationAppointmentEmailBody(Appointment appointment) {
         String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
-        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), DATE_TEXT_FORMAT);
 
         return "<p>Se ha confirmado tu cita para el díá: " + formattedScheduledAt + "</p>\n" +
                 "            <div class=\"ticket\">\n" +
@@ -557,7 +557,7 @@ public class AppointmentService {
     }
 
     private String genCreationAppointmentEmailBody(Appointment appointment, Payment payment) {
-        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), DATE_TEXT_FORMAT);
         String operationTime = Methods.formatLocalDateTime(payment.getCreatedAt(), "dd-MM-yyyy HH:mm", "America/Mexico_City");
 
         return "<p>Gracias por tu compra para la cita del díá: " + formattedScheduledAt + "</p>\n" +
@@ -570,7 +570,7 @@ public class AppointmentService {
 
     private String genNonAvAppEmailBody(Appointment appointment) {
         String fullName = Methods.getFullName(appointment.getDoctor().getPerson());
-        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), DATE_TEXT_FORMAT);
 
         return "<p>El doctor ha notificado que no estará disponible para la cita.</p>\n" +
                 "            <div class=\"ticket\">\n" +
@@ -585,7 +585,7 @@ public class AppointmentService {
 
     private String genCancellationAppEmailBody(Appointment appointment, String reason) {
         String doctorFullName = Methods.getFullName(appointment.getDoctor().getPerson());
-        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), "EEEE dd 'de' MMMM 'del' yyyy");
+        String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), DATE_TEXT_FORMAT);
 
         return "<p>Información de la cita cancelada.</p>\n" +
                 "            <div class=\"ticket\">\n" +
