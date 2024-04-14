@@ -41,7 +41,7 @@ export default {
   async activateAccount(payload) {
     try {
       const response = await axios.doPost(
-        "/open/verification-code/activate_account/",
+        "/open/verification-code/activate-account/",
         { code: payload }
       );
       return response.data;
