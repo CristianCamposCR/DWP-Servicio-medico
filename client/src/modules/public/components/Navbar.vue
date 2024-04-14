@@ -1,87 +1,87 @@
 <template>
   <div class="sticky-top">
-    <b-navbar toggleable="lg" type="light" variant="light" class="shadow-sm px-md-4">
-      <b-navbar-brand href="#">
-        <img src="@/assets/image/doctor_3584957.png" alt="CIMI" height="40">
+    <b-navbar
+      toggleable="lg"
+      type="light"
+      variant="light"
+      class="shadow-sm px-md-4"
+    >
+      <b-navbar-brand to="/">
+        <img src="@/assets/image/doctor_3584957.png" alt="CIMI" height="40" />
       </b-navbar-brand>
-      <b-navbar-brand href="#"><b>CIMI</b></b-navbar-brand>
+      <b-navbar-brand to="/"><b>CIMI</b></b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item
-          v-for="link in links"
-          :key="link.name"
-          :to="link.to"
-          class="custom-link"
-        >
-          {{ link.name }}
-        </b-nav-item>
+            v-for="link in links"
+            :key="link.name"
+            :to="link.to"
+            class="custom-link"
+          >
+            {{ link.name }}
+          </b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-
-          <b-nav-item
-              :to="{ name: 'login'}"
-              class="mr-4 custom-link" >Iniciar Sesión</b-nav-item>
+          <b-nav-item :to="{ name: 'login' }" class="mr-4 custom-link"
+            >Iniciar Sesión</b-nav-item
+          >
 
           <b-nav-form>
             <b-button
-                :to="{ name: 'login', query: { action: 'register' } }"
-                size="sm" class="my-2 my-sm-0 py-2 px-md-4 custom-link" type="button" variant="success">Crear cuenta</b-button>
+              :to="{ name: 'login', query: { action: 'register' } }"
+              size="sm"
+              class="my-2 my-sm-0 py-2 px-md-4 custom-link"
+              type="button"
+              variant="success"
+              >Crear cuenta</b-button
+            >
           </b-nav-form>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <ProgressIndicator/>
+    <ProgressIndicator />
   </div>
 </template>
-
 
 <script>
 import ProgressIndicator from "@/components/ProgressIndicator.vue";
 
 export default {
-  name: 'Navbar',
+  name: "Navbar",
   components: {
-    ProgressIndicator
+    ProgressIndicator,
   },
   data() {
     return {
       links: [
-      { name: "Inicio", to: "/" },
         { name: "Doctores", to: "doctors" },
         { name: "Especialidades", to: "specialities" },
         { name: "Areas", to: "areas" },
       ],
     };
   },
-}
+};
 </script>
 
 <style scoped>
-.custom-link{
+.custom-link {
   transition: all 0.3s;
 }
 
-.custom-link:hover{
+.custom-link:hover {
   scale: 1.1;
 }
 
-
 @media (max-width: 1000px) {
-  .custom-link{
-
-    &:hover{
+  .custom-link {
+    &:hover {
       scale: 1.01;
     }
   }
 }
-
-
 </style>
-
-
-
