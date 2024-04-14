@@ -1,5 +1,5 @@
 <template>
-  <b-breadcrumb class="m-0 bg-transparent">
+  <b-breadcrumb class="m-0 bg-transparent custom-iteam">
 
     <b-breadcrumb-item v-for="(link) in links"
                        :to="link.to ? link.to : null"
@@ -31,3 +31,11 @@ export default {
 
 
 </script>
+
+<style scoped>
+.custom-iteam .breadcrumb-item:hover > a{
+  text-decoration: none;
+  cursor: default;
+  color: var(--primary);
+}
+</style>
