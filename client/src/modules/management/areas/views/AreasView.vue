@@ -102,6 +102,13 @@
                         class="card-description"
                         >{{ area.description }}</span
                       >
+                      <span
+                        v-else-if="
+                          area.description === '' || area.description === null
+                        "
+                        class="card-description"
+                        >Sin descripción</span
+                      >
                     </div>
                   </b-card-text>
                 </b-card-body>
@@ -164,7 +171,7 @@
       </b-row>
     </section>
 
-    <section class="mt-1" v-if="areas.length === 0">
+    <section class="mt-1" v-if="areas.length === 0 && isLoading === false">
       <no-registers :message="'áreas'" />
     </section>
 
@@ -250,7 +257,7 @@ export default Vue.extend({
             this.getAllAreas();
             setTimeout(() => {
               SweetAlertCustom.successMessage();
-            }, 100);
+            }, 900);
             return;
           }
         }
@@ -261,6 +268,7 @@ export default Vue.extend({
 
     async getOne(id) {
       try {
+        this.isLoading = true;
         const cipherId = await encrypt(id);
         const resp = await areaController.getOne(cipherId);
         const { error } = resp;
@@ -270,6 +278,8 @@ export default Vue.extend({
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
   },

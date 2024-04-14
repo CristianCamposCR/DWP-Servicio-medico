@@ -2,14 +2,14 @@
   <div>
     <loading-custom :isLoading="isLoading" />
     <div>
-      <bu-button
+      <button
         class="btn btn-transparent position-absolute start-0 top-0 goBack"
         @click="goBack"
         v-b-tooltip.hover.v-info
         title="Regresar"
       >
         <b-icon icon="arrow-left"></b-icon>
-      </bu-button>
+      </button>
     </div>
     <b-card-img
       src="/src/assets/Hospital.jpg"
@@ -549,7 +549,6 @@ export default Vue.extend({
             ...this.newAccount,
             ...this.personalNewAccount,
           };
-          console.log("Payload", payload);
           const response = await authController.signup(payload);
           if (!response.error) {
             this.$bvModal.show("modal-confirm-signup");

@@ -76,7 +76,6 @@ export default Vue.extend({
       try {
         this.isLoading = true;
         const response = await authController.activateAccount(this.code);
-        console.log(response);
         if (!response.error) {
           SweetAlertCustom.successMessage();
           this.$bvModal.hide("modal-confirm-signup");

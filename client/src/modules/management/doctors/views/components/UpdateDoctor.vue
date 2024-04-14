@@ -244,7 +244,7 @@ export default Vue.extend({
             this.$emit("reloadUpdateDoctor");
             setTimeout(() => {
               SweetAlertCustom.successMessage();
-            }, 1000);
+            }, 100);
             this.$nextTick(() => this.$bvModal.hide("update-doctor"));
             return;
           }

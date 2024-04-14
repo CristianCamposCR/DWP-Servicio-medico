@@ -18,14 +18,16 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block @click="getAllPatients">Buscar</b-button>
+              <b-button variant="primary" block @click="getAllPatients"
+                >Buscar</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </b-col>
       </b-row>
     </section>
 
-    <section class="mt-4 px-5"  v-if="patients.length > 0">
+    <section class="mt-4 px-5" v-if="patients.length > 0">
       <b-row>
         <b-col
           v-for="(patient, index) in patients"
@@ -114,8 +116,10 @@
         </b-col>
       </b-row>
     </section>
-    <section class="mt-4"  v-if="patients.length > 0">
-      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
+    <section class="mt-4" v-if="patients.length > 0">
+      <b-row
+        class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center"
+      >
         <b-col
           cols="6"
           md="6"
@@ -136,7 +140,7 @@
       </b-row>
     </section>
 
-    <section class="mt-1" v-if="patients.length === 0">
+    <section class="mt-1" v-if="patients.length === 0 && isLoading === false">
       <no-registers :message="'pacientes'" />
     </section>
     <ModalPatientView
