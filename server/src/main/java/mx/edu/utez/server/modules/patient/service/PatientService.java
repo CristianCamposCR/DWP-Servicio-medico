@@ -54,7 +54,7 @@ public class PatientService {
     private final VerificationCodeService verificationCodeService;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class, MessagingException.class})
-    public ResponseApi<Boolean> signup(SignupDto signupDto) {
+    public ResponseApi<Boolean> saveToSignup(SignupDto signupDto) {
         String fullName = (signupDto.getName() + " " + signupDto.getSurname() + " " + (signupDto.getLastname() != null ? signupDto.getLastname() : "")).trim();
         String originalPassword = hashService.decrypt(signupDto.getPassword());
         if (this.iPatientRepository.existsByFullNameOrCurpOrEmail(fullName, signupDto.getCurp(), signupDto.getEmail()) > 0)

@@ -381,7 +381,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> rescheduleAppointment(Long id, String username, RescheduleDto dto) throws MessagingException {
+    public ResponseApi<Boolean> updateToRescheduleAppointment(Long id, String username, RescheduleDto dto) throws MessagingException {
         if (Validations.isInvalidId(id))
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
@@ -447,7 +447,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> confirmAppointment(AssignDto dto, Long appointmentId, boolean isAssignment) throws MessagingException {
+    public ResponseApi<Boolean> updateToConfirmAppointment(AssignDto dto, Long appointmentId, boolean isAssignment) throws MessagingException {
         if (Validations.isInvalidId(appointmentId))
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
@@ -490,7 +490,7 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseApi<Boolean> notifyNonAvailability(Long appointmentId, String username) throws MessagingException {
+    public ResponseApi<Boolean> updateToNotifyNonAvailability(Long appointmentId, String username) throws MessagingException {
         if (Validations.isInvalidId(appointmentId))
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 
@@ -524,7 +524,7 @@ public class AppointmentService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class, MessagingException.class})
-    public ResponseApi<Boolean> cancelAppointment(Long appointmentId, CancellationReasons reason) throws MessagingException {
+    public ResponseApi<Boolean> updateToCancelAppointment(Long appointmentId, CancellationReasons reason) throws MessagingException {
         if (Validations.isInvalidId(appointmentId))
             return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
 

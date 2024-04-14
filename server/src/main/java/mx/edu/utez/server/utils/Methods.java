@@ -57,4 +57,9 @@ public class Methods {
                 .getPrincipal();
         return userDetails.getUsername();
     }
+
+    public static String getTableName(String serviceName) {
+        String entityName = serviceName.substring(0, serviceName.lastIndexOf("Service"));
+        return entityName.replaceAll("(\\p{Ll})(\\p{Lu})", "$1_$2").toLowerCase() + "s";
+    }
 }

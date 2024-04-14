@@ -153,7 +153,7 @@ public class AppointmentController {
         try {
             Long id = hashService.decryptId(encryptedId);
             String username = Methods.getLoggedUsername();
-            ResponseApi<Boolean> responseApi = this.appointmentService.rescheduleAppointment(id, username, dto);
+            ResponseApi<Boolean> responseApi = this.appointmentService.updateToRescheduleAppointment(id, username, dto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());
@@ -170,7 +170,7 @@ public class AppointmentController {
         try {
             Long id = hashService.decryptId(encryptedId);
             String username = Methods.getLoggedUsername();
-            ResponseApi<Boolean> responseApi = this.appointmentService.notifyNonAvailability(id, username);
+            ResponseApi<Boolean> responseApi = this.appointmentService.updateToNotifyNonAvailability(id, username);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());
@@ -187,7 +187,7 @@ public class AppointmentController {
         try {
             Long id = hashService.decryptId(encryptedId);
             CancellationReasons reason = CancellationReasons.valueOf(dto.getReason());
-            ResponseApi<Boolean> responseApi = this.appointmentService.cancelAppointment(id, reason);
+            ResponseApi<Boolean> responseApi = this.appointmentService.updateToCancelAppointment(id, reason);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());

@@ -80,7 +80,7 @@ public class AppointmentManagementController {
     public ResponseEntity<ResponseApi<Boolean>> assignDoctor(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id, true);
+            ResponseApi<Boolean> responseApi = this.appointmentService.updateToConfirmAppointment(dto, id, true);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());
@@ -96,7 +96,7 @@ public class AppointmentManagementController {
     public ResponseEntity<ResponseApi<Boolean>> reassignDoctor(@PathVariable("id") String encryptedId, @Valid @RequestBody AssignDto dto) {
         try {
             Long id = hashService.decryptId(encryptedId);
-            ResponseApi<Boolean> responseApi = this.appointmentService.confirmAppointment(dto, id, false);
+            ResponseApi<Boolean> responseApi = this.appointmentService.updateToConfirmAppointment(dto, id, false);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());

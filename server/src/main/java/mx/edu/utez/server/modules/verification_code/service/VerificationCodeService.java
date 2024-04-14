@@ -65,7 +65,7 @@ public class VerificationCodeService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> activateAccount(VerificationCodeDto verificationCodeDto) {
+    public ResponseApi<Boolean> updateToActivateAccount(VerificationCodeDto verificationCodeDto) {
         try {
             String code = verificationCodeDto.getCode();
             String encryptedCode = this.hashService.encrypt(code);
@@ -106,7 +106,7 @@ public class VerificationCodeService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> verifyCode(VerificationCodeDto verificationCodeDto) {
+    public ResponseApi<Boolean> updateToVerifyCode(VerificationCodeDto verificationCodeDto) {
         try {
             String code = verificationCodeDto.getCode();
             String encryptedCode = this.hashService.encrypt(code);
@@ -138,7 +138,7 @@ public class VerificationCodeService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> refreshCode(GenerateVerificationCodeDto dto, boolean isActivation) {
+    public ResponseApi<Boolean> saveToRefreshCode(GenerateVerificationCodeDto dto, boolean isActivation) {
         try {
             Optional<User> optionalUser = this.iUserRepository.findByUsername(dto.getUsername());
             if (optionalUser.isEmpty())
