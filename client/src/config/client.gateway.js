@@ -123,6 +123,10 @@ function handle400Error(error) {
       titleAlert = "Registro duplicado";
       messageAlert = "Esta área ya existe";
       break;
+      case "DUPLICATED_DOCTOR":
+      titleAlert = "Registro duplicado";
+      messageAlert = "Verifica la informacion del doctor los campos unicos son: Cedula profesional, Curp y Correo electronico";
+      break;
   }
   if (message !== "Review request")
     Vue.swal(titleAlert, messageAlert, "warning");

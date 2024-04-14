@@ -35,34 +35,35 @@
           </b-form-group>
         </b-col>
         <b-col cols="12" sm="6">
-          <b-form-group>
-            <label for="avaibleDays">Dias disponibles</label>
-            <multi-select
-              id="availableDays"
-              :class="{
-                'is-invalid': v$.doctor.availableDays.$error,
-                'is-valid': !v$.doctor.availableDays.$invalid,
-              }"
-              v-model="v$.doctor.availableDays.$model"
-              placeholder="Selecciona de 1 a 5 días"
-              :options="availableDaysOptions"
-              :multiple="true"
-              selectLabel="Presiona enter para seleccionar"
-              deselectLabel="Presiona enter para eliminar"
-              selectedLabel="Seleccionado"
-              @close="v$.doctor.availableDays.$touch()"
-            >
-              <template slot="noResult">No hay resultados</template>
-              <template slot="noOptions">No hay opciones</template>
-            </multi-select>
-
-            <b-form-invalid-feedback
-              v-for="error in v$.doctor.availableDays.$errors"
-              :key="error.$uid"
-            >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
-          </b-form-group>
+          <b-form-group label="Dias disponibles:">
+                <multi-select
+                id="availableDays"
+                :class="{
+                  'is-invalid': v$.doctor.availableDays.$error,
+                  'is-valid': !v$.doctor.availableDays.$invalid,
+                }"
+                v-model="v$.doctor.availableDays.$model"
+                placeholder="Selecciona por lo menos un dia"
+                label="name"
+                :options="availableDaysOptions"
+                track-by="name"
+                :multiple="true"
+                selectLabel="Presiona enter para seleccionar"
+                deselectLabel="Presiona enter para eliminar"
+                selectedLabel="Seleccionado"
+                @close="v$.doctor.availableDays.$touch()"
+                ><template slot="noResult">No hay resultados</template>
+                <template slot="noOptions"
+                  >No hay opciones</template
+                ></multi-select
+              >
+              <b-form-invalid-feedback
+                v-for="error in v$.doctor.availableDays.$errors"
+                :key="error.$uid"
+              >
+                {{ error.$message }}
+              </b-form-invalid-feedback>
+            </b-form-group>
         </b-col>
       </b-row>
 
@@ -164,7 +165,7 @@
       <div class="col-12 mt-4 px-5 d-flex justify-content-between">
         <b-button variant="danger" @click="onClose">Cancelar</b-button>
         <b-button variant="success" class="ml-2" @click="updateDoctor">
-          Registrar
+          Actualizar
         </b-button>
       </div>
     </b-form>
@@ -205,11 +206,11 @@ export default Vue.extend({
         },
       ],
       availableDaysOptions: [
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
+        { name: "Lunes", id: "MONDAY" },
+        { name: "Martes", id: "TUESDAY" },
+        { name: "Miercoles", id: "WEDNESDAY" },
+        { name: "Jueves", id: "THURSDAY" },
+        { name: "Viernes", id: "FRIDAY" },
       ],
       specialitiesOptions: [],
       errorMessages: {
@@ -236,8 +237,8 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
-          this.doctor.availableDays = this.doctor.availableDays.join(', ');
-          const resp = await doctorController.update(this.doctor);
+          const englishDaysString = '[' + this.doctor.availableDays.map(day => day.id).join(', ') + ']';
+          const resp = await doctorController.update({...this.doctor, availableDays: englishDaysString});
           const { error } = resp;
           if (!error) {
             this.$emit("reloadUpdateDoctor");
@@ -335,4 +336,11 @@ export default Vue.extend({
   },
 });
 </script>
-
+<style>
+.is-invalid > .multiselect__tags {
+  border-color: #dc3545;
+}
+.is-valid > .multiselect__tags {
+  border-color: #28a745;
+}
+</style>
