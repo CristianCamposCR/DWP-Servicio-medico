@@ -10,7 +10,7 @@
       <b-row>
         <b-col cols="12" sm="6">
           <b-form-group>
-            <label for="experience" class="detail-label"> Experiencia:</label>
+            <label for="experience" class="detail-label"> Años de experiencia:</label>
             <b-form-input
               id="experience"
               placeholder="Años de experiencia"
@@ -35,35 +35,39 @@
           </b-form-group>
         </b-col>
         <b-col cols="12" sm="6">
-          <b-form-group label="Dias disponibles:">
-                <multi-select
-                id="availableDays"
-                :class="{
-                  'is-invalid': v$.doctor.availableDays.$error,
-                  'is-valid': !v$.doctor.availableDays.$invalid,
-                }"
-                v-model="v$.doctor.availableDays.$model"
-                placeholder="Selecciona por lo menos un dia"
-                label="name"
-                :options="availableDaysOptions"
-                track-by="name"
-                :multiple="true"
-                selectLabel="Presiona enter para seleccionar"
-                deselectLabel="Presiona enter para eliminar"
-                selectedLabel="Seleccionado"
-                @close="v$.doctor.availableDays.$touch()"
-                ><template slot="noResult">No hay resultados</template>
-                <template slot="noOptions"
-                  >No hay opciones</template
-                ></multi-select
-              >
-              <b-form-invalid-feedback
-                v-for="error in v$.doctor.availableDays.$errors"
-                :key="error.$uid"
-              >
-                {{ error.$message }}
-              </b-form-invalid-feedback>
-            </b-form-group>
+          <b-form-group>
+            <label for="speciality" class="detail-label">
+              Selecciona una especialidad:</label
+            >
+            <multi-select
+              id="speciality"
+              :class="{
+                'is-invalid': v$.doctor.speciality.$error,
+                'is-valid': !v$.doctor.speciality.$invalid,
+              }"
+              v-model="v$.doctor.speciality.$model"
+              placeholder="Selecciona una especialidad"
+              label="name"
+              :options="specialitiesOptions"
+              track-by="name"
+              :multiple="false"
+              selectLabel="Presiona enter para seleccionar"
+              deselectLabel="Presiona enter para eliminar"
+              selectedLabel="Seleccionado"
+              @close="v$.doctor.speciality.$touch()"
+            >
+              <template slot="noResult">No hay resultados</template>
+              <template slot="noOptions"
+                >No hay opciones</template
+              ></multi-select
+            >
+            <b-form-invalid-feedback
+              v-for="error in v$.doctor.speciality.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </b-form-invalid-feedback>
+          </b-form-group>
         </b-col>
       </b-row>
 
@@ -71,7 +75,7 @@
         <b-col cols="12" sm="6">
           <b-form-group>
             <label for="shift" class="detail-label">
-              Selecciona una turno:</label
+              Selecciona un turno:</label
             >
             <multi-select
               id="shift"
@@ -126,40 +130,38 @@
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
-        <b-col cols="12" sm="6">
-          <b-form-group>
-            <label for="speciality" class="detail-label">
-              Selecciona una especialidad:</label
-            >
-            <multi-select
-              id="speciality"
-              :class="{
-                'is-invalid': v$.doctor.speciality.$error,
-                'is-valid': !v$.doctor.speciality.$invalid,
-              }"
-              v-model="v$.doctor.speciality.$model"
-              placeholder="Selecciona una especialidad"
-              label="name"
-              :options="specialitiesOptions"
-              track-by="name"
-              :multiple="false"
-              selectLabel="Presiona enter para seleccionar"
-              deselectLabel="Presiona enter para eliminar"
-              selectedLabel="Seleccionado"
-              @close="v$.doctor.speciality.$touch()"
-            >
-              <template slot="noResult">No hay resultados</template>
-              <template slot="noOptions"
-                >No hay opciones</template
-              ></multi-select
-            >
-            <b-form-invalid-feedback
-              v-for="error in v$.doctor.speciality.$errors"
-              :key="error.$uid"
-            >
-              {{ error.$message }}
-            </b-form-invalid-feedback>
-          </b-form-group>
+      </b-row>
+      <b-row>
+        <b-col cols="12" sm="12">
+          <b-form-group label="Días disponibles:">
+                <multi-select
+                id="availableDays"
+                :class="{
+                  'is-invalid': v$.doctor.availableDays.$error,
+                  'is-valid': !v$.doctor.availableDays.$invalid,
+                }"
+                v-model="v$.doctor.availableDays.$model"
+                placeholder="Selecciona por lo menos un dia"
+                label="name"
+                :options="availableDaysOptions"
+                track-by="name"
+                :multiple="true"
+                selectLabel="Presiona enter para seleccionar"
+                deselectLabel="Presiona enter para eliminar"
+                selectedLabel="Seleccionado"
+                @close="v$.doctor.availableDays.$touch()"
+                ><template slot="noResult">No hay resultados</template>
+                <template slot="noOptions"
+                  >No hay opciones</template
+                ></multi-select
+              >
+              <b-form-invalid-feedback
+                v-for="error in v$.doctor.availableDays.$errors"
+                :key="error.$uid"
+              >
+                {{ error.$message }}
+              </b-form-invalid-feedback>
+            </b-form-group>
         </b-col>
       </b-row>
       <div class="col-12 mt-4 px-5 d-flex justify-content-between">

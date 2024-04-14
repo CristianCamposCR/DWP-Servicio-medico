@@ -2,10 +2,10 @@
   <div>
     <div class="container-fluid mt-4">
       <loading-custom :isLoading="isLoading" />
-      <section class="mx-2">
+      <section class="mx-2 px-5">
         <b-row>
           <b-col>
-            <h1>Doctores</h1>
+            <h1 class="title-views">Doctores</h1>
           </b-col>
         </b-row>
         <b-row>
@@ -15,6 +15,7 @@
                 placeholder="Escribe el nombre del doctor"
                 v-model="pagination.data.name"
                 @keyup.enter="getAllDoctors"
+                class="custom-placeholder"
               ></b-form-input>
 
               <b-input-group-append>
@@ -24,7 +25,8 @@
           </b-col>
           <b-col cols="12" sm="12" md="6" class="d-flex justify-content-end">
             <div class="d-flex align-items-center mt-2 mt-md-0">
-              <span class="mr-1">Agregar nuevo doctor</span> &nbsp;
+              <span class="mr-1 area-indicator">Agregar nuevo doctor</span>
+              &nbsp;
               <b-button variant="primary" v-b-modal.modal-save-doctor>
                 <b-icon icon="plus" />
               </b-button>
@@ -33,7 +35,7 @@
         </b-row>
       </section>
       <save-doctor @reloadRegisters="getAllDoctors" />
-      <section class="mt-5">
+      <section class="mt-5 px-5" v-if="doctors.length > 0">
         <b-row>
           <b-col
             v-for="(doctor, index) in doctors"
@@ -66,42 +68,24 @@
                 </b-col>
                 <b-col md="12">
                   <b-card-body>
-                    <b-card-title class="card-title"
+                    <b-card-title class="card-title mb-0"
                       >{{ doctor.person.name }} {{ doctor.person.surname }}
                       {{ doctor.person.lastname }}</b-card-title
                     >
+                    <span class="area-indicator"> Doctor</span>
+
                     <b-card-text>
-                      <div class="mb-3">Doctor</div>
-                      <div class="mb-3">
-                        <b>No. Telefono: </b>{{ doctor.person.phoneNumber }}
+                      <div class="mt-3">
+                        <b-icon icon="phone" class="mr-1"></b-icon>
+                        <span class="card-description">{{
+                          doctor.person.phoneNumber
+                        }}</span>
                       </div>
-                      <div>
-                        <b>Correo: </b>
-                        <span
-                          v-if="
-                            doctor.person.email &&
-                            doctor.person.email.length > 50
-                          "
-                          class="card-description"
-                        >
-                          {{
-                            showFullDescriptionIndex === index
-                              ? doctor.person.email
-                              : doctor.person.email.substring(0, 50) + "..."
-                          }}
-                          <a href="#" @click="toggleDescription(index, $event)">
-                            {{
-                              showFullDescriptionIndex === index
-                                ? "Ver menos"
-                                : "Ver más"
-                            }}
-                          </a>
-                        </span>
-                        <span
-                          v-else-if="doctor.person.email"
-                          class="card-description"
-                          >{{ doctor.person.email }}</span
-                        >
+                      <div class="mt-2">
+                        <b-icon icon="envelope" class="mr-1"></b-icon>
+                        <span class="card-description">{{
+                          doctor.person.email
+                        }}</span>
                       </div>
                     </b-card-text>
                   </b-card-body>
@@ -110,62 +94,43 @@
               <template #footer>
                 <div>
                   <b-button
-                  v-if="doctor.person.user.status.name === EStatus.ACTIVE"
-                  @click="changeStatus(doctor.person.user.id)"
-                  v-b-tooltip.hover.v-info
-                  title="Desactivar"
-                  variant="outline-primary"
-                >
-                  <b-icon icon="toggle-on"></b-icon>
-                </b-button>
-                <b-button
-                  v-else-if="
-                    doctor.person.user.status.name === EStatus.INACTIVE
-                  "
-                  @click="changeStatus(doctor.person.user.id)"
-                  v-b-tooltip.hover.v-info
-                  title="Activar"
-                  variant="outline-danger"
-                >
-                  <b-icon icon="toggle-off"></b-icon>
-                </b-button>
-                  <b-button
-                    class="ml-2"
-                    variant="primary"
-                    @click="getOneDoctor(doctor.id)"
+                    v-if="doctor.person.user.status.name === EStatus.ACTIVE"
+                    @click="changeStatus(doctor.person.user.id)"
+                    v-b-tooltip.hover.v-info
+                    title="Desactivar"
+                    variant="outline-primary"
                   >
-                    Editar doctor
+                    <b-icon icon="toggle-on"></b-icon>
                   </b-button>
+                  <b-button
+                    v-else-if="
+                      doctor.person.user.status.name === EStatus.INACTIVE
+                    "
+                    @click="changeStatus(doctor.person.user.id)"
+                    v-b-tooltip.hover.v-info
+                    title="Activar"
+                    variant="outline-danger"
+                  >
+                    <b-icon icon="toggle-off"></b-icon>
+                  </b-button>
+                  <b-button
+                    class="ml-3"
+                    variant="outline-secondary"
+                    v-b-tooltip.hover.v-info
+                    title="Editar"
+                    @click="getOneDoctor(doctor.id)"
+                    ><b-icon icon="pencil"></b-icon
+                  ></b-button>
                 </div>
               </template>
             </b-card>
           </b-col>
         </b-row>
       </section>
-      <section class="mt-4">
-        <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1">
-          <b-col
-            cols="12"
-            md="3"
-            class="d-flex justify-content-center justify-content-md-start"
-          >
-            <b class="fw-bold"
-              >Mostrando
-              {{
-                pagination.totalRows === 0
-                  ? 0
-                  : (pagination.page - 1) * pagination.size + 1
-              }}
-              a
-              {{
-                pagination.page * pagination.size > pagination.totalRows
-                  ? pagination.totalRows
-                  : pagination.page * pagination.size
-              }}
-              de {{ pagination.totalRows }} registros</b
-            >
-          </b-col>
-
+      <section class="mt-4" v-if="doctors.length > 0">
+        <b-row
+          class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center"
+        >
           <b-col
             cols="6"
             md="6"
@@ -173,7 +138,7 @@
           >
             <b-pagination
               align="center"
-              size="sm"
+              size="md"
               class="my-0"
               v-model="pagination.page"
               :total-rows="pagination.totalRows"
@@ -185,6 +150,10 @@
           </b-col>
         </b-row>
       </section>
+
+      <section class="mt-1" v-if="doctors.length === 0 && isLoading === false">
+      <no-registers :message="'áreas'" />
+    </section>
     </div>
     <update-doctor
       :doctors="doctorSelected"
@@ -210,6 +179,9 @@ export default Vue.extend({
     ),
     UpdateDoctor: defineAsyncComponent(() =>
       import("./components/UpdateDoctor.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
     ),
   },
   data() {
@@ -239,6 +211,7 @@ export default Vue.extend({
     },
     async getOneDoctor(id) {
       try {
+        this.isLoading = true;
         const cipherId = await encrypt(id);
         const resp = await doctorController.getOne(cipherId);
         const englishToSpanish = {
@@ -248,26 +221,28 @@ export default Vue.extend({
           THURSDAY: "Jueves",
           FRIDAY: "Viernes",
         };
-        
+
         const { error } = resp;
         if (!error) {
           const daysArray = resp.availableDays
-          .replace("[", "")
-          .replace("]", "")
-          .split(", ")
-          .map((day) => englishToSpanish[day]);
-        const resultArray = daysArray.map((day) => ({
-          name: day,
-          id: Object.keys(englishToSpanish).find(
-            (key) => englishToSpanish[key] === day
-          ),
-        }));
-          resp.availableDays = resultArray
+            .replace("[", "")
+            .replace("]", "")
+            .split(", ")
+            .map((day) => englishToSpanish[day]);
+          const resultArray = daysArray.map((day) => ({
+            name: day,
+            id: Object.keys(englishToSpanish).find(
+              (key) => englishToSpanish[key] === day
+            ),
+          }));
+          resp.availableDays = resultArray;
           this.doctorSelected = resp;
           this.$bvModal.show("update-doctor");
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
     async getAllDoctors() {

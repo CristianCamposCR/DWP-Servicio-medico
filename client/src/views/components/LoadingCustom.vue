@@ -1,5 +1,5 @@
 <template>
-  <loading-overlay :active="isLoading" color="#808080" loader="dots">
+  <loading-overlay :active="isLoading" color="#808080" loader="dots" class="custom-loading-font">
     <template v-slot:after><br />Cargando...</template>
   </loading-overlay>
 </template>
