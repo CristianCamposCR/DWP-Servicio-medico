@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.modules.person.model.Person;
 import mx.edu.utez.server.modules.security.entities.UserDetailsImpl;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.SecureRandom;
@@ -53,9 +54,12 @@ public class Methods {
     }
 
     public static String getLoggedUsername() {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return userDetails.getUsername();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            return userDetails.getUsername();
+        }
+        return null;
     }
 
     public static String getTableName(String serviceName) {
