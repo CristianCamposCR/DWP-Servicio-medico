@@ -14,7 +14,7 @@
             <p class="my-3">Regístrate y comienza a disfrutar de los beneficios que CIMI tiene para ti.</p>
             <b-button
                 :to="{name: 'login', query: { action: 'register' }}"
-                variant="success" size="lg" class="custom-button">Crear cuenta</b-button>
+                variant="primary" size="lg" class="custom-button">Crear cuenta</b-button>
           </div>
           <div class="col-md-6 text-center" data-aos="zoom-in-up">
             <img src="@/assets/image/kit-doctor-profile.gif" alt="CIMI" class="img-fluid">
@@ -58,7 +58,7 @@
     <!--  image an another text  -->
     <div class="landing-page-flayer" style="position: relative;">
 
-      <div class="bg-success py-3 py-md-1 text-center text-white font-weight-bold h3 m-0 bar-text">
+      <div class="bg-primary py-3 py-md-1 text-center text-white font-weight-bold h3 m-0 bar-text">
         Diariamente nos esforzamos por ser mejores para ti
       </div>
 
@@ -147,7 +147,7 @@
           <div class="col-12 col-md-4 col-lg-4 col-xl-2 my-2">
             <div class="card position-relative h-100"  data-aos="flip-down">
               <h3>
-                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-success"
+                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-primary"
                         data-aos-offset="200" data-aos="fade-down" style="top: -15px; left: -15px">1
                   <span class="visually-hidden d-none">step 1</span>
                 </span>
@@ -160,7 +160,7 @@
           <div class="col-12 col-md-4 col-lg-4 col-xl-2 my-2">
             <div class="card position-relative h-100" data-aos="flip-down">
               <h3>
-                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-success"
+                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-primary"
                         data-aos-offset="200" data-aos="fade-down" style="top: -15px; left: -15px">2
                   <span class="visually-hidden d-none">step 2</span>
                 </span>
@@ -173,7 +173,7 @@
           <div class="col-12 col-md-4 col-lg-4 col-xl-2 my-2">
             <div class="card position-relative h-100" data-aos="flip-down">
               <h3>
-                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-success"
+                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-primary"
                         data-aos-offset="200" data-aos="fade-down" style="top: -15px; left: -15px">3
                   <span class="visually-hidden d-none">step 3</span>
                 </span>
@@ -186,7 +186,7 @@
           <div class="col-12 col-md-4 col-lg-4 col-xl-2 my-2">
             <div class="card position-relative h-100" data-aos="flip-down">
               <h3>
-                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-success"
+                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-primary"
                         data-aos-offset="200" data-aos="fade-down" style="top: -15px; left: -15px">4
                   <span class="visually-hidden d-none">step 4</span>
                 </span>
@@ -199,7 +199,7 @@
           <div class="col-12 col-md-4 col-lg-4 col-xl-2 my-2">
             <div class="card position-relative h-100" data-aos="flip-down">
               <h3>
-                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-success"
+                  <span class="position-absolute p-2 px-4 text-light badge rounded-pill bg-primary"
                         data-aos-offset="200" data-aos="fade-down" style="top: -15px; left: -15px">5
                   <span class="visually-hidden d-none">step 5</span>
                 </span>
@@ -214,14 +214,14 @@
         <div class="text-center mt-5">
           <b-button
               :to="{name: 'login', query: { action: 'register' }}"
-              variant="success" size="lg" class="custom-button w-75">Crear cuenta</b-button>
+              variant="primary" size="lg" class="custom-button w-75">Crear cuenta</b-button>
         </div>
       </div>
     </div>
 
     <!--  certifications  -->
     <div class="landing-page-certification">
-      <h2 class="text-center mb-4 py-2 display-5 text-success font-weight-bold" data-aos="zoom-in-up" data-aos-offset="300">
+      <h2 class="text-center mb-4 py-2 display-5 text-primary font-weight-bold" data-aos="zoom-in-up" data-aos-offset="300">
         Certificaciones</h2>
 
       <div class="container">
@@ -287,7 +287,7 @@
 
     <!--  opinion of the users  -->
     <div class="landing-page-opinion">
-      <h2 class="text-center mb-4  py-2 display-5 text-success font-weight-bold" data-aos="zoom-in-up" data-aos-offset="300">
+      <h2 class="text-center mb-4  py-2 display-5 text-primary font-weight-bold" data-aos="zoom-in-up" data-aos-offset="300">
         Opiniones de nuestros usuarios</h2>
       <div class="container">
         <div id="carouselExampleControls2" class="carousel slide" data-ride="carousel" data-aos="zoom-out" data-aos-offset="300">
@@ -364,7 +364,7 @@
     </div>
 
     <!--    Footer  -->
-    <div class="" style="background-color: #0d9265">
+    <div class="bg-primary">
       <div class="px-4 py-5">
         <div class="row">
           <div class="col-12 col-md-3">

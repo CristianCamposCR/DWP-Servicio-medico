@@ -37,7 +37,7 @@ export default {
   top: 60px;
   .progress-indicator{
     height: 5px;
-    background: #42b983;
+    background: #10b981;
   }
 }
 

@@ -19,7 +19,8 @@
             v-for="link in links"
             :key="link.name"
             :to="link.to"
-            class="custom-link"
+            class="custom-nav-font custom-link"
+            exact-active-class="active-link"
           >
             {{ link.name }}
           </b-nav-item>
@@ -27,7 +28,9 @@
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-item :to="{ name: 'login' }" class="mr-4 custom-link"
+          <b-nav-item
+            :to="{ name: 'login' }"
+            class="mr-4 custom-link custom-nav-font"
             >Iniciar Sesión</b-nav-item
           >
 
@@ -35,9 +38,8 @@
             <b-button
               :to="{ name: 'login', query: { action: 'register' } }"
               size="sm"
-              class="my-2 my-sm-0 py-2 px-md-4 custom-link"
-              type="button"
-              variant="success"
+              class="my-2 my-sm-0 py-2 px-md-4 custom-link custom-nav-font"
+              variant="primary"
               >Crear cuenta</b-button
             >
           </b-nav-form>
@@ -59,9 +61,9 @@ export default {
   data() {
     return {
       links: [
-        { name: "Doctores", to: "doctors" },
+        { name: "Áreas", to: "areas" },
         { name: "Especialidades", to: "specialities" },
-        { name: "Areas", to: "areas" },
+        { name: "Doctores", to: "doctors" },
       ],
     };
   },
@@ -71,6 +73,10 @@ export default {
 <style scoped>
 .custom-link {
   transition: all 0.3s;
+}
+
+.active-link {
+  color: #10b981 !important;
 }
 
 .custom-link:hover {
