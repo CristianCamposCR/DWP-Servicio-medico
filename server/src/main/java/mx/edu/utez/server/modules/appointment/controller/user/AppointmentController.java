@@ -134,7 +134,8 @@ public class AppointmentController {
     @PostMapping("/")
     public ResponseEntity<ResponseApi<Boolean>> save(@Valid @RequestBody SaveAppointmentDto dto) {
         try {
-            ResponseApi<Boolean> responseApi = this.appointmentService.save(dto);
+            String username = Methods.getLoggedUsername();
+            ResponseApi<Boolean> responseApi = this.appointmentService.save(dto, username);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (MessagingException e) {
             logger.error(e.getMessage());

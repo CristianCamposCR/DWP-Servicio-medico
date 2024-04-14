@@ -24,8 +24,6 @@ public class SaveAppointmentDto {
     @Future
     private LocalDate scheduledAt;
     @NotNull
-    private Patient patient;
-    @NotNull
     private Speciality speciality;
     @NotNull
     private AppointmentType appointmentType;
@@ -39,7 +37,6 @@ public class SaveAppointmentDto {
     public Appointment getAppointmentEntity() {
         return new Appointment(
                 getScheduledAt(),
-                getPatient(),
                 getSpeciality(),
                 getAppointmentType(),
                 getShift()

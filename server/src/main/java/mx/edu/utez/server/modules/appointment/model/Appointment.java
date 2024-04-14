@@ -1,6 +1,7 @@
 package mx.edu.utez.server.modules.appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,9 +40,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Appointment {
-    public Appointment(LocalDate scheduledAt, Patient patient, Speciality speciality, AppointmentType appointmentType, Shift preferentialShift) {
+    public Appointment(LocalDate scheduledAt, Speciality speciality, AppointmentType appointmentType, Shift preferentialShift) {
         this.scheduledAt = scheduledAt;
-        this.patient = patient;
         this.speciality = speciality;
         this.appointmentType = appointmentType;
         this.preferentialShift = preferentialShift;
@@ -118,11 +118,11 @@ public class Appointment {
 
     // Relationships ->
     @OneToOne(mappedBy = "appointment")
-    @JsonIgnore
+    @JsonIgnoreProperties({"appointment"})
     private Record records;
 
     @OneToOne(mappedBy = "appointment")
-    @JsonIgnore
+    @JsonIgnoreProperties({"appointment"})
     private Payment payment;
 
     // Methods

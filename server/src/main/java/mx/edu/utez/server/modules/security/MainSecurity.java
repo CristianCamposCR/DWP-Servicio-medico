@@ -111,6 +111,7 @@ public class MainSecurity {
                         .requestMatchers(HttpMethod.GET, "/api/appointment/{id}").hasAnyAuthority(Roles.DOCTOR.name(), Roles.PATIENT.name(), Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/review/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/review/paged/").hasAuthority(Roles.DOCTOR.name())
+                        .requestMatchers(HttpMethod.POST, "/api/record/").hasAuthority(Roles.DOCTOR.name())
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
