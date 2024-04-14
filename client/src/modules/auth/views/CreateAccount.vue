@@ -542,37 +542,44 @@ export default Vue.extend({
     },
     async signup() {
       try {
-        const result = await SweetAlertCustom.questionMessage();
-        if (result.isConfirmed) {
-          this.isLoading = true;
-          const payload = {
-            ...this.newAccount,
-            ...this.personalNewAccount,
-          };
-          const response = await authController.signup(payload);
-          if (!response.error) {
-            this.$bvModal.show("modal-confirm-signup");
-            this.v$.newAccount.$reset();
-            this.v$.personalNewAccount.$reset();
-            this.v$.confirmPassword.$reset();
-            this.newAccount = {
-              name: "",
-              surname: "",
-              lastname: "",
-              phoneNumber: "",
-              username: "",
-              password: "",
+        if (
+          this.v$.newAccount.$invalid ||
+          this.v$.personalNewAccount.$invalid
+        ) {
+          SweetAlertCustom.invalidForm();
+        } else {
+          const result = await SweetAlertCustom.questionMessage();
+          if (result.isConfirmed) {
+            this.isLoading = true;
+            const payload = {
+              ...this.newAccount,
+              ...this.personalNewAccount,
             };
-            this.personalNewAccount = {
-              email: "",
-              curp: "",
-              birthday: null,
-              gender: null,
-            };
-            this.confirmPassword = "";
-            this.step = 0;
-          } else {
-            this.isValidFriendlyCaptcha = false;
+            const response = await authController.signup(payload);
+            if (!response.error) {
+              this.$bvModal.show("modal-confirm-signup");
+              this.v$.newAccount.$reset();
+              this.v$.personalNewAccount.$reset();
+              this.v$.confirmPassword.$reset();
+              this.newAccount = {
+                name: "",
+                surname: "",
+                lastname: "",
+                phoneNumber: "",
+                username: "",
+                password: "",
+              };
+              this.personalNewAccount = {
+                email: "",
+                curp: "",
+                birthday: null,
+                gender: null,
+              };
+              this.confirmPassword = "";
+              this.step = 0;
+            } else {
+              this.isValidFriendlyCaptcha = false;
+            }
           }
         }
       } catch (error) {
