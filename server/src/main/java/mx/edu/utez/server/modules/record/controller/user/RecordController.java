@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/record")
 @CrossOrigin(origins = {"*"})
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyAuthority('DOCTOR','PATIENT')")
+@PreAuthorize("hasAnyAuthority('DOCTOR')")
 public class RecordController {
     Logger logger = LoggerFactory.getLogger(RecordController.class);
     private final RecordService recordService;
@@ -32,6 +33,18 @@ public class RecordController {
     public ResponseEntity<ResponseApi<Boolean>> save(@Validated(RecordGroups.Save.class) @RequestBody RecordDto dto) {
         try {
             ResponseApi<Boolean> responseApi = recordService.save(dto);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @PutMapping("/")
+    public ResponseEntity<ResponseApi<Boolean>> update(@Validated(RecordGroups.Update.class) @RequestBody RecordDto dto) {
+        try {
+            ResponseApi<Boolean> responseApi = recordService.update(dto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
