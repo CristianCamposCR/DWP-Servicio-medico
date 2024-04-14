@@ -6,7 +6,7 @@ export default {
       const payloadPagination = `?page=${pagination.page}&size=${pagination.size}&sort=${pagination.sort}&direction=${pagination.direction}`;
       const response = await axios.doPost(
         `/management/patient/paged/${payloadPagination}`,
-        pagination.data
+        { searchValue: pagination.data.name }
       );
       return response.data.data;
     } catch (error) {

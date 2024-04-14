@@ -18,14 +18,14 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block>Buscar</b-button>
+              <b-button variant="primary" block @click="getAllPatients">Buscar</b-button>
             </b-input-group-append>
           </b-input-group>
         </b-col>
       </b-row>
     </section>
 
-    <section class="mt-4 px-5">
+    <section class="mt-4 px-5"  v-if="patients.length > 0">
       <b-row>
         <b-col
           v-for="(patient, index) in patients"
@@ -114,8 +114,8 @@
         </b-col>
       </b-row>
     </section>
-    <section class="mt-4">
-      <b-row class="bg-light m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
+    <section class="mt-4"  v-if="patients.length > 0">
+      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
         <b-col
           cols="6"
           md="6"
@@ -134,6 +134,10 @@
           </b-pagination>
         </b-col>
       </b-row>
+    </section>
+
+    <section class="mt-1" v-if="patients.length === 0">
+      <no-registers :message="'áreas'" />
     </section>
     <ModalPatientView
       :patient="patientSelected"
@@ -155,6 +159,9 @@ export default Vue.extend({
       import("../../../../views/components/LoadingCustom.vue"),
     ModalPatientView: defineAsyncComponent(() =>
       import("./components/ModalPatientView.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
     ),
   },
   name: "PatientView",
