@@ -51,7 +51,6 @@ export default [
           role: rolesAllowed,
         },
       },
-
     ],
   },
 ];
