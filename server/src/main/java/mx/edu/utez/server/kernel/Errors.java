@@ -88,6 +88,9 @@ public enum Errors {
     // CANCELLATION REASON
     NO_CANCELLATION_REASON_FOUND,
 
+    // RECORD
+    NO_RECORD_FOUND,
+
     // SERVER
     SERVER_ERROR,
 }

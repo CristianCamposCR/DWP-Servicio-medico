@@ -41,7 +41,38 @@ public class RecordService {
                     true,
                     HttpStatus.OK,
                     false,
-                    "Registro realizado."
+                    "Registro médico realizado."
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public ResponseApi<Boolean> update(RecordDto recordDto) {
+        try {
+            Appointment appointment = getAppointment(recordDto.getAppointment().getId());
+            if (appointment == null)
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name());
+
+            if (!iRecordRepository.existsById(recordDto.getId()))
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_RECORD_FOUND.name());
+
+            if (appointment.getStatus().getName() != Statuses.CONFIRMADA)
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_IS_NOT_ACTIVE.name());
+
+            iRecordRepository.saveAndFlush(recordDto.getRecordEntity());
+
+            return new ResponseApi<>(
+                    true,
+                    HttpStatus.OK,
+                    false,
+                    "Registro médico actualizado."
             );
         } catch (Exception e) {
             logger.error(e.getMessage());
