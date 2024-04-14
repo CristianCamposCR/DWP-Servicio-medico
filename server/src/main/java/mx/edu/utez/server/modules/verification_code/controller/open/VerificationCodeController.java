@@ -3,6 +3,7 @@ package mx.edu.utez.server.modules.verification_code.controller.open;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.modules.auth.controller.dto.SignedDto;
 import mx.edu.utez.server.modules.verification_code.controller.dto.GenerateVerificationCodeDto;
 import mx.edu.utez.server.modules.verification_code.controller.dto.VerificationCodeDto;
 import mx.edu.utez.server.modules.verification_code.service.VerificationCodeService;
@@ -25,9 +26,9 @@ public class VerificationCodeController {
     Logger logger = LoggerFactory.getLogger(VerificationCodeController.class);
     private final VerificationCodeService verificationCodeService;
 
-    @PostMapping("/verify")
-    public ResponseEntity<ResponseApi<Boolean>> verifyCode(@Valid @RequestBody VerificationCodeDto verificationCodeDto) {
-        ResponseApi<Boolean> responseApi = this.verificationCodeService.updateToVerifyCode(verificationCodeDto);
+    @PostMapping("/verify/")
+    public ResponseEntity<ResponseApi<SignedDto>> verifyCode(@Valid @RequestBody VerificationCodeDto verificationCodeDto) {
+        ResponseApi<SignedDto> responseApi = this.verificationCodeService.updateToVerifyCode(verificationCodeDto);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 

@@ -82,6 +82,8 @@ public class MainSecurity {
                         .requestMatchers(HttpMethod.PUT, "/api/management/speciality/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/api/management/speciality/{id}").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, "/api/management/user/{id}").hasAuthority(Roles.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/api/user/change-password/").hasAnyAuthority(Roles.DOCTOR.name(), Roles.PATIENT.name())
+                        .requestMatchers(HttpMethod.POST, "/api/user/recovery-password/").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/management/doctor/paged/").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/api/management/doctor/{id}").hasAuthority(Roles.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/management/doctor/").hasAuthority(Roles.ADMIN.name())
