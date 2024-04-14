@@ -22,6 +22,15 @@
           >
             {{ link.name }}
           </b-nav-item>
+          <b-nav-item-dropdown right>
+            <template #button-content>
+             <b class="custom-nav-font">Citas </b>
+              <b-icon icon="calendar"> </b-icon>
+            </template>
+            <b-dropdown-item to="appointments-management">Citas Activas</b-dropdown-item>
+            <b-dropdown-item to="citas-pendientes">Citas Pendientes</b-dropdown-item>
+            <b-dropdown-item to="citas-canceladas">Citas Canceladas</b-dropdown-item>
+          </b-nav-item-dropdown>
         </b-navbar-nav>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
@@ -39,11 +48,14 @@
             <b-dropdown-item disabled>Rol: Administrador</b-dropdown-item>
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
           </b-nav-item-dropdown>
+
+          
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
   </div>
 </template>
+
 <script>
 import Vue from "vue";
 export default Vue.extend({
