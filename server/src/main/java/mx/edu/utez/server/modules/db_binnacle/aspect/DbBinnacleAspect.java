@@ -18,7 +18,7 @@ public class DbBinnacleAspect {
     private final DbBinnacleService dbBinnacleService;
     private String loggedUsername;
 
-    @Before("execution(* mx.edu.utez.server.modules.*.service.*Service.save*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.update*(..))")
+    @Before("execution(* mx.edu.utez.server.modules.*.service.*Service.save*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.update*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.changeStatus*(..))")
     public void setLoggedUsername() {
         try {
             loggedUsername = Methods.getLoggedUsername();
