@@ -6,7 +6,8 @@
         <button
           class="btn btn-transparent position-absolute start-0 top-0 goBack"
           @click="goBack"
-          v-b-tooltip.hover.v-info title="Regresar"
+          v-b-tooltip.hover.v-info
+          title="Regresar"
         >
           <b-icon icon="arrow-left"></b-icon>
         </button>
@@ -15,7 +16,7 @@
         src="/src/assets/Hospital.jpg"
         width="100px"
         height="140px"
-        style="object-fit: cover; object-position: center;"
+        style="object-fit: cover; object-position: center"
       ></b-card-img>
       <div class="mt-5 mx-4">
         <b-col sm="12">
@@ -148,18 +149,22 @@ export default Vue.extend({
     },
     async sigin() {
       try {
-        this.isLoading = true;
-        if (
-          this.signinPayload.email != "" &&
-          this.signinPayload.password != ""
-        ) {
-          const response = await authController.login(this.signinPayload);
-          if (!response.error) {
-            localStorage.setItem("token", response.token);
-            if (await this.checkNextRedirect())
-              SweetAlertCustom.welcomeMessage();
-          } else {
-            this.isValidFriendlyCaptcha = false;
+        if (this.v$.signinPayload.$invalid) {
+          SweetAlertCustom.invalidForm();
+        } else {
+          this.isLoading = true;
+          if (
+            this.signinPayload.email != "" &&
+            this.signinPayload.password != ""
+          ) {
+            const response = await authController.login(this.signinPayload);
+            if (!response.error) {
+              localStorage.setItem("token", response.token);
+              if (await this.checkNextRedirect())
+                SweetAlertCustom.welcomeMessage();
+            } else {
+              this.isValidFriendlyCaptcha = false;
+            }
           }
         }
       } catch (error) {

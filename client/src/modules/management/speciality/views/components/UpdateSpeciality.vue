@@ -271,21 +271,27 @@ export default Vue.extend({
     },
     async updateSpeciality() {
       try {
-        const result = await SweetAlertCustom.questionMessage();
-        if (result.isConfirmed) {
-          this.speciality.area = { id: this.speciality.area };
-          const resp = await specialityController.updateSpeciality(
-            this.speciality
-          );
-          const { error } = resp;
-          if (!error) {
-            this.$emit("reloadRegisters2");
-            setTimeout(() => {
-              SweetAlertCustom.successMessage();
-            }, 100);
-            this.$nextTick(() => this.$bvModal.hide("modal-update-speciality"));
-            this.cleanForm();
-            return;
+        if (this.v$.speciality.$invalid) {
+          SweetAlertCustom.invalidForm();
+        } else {
+          const result = await SweetAlertCustom.questionMessage();
+          if (result.isConfirmed) {
+            this.speciality.area = { id: this.speciality.area };
+            const resp = await specialityController.updateSpeciality(
+              this.speciality
+            );
+            const { error } = resp;
+            if (!error) {
+              this.$emit("reloadRegisters2");
+              setTimeout(() => {
+                SweetAlertCustom.successMessage();
+              }, 100);
+              this.$nextTick(() =>
+                this.$bvModal.hide("modal-update-speciality")
+              );
+              this.cleanForm();
+              return;
+            }
           }
         }
       } catch (error) {

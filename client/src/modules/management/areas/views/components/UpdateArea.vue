@@ -183,18 +183,22 @@ export default Vue.extend({
   methods: {
     async updateArea() {
       try {
-        const result = await SweetAlertCustom.questionMessage();
-        if (result.isConfirmed) {
-          const resp = await areaController.update(this.area);
-          const { error } = resp;
-          if (!error) {
-            this.$emit("reloadRegisters2");
-            setTimeout(() => {
-              SweetAlertCustom.successMessage();
-            }, 100);
-            this.$nextTick(() => this.$bvModal.hide("modal-update-area"));
-            this.cleanForm();
-            return;
+        if (this.v$.area.$invalid) {
+          SweetAlertCustom.invalidForm();
+        } else {
+          const result = await SweetAlertCustom.questionMessage();
+          if (result.isConfirmed) {
+            const resp = await areaController.update(this.area);
+            const { error } = resp;
+            if (!error) {
+              this.$emit("reloadRegisters2");
+              setTimeout(() => {
+                SweetAlertCustom.successMessage();
+              }, 100);
+              this.$nextTick(() => this.$bvModal.hide("modal-update-area"));
+              this.cleanForm();
+              return;
+            }
           }
         }
       } catch (error) {

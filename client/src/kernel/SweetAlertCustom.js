@@ -79,6 +79,23 @@ class SweetAlertCustom {
     });
   }
 
+  static invalidForm(
+    title = "Fomulario inválido",
+    text = "Por favor llena todos los campos obligatorios para continuar."
+  ) {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: "warning",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#10B981",
+      showCancelButton: false,
+      customClass: {
+        actions: "custom-swal-buttons", // Esta es la clase personalizada que añadimos
+      },
+    });
+  }
+
   static notImplemented() {
     Swal.fire({
       title: "En proceso...",
