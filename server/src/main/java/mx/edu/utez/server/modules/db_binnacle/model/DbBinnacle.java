@@ -23,6 +23,14 @@ import java.time.Instant;
 @Getter
 @Setter
 public class DbBinnacle {
+    public DbBinnacle(String action, String serviceName, String tableName, String username, String dbUser) {
+        this.action = action;
+        this.serviceName = serviceName;
+        this.tableName = tableName;
+        this.username = username;
+        this.dbUser = dbUser;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,20 +39,17 @@ public class DbBinnacle {
     private String action;
 
     @Column(columnDefinition = "VARCHAR(100)", nullable = false)
+    private String serviceName;
+
+    @Column(columnDefinition = "VARCHAR(100)", nullable = false)
     private String tableName;
-
-    @Column(columnDefinition = "JSON")
-    private String fromRecord;
-
-    @Column(columnDefinition = "JSON")
-    private String toRecord;
 
     @Column(columnDefinition = "DATETIME", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(columnDefinition = "BIGINT")
-    private Long clientUserId;
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String username;
 
     @Column(columnDefinition = "VARCHAR(100)")
     private String dbUser;

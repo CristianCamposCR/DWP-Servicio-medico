@@ -27,14 +27,14 @@ public class VerificationCodeController {
 
     @PostMapping("/verify")
     public ResponseEntity<ResponseApi<Boolean>> verifyCode(@Valid @RequestBody VerificationCodeDto verificationCodeDto) {
-        ResponseApi<Boolean> responseApi = this.verificationCodeService.verifyCode(verificationCodeDto);
+        ResponseApi<Boolean> responseApi = this.verificationCodeService.updateToVerifyCode(verificationCodeDto);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
     @PostMapping("/activate-account/")
     public ResponseEntity<ResponseApi<Boolean>> activateAccount(@Valid @RequestBody VerificationCodeDto dto) {
         try {
-            ResponseApi<Boolean> responseApi = this.verificationCodeService.activateAccount(dto);
+            ResponseApi<Boolean> responseApi = this.verificationCodeService.updateToActivateAccount(dto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -47,7 +47,7 @@ public class VerificationCodeController {
     @PostMapping("/refresh-activation-code/")
     public ResponseEntity<ResponseApi<Boolean>> refreshCodeForActivation(@Valid @RequestBody GenerateVerificationCodeDto dto) {
         try {
-            ResponseApi<Boolean> responseApi = this.verificationCodeService.refreshCode(dto, true);
+            ResponseApi<Boolean> responseApi = this.verificationCodeService.saveToRefreshCode(dto, true);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -60,7 +60,7 @@ public class VerificationCodeController {
     @PostMapping("/refresh-code/")
     public ResponseEntity<ResponseApi<Boolean>> refreshCode(@Valid @RequestBody GenerateVerificationCodeDto dto) {
         try {
-            ResponseApi<Boolean> responseApi = this.verificationCodeService.refreshCode(dto, false);
+            ResponseApi<Boolean> responseApi = this.verificationCodeService.saveToRefreshCode(dto, false);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());

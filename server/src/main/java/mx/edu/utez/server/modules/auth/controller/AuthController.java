@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/signup/")
     public ResponseEntity<ResponseApi<Boolean>> signup(@Valid @RequestBody SignupDto signupDto) {
         try {
-            ResponseApi<Boolean> responseApi = this.patientService.signup(signupDto);
+            ResponseApi<Boolean> responseApi = this.patientService.saveToSignup(signupDto);
             return new ResponseEntity<>(responseApi, responseApi.getStatus());
         } catch (Exception e) {
             logger.error(e.getMessage());
