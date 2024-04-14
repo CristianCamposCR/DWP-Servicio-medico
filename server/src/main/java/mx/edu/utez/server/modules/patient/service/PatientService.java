@@ -88,6 +88,7 @@ public class PatientService {
                 signupDto.getCurp(),
                 signupDto.getPhoneNumber(),
                 signupDto.getBirthday(),
+                null,
                 signupDto.getGender().getGenderEntity()
         ));
 

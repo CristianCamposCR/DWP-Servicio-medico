@@ -20,7 +20,11 @@ public class DbBinnacleAspect {
 
     @Before("execution(* mx.edu.utez.server.modules.*.service.*Service.save*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.update*(..))")
     public void setLoggedUsername() {
-        loggedUsername = Methods.getLoggedUsername();
+        try {
+            loggedUsername = Methods.getLoggedUsername();
+        } catch (Exception e) {
+            loggedUsername = "Unknown";
+        }
     }
 
     @Async
