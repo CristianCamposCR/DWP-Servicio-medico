@@ -54,14 +54,22 @@ import { maxLength, minLength } from '@vuelidate/validators';
           Selecciona el área de la especialidad :&nbsp;
           <span class="text-danger">*</span>
         </label>
-        <b-form-select v-model="speciality.area.id" :options="areasOptions">
+        <b-form-select
+          v-model="v$.speciality.area.$model"
+          :options="areasOptions"
+          :state="v$.speciality.area.$dirty ? !v$.speciality.area.$error : null"
+          @touch="v$.speciality.area.$touch()"
+        >
           <template #first>
             <b-form-select-option :value="null">
-              Selecciona un Área
+              Selecciona un área
             </b-form-select-option>
           </template>
         </b-form-select>
-
+        <b-form-invalid-feedback
+          v-if="!v$.speciality.area.required.$response"
+          >{{ errorMessages.required }}</b-form-invalid-feedback
+        >
         <label class="mt-2">
           Costo :&nbsp;
           <span class="text-danger">*</span>
@@ -74,6 +82,7 @@ import { maxLength, minLength } from '@vuelidate/validators';
           @blur="v$.speciality.cost.$touch()"
           required
           trim
+          @keypress="onlynumbers"
           min="0"
         ></b-form-input>
         <b-form-invalid-feedback
@@ -180,6 +189,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import specialityController from "../../services/controller/speciality.controller";
 import SweetAlertCustom from "../../../../../kernel/SweetAlertCustom";
+import { onlyNumber } from "../../../../../kernel/functions";
 
 export default Vue.extend({
   name: "SaveSpeciality",
@@ -196,10 +206,11 @@ export default Vue.extend({
     return {
       areasOptions: [],
       speciality: {
-        area: {
-          id: null,
-          name: null,
-        },
+        name: "",
+        description: "",
+        cost: 0,
+        bannerImage: null,
+        area: null,
       },
       errorMessages: {
         required: "Campo Obligatorio",
@@ -218,15 +229,22 @@ export default Vue.extend({
       },
       previewImage: null,
       validFile: null,
+      preSelected: 4,
     };
   },
   watch: {
     specialitySelected() {
-      this.speciality = { ...this.specialitySelected };
+      this.speciality = {
+        ...this.specialitySelected,
+        area: this.specialitySelected.area.id,
+      };
       this.previewImage = this.speciality.bannerImage;
     },
   },
   methods: {
+    onlynumbers(evt) {
+      onlyNumber(evt);
+    },
     async getAreas() {
       try {
         const areas = await specialityController.getAreas();
@@ -375,6 +393,9 @@ export default Vue.extend({
               !isNaN(parseFloat(value)) &&
               parseFloat(value) >= 0
           ),
+        },
+        area: {
+          required: helpers.withMessage(this.errorMessages.required, required),
         },
       },
     };

@@ -53,13 +53,22 @@
           Selecciona el área de la especialidad :&nbsp;
           <span class="text-danger">*</span>
         </label>
-        <b-form-select v-model="speciality.area.id" :options="areasOptions">
+        <b-form-select
+          v-model="v$.speciality.area.$model"
+          :options="areasOptions"
+          :state="v$.speciality.area.$dirty ? !v$.speciality.area.$error : null"
+          @touch="v$.speciality.area.$touch()"
+        >
           <template #first>
             <b-form-select-option :value="null">
-              Selecciona un Área
+              Selecciona un área
             </b-form-select-option>
           </template>
         </b-form-select>
+        <b-form-invalid-feedback
+          v-if="!v$.speciality.area.required.$response"
+          >{{ errorMessages.required }}</b-form-invalid-feedback
+        >
 
         <label class="mt-2">
           Costo :&nbsp;
@@ -112,9 +121,7 @@
         >
           {{ error.$message }}
         </b-form-invalid-feedback>
-        <label class="mt-2">
-          Imagen:
-        </label>
+        <label class="mt-2"> Imagen: </label>
         <b-form-file
           @change="handleFileChange"
           browse-text="Buscar"
@@ -181,7 +188,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { required, helpers, minLength, maxLength } from "@vuelidate/validators";
 import specialityController from "../../services/controller/speciality.controller";
 import SweetAlertCustom from "../../../../../kernel/SweetAlertCustom";
-import { signal } from "../../../../../kernel/functions";
+import { onlyNumber } from "../../../../../kernel/functions";
 
 export default Vue.extend({
   name: "SaveSpeciality",
@@ -196,10 +203,7 @@ export default Vue.extend({
         description: "",
         cost: 0,
         bannerImage: null,
-        area: {
-          id: null,
-          name: null,
-        },
+        area: null,
       },
       errorMessages: {
         required: "Campo Obligatorio",
@@ -222,7 +226,7 @@ export default Vue.extend({
   },
   methods: {
     onlynumbers(evt) {
-      signal(evt);
+      onlyNumber(evt);
     },
     async getAreas() {
       try {
@@ -373,6 +377,9 @@ export default Vue.extend({
               !isNaN(parseFloat(value)) &&
               parseFloat(value) >= 0
           ),
+        },
+        area: {
+          required: helpers.withMessage(this.errorMessages.required, required),
         },
       },
     };
