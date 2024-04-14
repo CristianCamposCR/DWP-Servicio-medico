@@ -34,6 +34,8 @@ public class UpdateDoctorDto {
     @NotNull
     private Speciality speciality;
 
+    private String profilePhoto;
+
     public Doctor getDoctorEntity(){
         return new Doctor(
                 getId(),

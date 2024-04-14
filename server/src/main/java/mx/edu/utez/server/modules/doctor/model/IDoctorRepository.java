@@ -39,7 +39,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
             INNER JOIN people p ON d.person_id = p.id 
             INNER JOIN users u ON u.person_id = p.id 
             INNER JOIN statuses s ON u.status_id = s.id 
-            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' OR p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
+            WHERE LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
             """,
             nativeQuery = true,
             countQuery = "SELECT COUNT(*) FROM doctors")
@@ -50,7 +50,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
             INNER JOIN people p ON d.person_id = p.id 
             INNER JOIN users u ON u.person_id = p.id 
             INNER JOIN statuses s ON u.status_id = s.id 
-            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' OR p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
+            WHERE LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%'))
             AND s.name <> ?2
             """,
             nativeQuery = true,

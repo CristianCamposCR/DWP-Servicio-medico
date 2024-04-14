@@ -32,7 +32,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Person {
-    public Person(String name, String surname, String lastname, String email, String curp, String phoneNumber, LocalDate birthday, Gender gender) {
+    public Person(String name, String surname, String lastname, String email, String curp, String phoneNumber, LocalDate birthday, String profilePhoto, Gender gender) {
         this.name = name;
         this.surname = surname;
         this.lastname = lastname;
@@ -40,6 +40,7 @@ public class Person {
         this.curp = curp;
         this.phoneNumber = phoneNumber;
         this.birthday = birthday;
+        this.profilePhoto = profilePhoto;
         this.gender = gender;
     }
 

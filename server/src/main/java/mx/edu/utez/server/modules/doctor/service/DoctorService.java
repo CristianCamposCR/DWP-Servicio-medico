@@ -75,7 +75,7 @@ public class DoctorService {
         Person person = new Person(
                 "David Ivan", "Pérez", "Torres",
                 "davirperez@utez.edu.mx", "GAPJ950825HMCRRN00", "+7778889900",
-                LocalDate.of(1990, 5, 15), genderM);
+                LocalDate.of(1990, 5, 15), null, genderM);
 
         User user = new User(
                 defaultUsername,
@@ -141,6 +141,7 @@ public class DoctorService {
                     doctorDto.getCurp(),
                     doctorDto.getPhoneNumber(),
                     doctorDto.getBirthday(),
+                    doctorDto.getProfilePhoto(),
                     doctorDto.getGender().getGenderEntity()
             ));
 
@@ -300,6 +301,7 @@ public class DoctorService {
 
             Doctor doctor = dto.getDoctorEntity();
             doctor.setPerson(optionalDoctor.get().getPerson());
+            doctor.getPerson().setProfilePhoto(dto.getProfilePhoto());
 
             return new ResponseApi<>(
                     this.iDoctorRepository.saveAndFlush(doctor),

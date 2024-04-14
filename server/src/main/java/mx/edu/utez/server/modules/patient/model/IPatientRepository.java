@@ -24,7 +24,7 @@ public interface IPatientRepository extends JpaRepository<Patient, Long> {
             INNER JOIN people p ON pa.person_id = p.id 
             INNER JOIN users u ON u.person_id = p.id 
             INNER JOIN statuses s ON u.status_id = s.id 
-            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' OR p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%')) OR 
+            WHERE (LOWER(TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, '')))) LIKE LOWER(CONCAT('%', ?1, '%')) OR 
             LOWER(pa.patient_code) LIKE LOWER(CONCAT('%', ?1, '%')))
             AND s.name <> ?2
             """,

@@ -56,6 +56,7 @@ public class DoctorDto {
     @NotNull
     @Past
     private LocalDate birthday;
+    private String profilePhoto;
     @Valid
     private GenderDto gender;
     // User
