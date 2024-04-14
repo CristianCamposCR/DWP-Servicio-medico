@@ -1,45 +1,67 @@
 <template>
-  <div class="container-fluid  px-5 pt-3" style="height: calc(100vh - 72px)">
-    <b-row v-if="promotion.isActive">
-      <b-col>
-        <b-alert show variant="info" class="text-center text-dark">
-          Hoy es lunes, por lo que tienes un 20% de descuento en todas las citas
-        </b-alert>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="12" md="6">
-        <custom-bread-crumb :links="sections" :active="sectionActive"></custom-bread-crumb>
-        <span v-if="sectionActive === 1 || sectionActive === 2" class="font-weight-bold text-black-50 ml-2">
+  <b-overlay :show="isLoading && sectionActive === 4 "  style="height: 100vh">
+   <template #overlay>
+     <div>
+       <div class="d-flex justify-content-center">
+         <b-img
+             src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGJ3Y3RwZnAwNHNqeXN0c2d5amRkbGtrbGVud2dxcnRzdzhudjdiYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/QKW9AtBQifEfWKV8iV/giphy.gif"
+             style="object-fit: cover; object-position: center; margin-bottom: 0"
+             width="350px"
+             height="300px"
+         >
+         </b-img>
+       </div>
+       <div class="d-flex justify-content-center">
+         <div class="text-center not-registers-font mt-0">
+           Estamos agendando tu cita, por favor espera un momento...
+         </div>
+       </div>
+     </div>
+
+    </template>
+
+    <div class="container-fluid  px-5 pt-3" style="height: calc(100vh - 72px)">
+
+      <b-row v-if="promotion.isActive">
+        <b-col>
+          <b-alert show variant="info" class="text-center text-dark">
+            Hoy es lunes, por lo que tienes un 20% de descuento en todas las citas
+          </b-alert>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="12" md="6">
+          <custom-bread-crumb :links="sections" :active="sectionActive"></custom-bread-crumb>
+          <span v-if="sectionActive === 1 || sectionActive === 2" class="font-weight-bold text-black-50 ml-2">
           Selecciona o arrastra {{ this.sectionActive === 1 ? 'el área de interés' : 'la especialidad' }}
         </span>
-      </b-col>
+        </b-col>
 
-      <b-col v-if="this.sectionActive < 3" cols="12" sm="12" md="6" class="mt-3 mt-md-0 p-0 m-0">
-        <b-form @submit.prevent="handleSearch">
-          <b-input-group>
-            <b-form-input :placeholder="'Buscar'+ (sectionActive === 1 ? ' área' : ' especialidad') + '...'"
-                          v-model="pagination.data.name"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button variant="primary" type="submit">Buscar</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form>
-      </b-col>
-    </b-row>
+        <b-col v-if="this.sectionActive < 3" cols="12" sm="12" md="6" class="mt-3 mt-md-0 p-0 m-0">
+          <b-form @submit.prevent="handleSearch">
+            <b-input-group>
+              <b-form-input :placeholder="'Buscar'+ (sectionActive === 1 ? ' área' : ' especialidad') + '...'"
+                            v-model="pagination.data.name"
+              ></b-form-input>
+              <b-input-group-append>
+                <b-button variant="primary" type="submit">Buscar</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form>
+        </b-col>
+      </b-row>
 
-    <b-row class="h-75 flex-md-row-reverse">
-      <b-col cols="12" lg="3" class="mt-3 ">
-        <div class="card p-3">
-          <p class="p-0 m-0 mb-1 text-primary">Que tal <b>{{ this.user }}!!</b>, estas apunto de agendar una cita</p>
+      <b-row class="h-75 flex-md-row-reverse">
+        <b-col cols="12" lg="3" class="mt-3 ">
+          <div class="card p-3">
+            <p class="p-0 m-0 mb-1 text-primary">Que tal <b>{{ this.user }}!!</b>, estas apunto de agendar una cita</p>
 
-          <div class="h-100 w-100">
-            <div class="h-100 w-100 "
-                 @drop="onDrop($event)"
-                 @dragenter.prevent
-                 @dragover.prevent
-            >
+            <div class="h-100 w-100">
+              <div class="h-100 w-100 "
+                   @drop="onDrop($event)"
+                   @dragenter.prevent
+                   @dragover.prevent
+              >
               <span class="text-center">
                 <div v-if="appointment.area" class="text-left">
                   <sub class="text-black-50">Área seleccionada</sub>: <br>
@@ -179,99 +201,99 @@
 
 
               </span>
+              </div>
             </div>
-          </div>
 
 
-          <div v-if="!appointment.isAcceptedTerms" class="text-center">
-            <button class="btn-block btn btn-primary mt-1" @click="handleShowModal('termAndCondition')">Términos y
-              condiciones
-            </button>
-            <sub class="text-danger " v-if="!modalsShow.termAndCondition">Es necesario aceptar los términos y
-              condiciones para
-              continuar</sub>
-          </div>
+            <div v-if="!appointment.isAcceptedTerms" class="text-center">
+              <button class="btn-block btn btn-primary mt-1" @click="handleShowModal('termAndCondition')">Términos y
+                condiciones
+              </button>
+              <sub class="text-danger " v-if="!modalsShow.termAndCondition">Es necesario aceptar los términos y
+                condiciones para
+                continuar</sub>
+            </div>
 
 
-          <button class="btn btn-primary mt-3"
-                  v-if="sectionActive < 4"
-                  :disabled="
+            <button class="btn btn-primary mt-3"
+                    v-if="sectionActive < 4"
+                    :disabled="
                   !appointment.isAcceptedTerms ||
                   sectionActive === 1 && !appointment.area ||
                   sectionActive === 2 && (!appointment.specialty || !appointment.area) ||
                   sectionActive === 3 && (!appointment.shift || !appointment.appointmentType || !appointment.date)"
-                  @click="handleNextStep"
-          >
-            {{
-              this.sectionActive < 3 ? 'Siguiente' : 'Validar disponibilidad'
-            }}
-          </button>
+                    @click="handleNextStep"
+            >
+              {{
+                this.sectionActive < 3 ? 'Siguiente' : 'Validar disponibilidad'
+              }}
+            </button>
 
 
-          <button class="btn btn-primary mt-3"
-                  v-if="sectionActive === 4"
-                  :disabled="!appointment.isAcceptedTerms   ||
+            <button class="btn btn-primary mt-3"
+                    v-if="sectionActive === 4"
+                    :disabled="!appointment.isAcceptedTerms   ||
                   !creditCard.cvv ||
                   !creditCard.expirationDate.month ||
                    !creditCard.expirationDate.year ||
                    !creditCard.number ||
-                   !creditCard.owner"
-                  @click="saveAppointment"
-          >
-            Pagar
-          </button>
-
-          <!--   TODO: Change values for disables to $v.model.invalid -->
-
-
-          <button class="btn btn-secondary mt-1" @click="toBack">Regresar</button>
-        </div>
-      </b-col>
-
-
-      <b-col class="">
-
-        <custom-not-found-registers :show="!isLoading && pagination.totalRows === 0"></custom-not-found-registers>
-
-        <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 1">
-          <custom-loading-section :busy="isLoading  "/>
-          <b-row>
-            <b-col
-                v-for="(area, index) in listItems"
-                :key="index"
-                cols="12" sm="6" md="4" xl="3"
-                class="d-flex justify-content-center"
+                   !creditCard.owner || isLoading"
+                    @click="saveAppointment"
             >
-              <b-card
-                  @dragover.prevent
-                  @dragenter.prevent
-                  @dragstart="startDrag($event, area, 'area')"
-                  draggable="true"
+              Pagar
+            </button>
 
-                  no-body
-                  class="overflow-hidden mt-3 mx-2 shadow card-animation"
-                  style="max-width: 270px; max-height: 800px; min-width: 100%"
-                  footer-bg-variant="transparent"
-                  footer-border-variant="white"
+            <!--   TODO: Change values for disables to $v.model.invalid -->
+
+
+            <button class="btn btn-secondary mt-1" @click="toBack">Regresar</button>
+          </div>
+        </b-col>
+
+
+        <b-col class="">
+
+          <custom-not-found-registers :show="!isLoading && pagination.totalRows === 0"></custom-not-found-registers>
+
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 1">
+            <custom-loading-section :busy="isLoading  "/>
+            <b-row>
+              <b-col
+                  v-for="(area, index) in listItems"
+                  :key="index"
+                  cols="12" sm="6" md="4" xl="3"
+                  class="d-flex justify-content-center"
               >
-                <b-row no-gutters>
-                  <b-col md="12">
-                    <b-card-img
-                        :src=" area.bannerImage ? area.bannerImage : '/src/assets/image/default-area.avif'"
-                        alt="Image"
-                        class="rounded-0"
-                        height="100"
-                        style="object-fit: cover"
-                    ></b-card-img>
-                  </b-col>
-                  <b-col md="12">
-                    <b-card-body class="pb-0 mb-0">
-                      <b-card-title class="card-title">{{
-                          area.name
-                        }}
-                      </b-card-title>
-                      <b-card-text>
-                        <div>
+                <b-card
+                    @dragover.prevent
+                    @dragenter.prevent
+                    @dragstart="startDrag($event, area, 'area')"
+                    draggable="true"
+
+                    no-body
+                    class="overflow-hidden mt-3 mx-2 shadow card-animation"
+                    style="max-width: 270px; max-height: 800px; min-width: 100%"
+                    footer-bg-variant="transparent"
+                    footer-border-variant="white"
+                >
+                  <b-row no-gutters>
+                    <b-col md="12">
+                      <b-card-img
+                          :src=" area.bannerImage ? area.bannerImage : '/src/assets/image/default-area.avif'"
+                          alt="Image"
+                          class="rounded-0"
+                          height="100"
+                          style="object-fit: cover"
+                      ></b-card-img>
+                    </b-col>
+                    <b-col md="12">
+                      <b-card-body class="pb-0 mb-0">
+                        <b-card-title class="card-title">{{
+                            area.name
+                          }}
+                        </b-card-title>
+                        <b-card-text>
+                          <div>
                           <span
                               v-if="area.description && area.description.length > 50"
                               class="card-description"
@@ -285,97 +307,97 @@
                               }}
                             </a>
                           </span>
-                          <span
-                              v-else-if="area.description"
-                              class="card-description"
-                          >
+                            <span
+                                v-else-if="area.description"
+                                class="card-description"
+                            >
                             {{ area.description }}
                           </span>
-                        </div>
-                      </b-card-text>
-                    </b-card-body>
-                  </b-col>
-                </b-row>
-                <template #footer>
-                  <div>
-                    <b-button variant="primary" block @click="handleItemSelected(area, 'area')"
-                              :disabled="appointment.area?.id === area?.id">
-                      {{
-                        appointment.area?.id === area?.id ? 'Seleccionado' : 'Seleccionar'
-                      }}
-                      <b-icon v-if="appointment.area? appointment.area === area : false " icon="check"
-                              aria-hidden="true" variant="white"/>
-                    </b-button>
-                  </div>
-                </template>
-              </b-card>
-            </b-col>
-          </b-row>
-
-          <section class="position-absolute" v-if="pagination.totalRows !== 0 " style="bottom: 0; width: 100%">
-            <b-row class=" m-0 py-3 py-sm-2 py-lg-1">
-              <b-col cols="6" class="d-flex justify-content-center justify-content-md-start">
-                <b class="font-weight-light text-black-50">
-                  Áreas disponibles {{ pagination.totalRows }}
-                </b>
-              </b-col>
-
-              <b-col cols="6" class="d-flex align-items-end align-items-md-center justify-content-center">
-                <b-pagination
-                    align="center"
-                    size="sm"
-                    class="my-0"
-                    v-model="pagination.page"
-                    :total-rows="pagination.totalRows"
-                    :per-page="pagination.size"
-                    aria-controls="table-transition-example"
-                    @input="getAllAreas"
-                >
-                </b-pagination>
+                          </div>
+                        </b-card-text>
+                      </b-card-body>
+                    </b-col>
+                  </b-row>
+                  <template #footer>
+                    <div>
+                      <b-button variant="primary" block @click="handleItemSelected(area, 'area')"
+                                :disabled="appointment.area?.id === area?.id">
+                        {{
+                          appointment.area?.id === area?.id ? 'Seleccionado' : 'Seleccionar'
+                        }}
+                        <b-icon v-if="appointment.area? appointment.area === area : false " icon="check"
+                                aria-hidden="true" variant="white"/>
+                      </b-button>
+                    </div>
+                  </template>
+                </b-card>
               </b-col>
             </b-row>
+
+            <section class="position-absolute" v-if="pagination.totalRows !== 0 " style="bottom: 0; width: 100%">
+              <b-row class=" m-0 py-3 py-sm-2 py-lg-1">
+                <b-col cols="6" class="d-flex justify-content-center justify-content-md-start">
+                  <b class="font-weight-light text-black-50">
+                    Áreas disponibles {{ pagination.totalRows }}
+                  </b>
+                </b-col>
+
+                <b-col cols="6" class="d-flex align-items-end align-items-md-center justify-content-center">
+                  <b-pagination
+                      align="center"
+                      size="sm"
+                      class="my-0"
+                      v-model="pagination.page"
+                      :total-rows="pagination.totalRows"
+                      :per-page="pagination.size"
+                      aria-controls="table-transition-example"
+                      @input="getAllAreas"
+                  >
+                  </b-pagination>
+                </b-col>
+              </b-row>
+            </section>
           </section>
-        </section>
 
-        <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 2">
-          <custom-loading-section :busy="isLoading  "/>
-          <b-row>
-            <b-col
-                v-for="(speciality, index) in specialtyList"
-                :key="index"
-                cols="12" sm="6" md="4" xl="3"
-                class="d-flex justify-content-center"
-            >
-              <b-card
-                  @dragover.prevent
-                  @dragenter.prevent
-                  @dragstart="startDrag($event, speciality, 'specialty')"
-                  draggable="true"
-                  no-body
-                  class="overflow-hidden mt-3 mx-2 shadow card-animation"
-                  style="max-width: 270px; max-height: 800px; min-width: 100%"
-                  footer-bg-variant="transparent"
-                  footer-border-variant="white"
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 2">
+            <custom-loading-section :busy="isLoading  "/>
+            <b-row>
+              <b-col
+                  v-for="(speciality, index) in specialtyList"
+                  :key="index"
+                  cols="12" sm="6" md="4" xl="3"
+                  class="d-flex justify-content-center"
               >
-                <b-row no-gutters>
-                  <b-col md="12">
-                    <b-card-img
-                        :src=" speciality.bannerImage ? speciality.bannerImage : '/src/assets/image/default-speciality.png'"
-                        alt="Image"
-                        class="rounded-0"
-                        height="100"
-                        style="object-fit: cover"
-                    ></b-card-img>
-                  </b-col>
-                  <b-col md="12">
-                    <b-card-body class="pb-0 mb-0">
+                <b-card
+                    @dragover.prevent
+                    @dragenter.prevent
+                    @dragstart="startDrag($event, speciality, 'specialty')"
+                    draggable="true"
+                    no-body
+                    class="overflow-hidden mt-3 mx-2 shadow card-animation"
+                    style="max-width: 270px; max-height: 800px; min-width: 100%"
+                    footer-bg-variant="transparent"
+                    footer-border-variant="white"
+                >
+                  <b-row no-gutters>
+                    <b-col md="12">
+                      <b-card-img
+                          :src=" speciality.bannerImage ? speciality.bannerImage : '/src/assets/image/default-speciality.png'"
+                          alt="Image"
+                          class="rounded-0"
+                          height="100"
+                          style="object-fit: cover"
+                      ></b-card-img>
+                    </b-col>
+                    <b-col md="12">
+                      <b-card-body class="pb-0 mb-0">
 
-                      <b-card-title class="card-title">{{
-                          speciality.name
-                        }}
-                      </b-card-title>
-                      <b-card-text>
-                        <div>
+                        <b-card-title class="card-title">{{
+                            speciality.name
+                          }}
+                        </b-card-title>
+                        <b-card-text>
+                          <div>
                           <span v-if="speciality.description && speciality.description.length > 50"
                                 class="card-description">
                             {{
@@ -387,290 +409,294 @@
                               }}
                             </a>
                           </span>
-                          <span
-                              v-else-if="speciality.description"
-                              class="card-description"
-                          >
+                            <span
+                                v-else-if="speciality.description"
+                                class="card-description"
+                            >
                             {{ speciality.description }}
                           </span>
-                        </div>
-                        <p class="pb-0 mb-0" v-if="!promotion.isActive">
-                          <b>Costo: </b>
-                          ${{ speciality.cost }}
-                        </p>
-                        <p class="pb-0 mb-0 position-relative" v-else>
-                          <b>Costo: </b>
-                          ${{ speciality.cost - (speciality.cost * promotion.discount.quantity / 100) }}
-                          <sub>
-                            <del class="text-black-50 mr-1">${{ speciality.cost }}</del>
-                          </sub>
-                          <b-icon icon="tag-fill" variant="danger" aria-hidden="true" class="position-absolute"
-                                  style="top:11px;"/>
+                          </div>
+                          <p class="pb-0 mb-0" v-if="!promotion.isActive">
+                            <b>Costo: </b>
+                            ${{ speciality.cost }}
+                          </p>
+                          <p class="pb-0 mb-0 position-relative" v-else>
+                            <b>Costo: </b>
+                            ${{ speciality.cost - (speciality.cost * promotion.discount.quantity / 100) }}
+                            <sub>
+                              <del class="text-black-50 mr-1">${{ speciality.cost }}</del>
+                            </sub>
+                            <b-icon icon="tag-fill" variant="danger" aria-hidden="true" class="position-absolute"
+                                    style="top:11px;"/>
 
-                        </p>
+                          </p>
+                        </b-card-text>
+                      </b-card-body>
+                    </b-col>
+                  </b-row>
+                  <template #footer>
+                    <div>
+                      <b-button variant="primary" block @click="handleItemSelected(speciality, 'specialty')"
+                                :disabled="appointment.specialty?.id === speciality?.id"
+                      >
+                        {{
+                          appointment.specialty?.id === speciality?.id ? 'Seleccionado' : 'Seleccionar'
+                        }}
+
+                        <b-icon v-if="appointment.specialty? appointment.specialty === speciality : false " icon="check"
+                                aria-hidden="true" variant="white"/>
+                      </b-button>
+                    </div>
+                  </template>
+                </b-card>
+              </b-col>
+            </b-row>
+            <section class="position-absolute" v-if="pagination.totalRows !== 0 " style="bottom: 0; width: 100%">
+              <b-row class=" m-0 py-3 py-sm-2 py-lg-1">
+                <b-col cols="6" class="d-flex justify-content-center justify-content-md-start">
+                  <b class="font-weight-light text-black-50">
+                    Especialidades disponibles {{ pagination.totalRows }}
+                  </b>
+                </b-col>
+
+                <b-col cols="6" class="d-flex align-items-end align-items-md-center justify-content-center">
+                  <b-pagination
+                      align="center"
+                      size="sm"
+                      class="my-0"
+                      v-model="pagination.page"
+                      :total-rows="pagination.totalRows"
+                      :per-page="pagination.size"
+                      aria-controls="table-transition-example"
+                      @input="getAllAreas"
+                  >
+                  </b-pagination>
+                </b-col>
+              </b-row>
+            </section>
+          </section>
+
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 3">
+            <custom-loading-section :busy="isLoading" :opacity="0.6"/>
+            <b-row>
+              <b-col cols="12" md="6">
+                <span class="font-weight-bold text-black-50 ml-2">Selecciona una fecha</span>
+                <b-card style="height: 93%" class="d-flex align-items-center p-3" no-body>
+                  <b-calendar
+                      block
+                      v-model="appointment.date"
+                      label-no-date-selected="Selecciona una fecha"
+                      label-selected="Fecha seleccionada"
+                      selected-variant="primary"
+                      :initial-date="new Date(dateTomorrow())"
+                      :min="new Date(dateTomorrow())"
+                      :max="new Date(dateMoreYear(2))"
+                      today-variant="info"
+                      nav-button-variant="primary"
+                      label-help="Usa las flechas simples para navegar entre los meses y las dobles para cambiar de año"
+                  ></b-calendar>
+                </b-card>
+              </b-col>
+              <b-col cols="12" md="6">
+                <span class="font-weight-bold text-black-50 ml-2">Selecciona o arrastra el turno</span>
+                <b-row>
+                  <b-col v-for="(shift, index) in shiftList"
+                         :key="index" cols="12" lg="12"
+                         class="my-4 my-md-0 d-flex justify-content-center px-lg-5"
+                  >
+                    <b-card
+                        class="shadow img-custom-card card-animation my-2"
+                        style="width: 100%;"
+                        :img-src="shift.image"
+                        img-alt="Image"
+                        img-height="60"
+                        no-body
+                        @dragover.prevent
+                        @dragenter.prevent
+                        @dragstart="startDrag($event, shift, 'shift')"
+                        draggable="true"
+                        footer-bg-variant="transparent"
+                        footer-border-variant="white"
+                    >
+                      <b-card-text class="text-center mb-0">
+                        <b-icon :icon="shift.icon" size="2rem"></b-icon>
+                        <p class="m-0 font-weight-bold">{{ shift.name }}</p>
+                        <p class="p-0 m-0">{{ shift.entryHour }} - {{ shift.departureHour }}</p>
                       </b-card-text>
-                    </b-card-body>
+
+                      <template #footer>
+                        <div>
+                          <b-button variant="primary" block @click="handleItemSelected(shift, 'shift')"
+                                    :disabled="appointment.shift?.id === shift.id"
+                          >
+                            {{
+                              appointment.shift?.id === shift.id ? 'Seleccionado' : 'Seleccionar'
+                            }}
+
+                            <b-icon v-if="appointment.shift? appointment.shift === shift : false " icon="check"
+                                    aria-hidden="true" variant="white"/>
+                          </b-button>
+                        </div>
+                      </template>
+                    </b-card>
                   </b-col>
                 </b-row>
-                <template #footer>
-                  <div>
-                    <b-button variant="primary" block @click="handleItemSelected(speciality, 'specialty')"
-                              :disabled="appointment.specialty?.id === speciality?.id"
+
+              </b-col>
+            </b-row>
+
+
+            <hr>
+            <span class="font-weight-bold text-black-50 ml-2">
+            Selecciona o arrastra el tipo de cita
+          </span>
+            <b-row>
+              <b-col v-for="(appointmentType, index) in appointmentTypeList" :key="index"
+                     class="my-4 my-md-0 pt-2 d-flex align-content-stretch">
+                <b-card
+                    class="shadow img-custom-card card-animation h-100"
+                    style="width: 100%;"
+                    @dragover.prevent
+                    @dragenter.prevent
+                    @dragstart="startDrag($event, appointmentType, 'appointmentType')"
+                    draggable="true"
+                    footer-bg-variant="transparent"
+                    footer-border-variant="white"
+                    no-body
+                >
+                  <b-card-text class="text-center m-0 pt-2">
+                    <p class="m-0 font-weight-bold">{{ appointmentType.name }}</p>
+                    <b-icon icon="file-earmark-medical" size="2rem"></b-icon>
+                  </b-card-text>
+                  <template #footer>
+                    <b-button variant="primary" block @click="handleItemSelected(appointmentType, 'appointmentType')"
+                              :disabled="appointment.appointmentType?.id === appointmentType.id"
                     >
                       {{
-                        appointment.specialty?.id === speciality?.id ? 'Seleccionado' : 'Seleccionar'
+                        appointment.appointmentType?.id === appointmentType.id ? 'Seleccionado' : 'Seleccionar'
                       }}
 
-                      <b-icon v-if="appointment.specialty? appointment.specialty === speciality : false " icon="check"
-                              aria-hidden="true" variant="white"/>
-                    </b-button>
-                  </div>
-                </template>
-              </b-card>
-            </b-col>
-          </b-row>
-          <section class="position-absolute" v-if="pagination.totalRows !== 0 " style="bottom: 0; width: 100%">
-            <b-row class=" m-0 py-3 py-sm-2 py-lg-1">
-              <b-col cols="6" class="d-flex justify-content-center justify-content-md-start">
-                <b class="font-weight-light text-black-50">
-                  Especialidades disponibles {{ pagination.totalRows }}
-                </b>
-              </b-col>
+                      <b-icon
+                          v-if="appointment.appointmentType? appointment.appointmentType === appointmentType : false "
+                          icon="check"
+                          aria-hidden="true" variant="white"/>
 
-              <b-col cols="6" class="d-flex align-items-end align-items-md-center justify-content-center">
-                <b-pagination
-                    align="center"
-                    size="sm"
-                    class="my-0"
-                    v-model="pagination.page"
-                    :total-rows="pagination.totalRows"
-                    :per-page="pagination.size"
-                    aria-controls="table-transition-example"
-                    @input="getAllAreas"
-                >
-                </b-pagination>
+                    </b-button>
+                  </template>
+                </b-card>
               </b-col>
             </b-row>
           </section>
-        </section>
 
-        <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 3">
-          <custom-loading-section :busy="isLoading" :opacity="0.6"/>
-          <b-row>
-            <b-col cols="12" md="6">
-              <span class="font-weight-bold text-black-50 ml-2">Selecciona una fecha</span>
-              <b-card style="height: 93%" class="d-flex align-items-center p-3" no-body>
-                <b-calendar
-                    block
-                    v-model="appointment.date"
-                    label-no-date-selected="Selecciona una fecha"
-                    label-selected="Fecha seleccionada"
-                    selected-variant="primary"
-                    :initial-date="new Date(dateTomorrow())"
-                    :min="new Date(dateTomorrow())"
-                    :max="new Date(dateMoreYear(2))"
-                    today-variant="info"
-                    nav-button-variant="primary"
-                    label-help="Usa las flechas simples para navegar entre los meses y las dobles para cambiar de año"
-                ></b-calendar>
-              </b-card>
-            </b-col>
-            <b-col cols="12" md="6">
-              <span class="font-weight-bold text-black-50 ml-2">Selecciona o arrastra el turno</span>
+
+          <section class="mt-2 mt-md-3 position-relative h-75 pb-5" v-else-if="sectionActive === 4">
+            <b-card>
+              <h3 class="text-center pb-4 text-primary">Ingresa los datos de la tarjeta</h3>
               <b-row>
-                <b-col v-for="(shift, index) in shiftList"
-                       :key="index" cols="12" lg="12"
-                       class="my-4 my-md-0 d-flex justify-content-center px-lg-5"
-                >
-                  <b-card
-                      class="shadow img-custom-card card-animation my-2"
-                      style="width: 100%;"
-                      :img-src="shift.image"
-                      img-alt="Image"
-                      img-height="60"
-                      no-body
-                      @dragover.prevent
-                      @dragenter.prevent
-                      @dragstart="startDrag($event, shift, 'shift')"
-                      draggable="true"
-                      footer-bg-variant="transparent"
-                      footer-border-variant="white"
+                <b-col cols="12" md="5" class="mt-5">
+                  <bank-card
+                      :card-holder-p="creditCard.owner"
+                      :card-number-p="creditCard.number"
                   >
-                    <b-card-text class="text-center mb-0">
-                      <b-icon :icon="shift.icon" size="2rem"></b-icon>
-                      <p class="m-0 font-weight-bold">{{ shift.name }}</p>
-                      <p class="p-0 m-0">{{ shift.entryHour }} - {{ shift.departureHour }}</p>
-                    </b-card-text>
-
-                    <template #footer>
-                      <div>
-                        <b-button variant="primary" block @click="handleItemSelected(shift, 'shift')"
-                                  :disabled="appointment.shift?.id === shift.id"
-                        >
-                          {{
-                            appointment.shift?.id === shift.id ? 'Seleccionado' : 'Seleccionar'
-                          }}
-
-                          <b-icon v-if="appointment.shift? appointment.shift === shift : false " icon="check"
-                                  aria-hidden="true" variant="white"/>
-                        </b-button>
-                      </div>
+                    <template #validDate>
+                      {{ !creditCard.expirationDate.month ? 'MM' : creditCard.expirationDate.month }} /
+                      {{ !creditCard.expirationDate.year ? 'YY' : creditCard.expirationDate.year.slice(-2) }}
                     </template>
-                  </b-card>
+                    <template #cvv>
+                      {{ creditCard.cvv ? creditCard.cvv : 'CVV' }}
+                    </template>
+                  </bank-card>
+                </b-col>
+
+                <b-col>
+                  <div>
+                    <b-form-group>
+                      <label for="cardNumber">Número de tarjeta</label>
+                      <b-form-input
+                          id="cardNumber"
+                          placeholder="645879654123"
+                          type="text"
+                          required
+                          v-model.trim="v$.creditCard.number.$model"
+                          trim maxlength="16"
+                          :state=" v$.creditCard.number.$dirty ? !v$.creditCard.number.$error : null"
+                          @blur="v$.creditCard.number.$touch()"
+                      >
+                      </b-form-input>
+                      <b-form-invalid-feedback v-for="error in v$.creditCard.number.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                      </b-form-invalid-feedback>
+                    </b-form-group>
+
+                    <b-form-group>
+                      <label for="cardNumber">Titular de la tarjeta</label>
+                      <b-form-input
+                          id="cardNumber"
+                          placeholder="645879654123"
+                          type="text"
+                          required
+                          v-model.trim="v$.creditCard.owner.$model"
+                          trim maxlength="50"
+                          :state=" v$.creditCard.owner.$dirty ? !v$.creditCard.owner.$error : null"
+                          @blur="v$.creditCard.owner.$touch()"
+                      >
+                      </b-form-input>
+                      <b-form-invalid-feedback v-for="error in v$.creditCard.owner.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                      </b-form-invalid-feedback>
+                    </b-form-group>
+                    <b-form-group>
+                      <label for="expirationDate">Fecha de expiración</label>
+                      <b-row>
+                        <b-col>
+                          <p class="m-0 text-black-50">Mes</p>
+                          <b-form-select :options="listMonths" v-model="creditCard.expirationDate.month">
+                            <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
+                          </b-form-select>
+                        </b-col>
+                        <b-col>
+                          <p class="m-0 text-black-50">Año</p>
+                          <b-form-select :options="listYears" v-model="creditCard.expirationDate.year">
+                            <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
+                          </b-form-select>
+                        </b-col>
+                      </b-row>
+                    </b-form-group>
+
+                    <b-form-group>
+                      <label for="cvv">CVV</label>
+                      <b-form-input
+                          id="cvv"
+                          placeholder="123"
+                          type="password"
+                          required
+                          v-model.trim="v$.creditCard.cvv.$model"
+                          trim
+                          maxlength="3"
+                          :state=" v$.creditCard.cvv.$dirty ? !v$.creditCard.cvv.$error : null"
+                          @blur="v$.creditCard.cvv.$touch()"
+                      >
+                      </b-form-input>
+                      <b-form-invalid-feedback v-for="error in v$.creditCard.cvv.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                      </b-form-invalid-feedback>
+                    </b-form-group>
+                  </div>
+
                 </b-col>
               </b-row>
+            </b-card>
+          </section>
 
-            </b-col>
-          </b-row>
+        </b-col>
+      </b-row>
+
+      <term-and-condition-view @close="handleShowModal('termAndCondition')" :show="modalsShow.termAndCondition"
+                               @ok="handleIsAcceptedTerms"/>
 
 
-          <hr>
-          <span class="font-weight-bold text-black-50 ml-2">
-            Selecciona o arrastra el tipo de cita
-          </span>
-          <b-row>
-            <b-col v-for="(appointmentType, index) in appointmentTypeList" :key="index"
-                   class="my-4 my-md-0 pt-2 d-flex align-content-stretch">
-              <b-card
-                  class="shadow img-custom-card card-animation h-100"
-                  style="width: 100%;"
-                  @dragover.prevent
-                  @dragenter.prevent
-                  @dragstart="startDrag($event, appointmentType, 'appointmentType')"
-                  draggable="true"
-                  footer-bg-variant="transparent"
-                  footer-border-variant="white"
-                  no-body
-              >
-                <b-card-text class="text-center m-0 pt-2">
-                  <p class="m-0 font-weight-bold">{{ appointmentType.name }}</p>
-                  <b-icon icon="file-earmark-medical" size="2rem"></b-icon>
-                </b-card-text>
-                <template #footer>
-                  <b-button variant="primary" block @click="handleItemSelected(appointmentType, 'appointmentType')"
-                            :disabled="appointment.appointmentType?.id === appointmentType.id"
-                  >
-                    {{
-                      appointment.appointmentType?.id === appointmentType.id ? 'Seleccionado' : 'Seleccionar'
-                    }}
-
-                    <b-icon v-if="appointment.appointmentType? appointment.appointmentType === appointmentType : false "
-                            icon="check"
-                            aria-hidden="true" variant="white"/>
-
-                  </b-button>
-                </template>
-              </b-card>
-            </b-col>
-          </b-row>
-        </section>
-
-        <section class="mt-2 mt-md-3 position-relative h-75 pb-5" v-else-if="sectionActive === 4">
-          <custom-loading-section :busy="isLoading  "/>
-          <b-card>
-            <h3 class="text-center pb-4 text-primary">Ingresa los datos de la tarjeta</h3>
-            <b-row>
-              <b-col cols="12" md="5" class="mt-5">
-                <bank-card
-                    :card-holder-p="creditCard.owner"
-                    :card-number-p="creditCard.number"
-                >
-                  <template #validDate>
-                    {{ !creditCard.expirationDate.month ? 'MM' : creditCard.expirationDate.month }} /
-                    {{ !creditCard.expirationDate.year ? 'YY' : creditCard.expirationDate.year.slice(-2) }}
-                  </template>
-                  <template #cvv>
-                    {{ creditCard.cvv ? creditCard.cvv : 'CVV' }}
-                  </template>
-                </bank-card>
-              </b-col>
-
-              <b-col>
-                <div>
-                  <b-form-group>
-                    <label for="cardNumber">Titular de la tarjeta</label>
-                    <b-form-input
-                        id="cardNumber"
-                        placeholder="645879654123"
-                        type="text"
-                        required
-                        v-model.trim="v$.creditCard.owner.$model"
-                        trim maxlength="50"
-                        :state=" v$.creditCard.owner.$dirty ? !v$.creditCard.owner.$error : null"
-                        @blur="v$.creditCard.owner.$touch()"
-                    >
-                    </b-form-input>
-                    <b-form-invalid-feedback v-for="error in v$.creditCard.owner.$errors" :key="error.$uid">
-                      {{ error.$message }}
-                    </b-form-invalid-feedback>
-                  </b-form-group>
-                  <b-form-group>
-                    <label for="cardNumber">Número de tarjeta</label>
-                    <b-form-input
-                        id="cardNumber"
-                        placeholder="645879654123"
-                        type="text"
-                        required
-                        v-model.trim="v$.creditCard.number.$model"
-                        trim maxlength="16"
-                        :state=" v$.creditCard.number.$dirty ? !v$.creditCard.number.$error : null"
-                        @blur="v$.creditCard.number.$touch()"
-                    >
-                    </b-form-input>
-                    <b-form-invalid-feedback v-for="error in v$.creditCard.number.$errors" :key="error.$uid">
-                      {{ error.$message }}
-                    </b-form-invalid-feedback>
-                  </b-form-group>
-                  <b-form-group>
-                    <label for="expirationDate">Fecha de expiración</label>
-                    <b-row>
-                      <b-col>
-                        <p class="m-0 text-black-50">Mes</p>
-                        <b-form-select :options="listMonths" v-model="creditCard.expirationDate.month">
-                          <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
-                        </b-form-select>
-                      </b-col>
-                      <b-col>
-                        <p class="m-0 text-black-50">Año</p>
-                        <b-form-select :options="listYears" v-model="creditCard.expirationDate.year">
-                          <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
-                        </b-form-select>
-                      </b-col>
-                    </b-row>
-                  </b-form-group>
-
-                  <b-form-group>
-                    <label for="cvv">CVV</label>
-                    <b-form-input
-                        id="cvv"
-                        placeholder="123"
-                        type="password"
-                        required
-                        v-model.trim="v$.creditCard.cvv.$model"
-                        trim
-                        maxlength="3"
-                        :state=" v$.creditCard.cvv.$dirty ? !v$.creditCard.cvv.$error : null"
-                        @blur="v$.creditCard.cvv.$touch()"
-                    >
-                    </b-form-input>
-                    <b-form-invalid-feedback v-for="error in v$.creditCard.cvv.$errors" :key="error.$uid">
-                      {{ error.$message }}
-                    </b-form-invalid-feedback>
-                  </b-form-group>
-                </div>
-
-              </b-col>
-            </b-row>
-          </b-card>
-        </section>
-
-      </b-col>
-    </b-row>
-
-    <term-and-condition-view @close="handleShowModal('termAndCondition')" :show="modalsShow.termAndCondition"
-                             @ok="handleIsAcceptedTerms"/>
-
-  </div>
+    </div>
+  </b-overlay>
 </template>
 
 
@@ -698,7 +724,7 @@ export default Vue.extend({
     CustomNotFoundRegisters: () => import("@/modules/patient/appointment/views/components/CustomNotFoundRegisters.vue"),
     TermAndConditionView: () => import("@/modules/patient/appointment/views/components/TermAndConditionView.vue"),
     BankCard: () => import("@/modules/patient/appointment/views/components/BankCard.vue"),
-    CustomLoadingSection: () => import("@/views/components/CustomLoadingSection.vue")
+    CustomLoadingSection: () => import("@/views/components/CustomLoadingSection.vue"),
   },
   mounted() {
     window.addEventListener('beforeunload', this.handleBeforeRouteLeave);
@@ -798,6 +824,8 @@ export default Vue.extend({
         owner: null
       },
 
+      wasAppointmentSaved: false,
+
       errorMessagges: {
         required: 'Este campo es requerido',
         numbers: 'Este campo solo acepta números',
@@ -810,10 +838,10 @@ export default Vue.extend({
       },
     };
   },
-  methods:{
+  methods: {
     isValidSectionData() {
       if (this.sectionActive === 1) {
-        return Boolean(this.appointment.area  && this.appointment.isAcceptedTerms)
+        return Boolean(this.appointment.area && this.appointment.isAcceptedTerms)
       } else if (this.sectionActive === 2) {
         return Boolean(this.appointment.specialty)
       } else if (this.sectionActive === 3) {
@@ -839,7 +867,7 @@ export default Vue.extend({
     },
     handleNextStep() {
 
-      if (!this.isValidSectionData()){
+      if (!this.isValidSectionData()) {
         // TODO: change the alert
         SweetAlertCustom.infoMessage('Por favor, complete todos los campos')
         return
@@ -1038,20 +1066,31 @@ export default Vue.extend({
           shift: {
             id: this.appointment.shift.id
           },
-          payment: {
-            total: this.appointment.specialty.cost,
-            totalPaid: this.appointment.specialty.cost - (this.appointment.specialty.cost * this.promotion.discount.quantity / 100),
-            discount: Number(this.promotion.discount)
-          }
         }
 
+        if (this.promotion.isActive) {
+          payload.payment = {
+            total: Number(this.appointment.specialty.cost),
+            totalPaid: Number(this.appointment.specialty.cost - (this.appointment.specialty.cost * this.promotion.discount.quantity / 100)),
+            discount: Number(this.promotion.discount.quantity)
+          }
+        } else {
+          payload.payment = {
+            total: Number(this.appointment.specialty.cost),
+            totalPaid: Number(this.appointment.specialty.cost),
+            discount: 0
+          }
+        }
 
         payload.payment.charge = await encrypt(JSON.stringify(payload))
         const response = await appointmentController.saveAppointment(payload);
 
-        if (response.id) {
-          SweetAlertCustom.successMessage(null, 'Cita agendada', 'La cita ha sido agendada con éxito')
-          await this.$router.push({name: 'appointment', params: {id: response.id}})
+        if (!response.error) {
+          await SweetAlertCustom.successMessage(1500, 'Cita agendada', 'La cita ha sido agendada con éxito')
+          setTimeout(() => {
+            this.wasAppointmentSaved = true;
+            this.$router.push({name: 'landing'})
+          }, 1500)
         } else {
           this.isLoading = false;
           throw new Error('Error al agendar la cita')
@@ -1097,7 +1136,10 @@ export default Vue.extend({
       return window.confirm('¿Estás seguro de que quieres salir?');
     },
     handleBeforeRouteLeave(e) {
-      if (!this.questionToLeave()) {
+      if(this.wasAppointmentSaved) {
+        e.preventDefault();
+        e.returnValue = '';
+      }else if (this.questionToLeave()) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -1114,9 +1156,12 @@ export default Vue.extend({
     }
   },
   beforeRouteLeave(to, from, next) {
-    if (this.questionToLeave()) {
-      next()
-    } else next(false)
+    if (this.wasAppointmentSaved) next();
+    else if (this.questionToLeave()) {
+      next();
+    } else {
+      next(false);
+    }
   },
   setup() {
     return {
