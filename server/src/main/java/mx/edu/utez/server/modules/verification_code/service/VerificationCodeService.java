@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
 import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
+import mx.edu.utez.server.modules.auth.controller.dto.SignedDto;
 import mx.edu.utez.server.modules.email.controller.dto.EmailDto;
 import mx.edu.utez.server.modules.email.service.EmailService;
+import mx.edu.utez.server.modules.security.jwt.JwtProvider;
 import mx.edu.utez.server.modules.sms.controller.dto.SmsDto;
 import mx.edu.utez.server.modules.sms.service.SmsService;
 import mx.edu.utez.server.modules.status.model.IStatusRepository;
@@ -43,6 +45,7 @@ public class VerificationCodeService {
     private final HashService hashService;
     private final EmailService emailService;
     private final SmsService smsService;
+    private final JwtProvider jwtProvider;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public String generateVerificationCode(User user) {
@@ -106,7 +109,7 @@ public class VerificationCodeService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> updateToVerifyCode(VerificationCodeDto verificationCodeDto) {
+    public ResponseApi<SignedDto> updateToVerifyCode(VerificationCodeDto verificationCodeDto) {
         try {
             String code = verificationCodeDto.getCode();
             String encryptedCode = this.hashService.encrypt(code);
@@ -127,7 +130,9 @@ public class VerificationCodeService {
             verificationCode.setWasUsed(true);
             this.iVerificationCodeRepository.saveAndFlush(verificationCode);
 
-            return new ResponseApi<>(true, HttpStatus.OK, false, "Código verificado");
+            SignedDto signedDto = new SignedDto(jwtProvider.generateRecoveryPassToken(verificationCode.getUser().getUsername()));
+
+            return new ResponseApi<>(signedDto, HttpStatus.OK, false, "Código verificado");
         } catch (Exception e) {
             return new ResponseApi<>(
                     HttpStatus.INTERNAL_SERVER_ERROR,

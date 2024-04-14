@@ -18,7 +18,10 @@ public class DbBinnacleAspect {
     private final DbBinnacleService dbBinnacleService;
     private String loggedUsername;
 
-    @Before("execution(* mx.edu.utez.server.modules.*.service.*Service.save*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.update*(..)) || execution(* mx.edu.utez.server.modules.*.service.*Service.changeStatus*(..))")
+    @Before("execution(* mx.edu.utez.server.modules.*.service.*Service.save*(..)) || " +
+            "execution(* mx.edu.utez.server.modules.*.service.*Service.update*(..)) || " +
+            "execution(* mx.edu.utez.server.modules.*.service.*Service.changeStatus*(..)) || " +
+            "execution(* mx.edu.utez.server.modules.*.service.*Service.credentials*(..))")
     public void setLoggedUsername() {
         try {
             loggedUsername = Methods.getLoggedUsername();
@@ -60,6 +63,18 @@ public class DbBinnacleAspect {
 
         if (result.getData() != null) {
             dbBinnacleService.log("CHANGE STATUS", tableName, serviceName, methodName, loggedUsername);
+        }
+    }
+
+    @Async
+    @AfterReturning(pointcut = "execution(* mx.edu.utez.server.modules.*.service.*Service.credentials*(..))", returning = "result")
+    public void logAfterChangeCredentialsOperation(JoinPoint joinPoint, ResponseApi<?> result) {
+        String methodName = joinPoint.getSignature().getName();
+        String serviceName = joinPoint.getTarget().getClass().getSimpleName();
+        String tableName = Methods.getTableName(serviceName);
+
+        if (result.getData() != null) {
+            dbBinnacleService.log("CHANGE CREDENTIALS", tableName, serviceName, methodName, loggedUsername);
         }
     }
 }
