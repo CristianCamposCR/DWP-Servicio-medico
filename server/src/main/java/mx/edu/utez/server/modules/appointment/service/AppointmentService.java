@@ -228,6 +228,32 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseApi<Page<Appointment>> findAllToReviewByPatient(SearchDto dto, String username, Pageable pageable) {
+        try {
+            Page<Appointment> appointments;
+            if (dto != null && dto.getSearchValue() != null && !dto.getSearchValue().isBlank()) {
+                appointments = this.iAppointmentRepository.findAllToReviewByPatientAndSearchValue(dto.getSearchValue(), username, pageable);
+            } else {
+                appointments = this.iAppointmentRepository.findAllToReviewByPatient(username, pageable);
+            }
+
+            return new ResponseApi<>(
+                    appointments,
+                    HttpStatus.OK,
+                    false,
+                    "Citas sin reseña."
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
+    }
+
+    @Transactional(readOnly = true)
     public ResponseApi<Page<Appointment>> findAllAssignedByDoctor(SearchDto dto, String username, Pageable pageable) {
         try {
             Page<Appointment> appointments;
@@ -513,7 +539,12 @@ public class AppointmentService {
         if (cancellationReason == null)
             return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_CANCELLATION_REASON_FOUND.name());
 
+        Status appointmentStatus = getStatus(Statuses.CANCELADA, StatusType.CITAS);
+        if (appointmentStatus == null)
+            return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
+
         appointment.setCancellationReason(cancellationReason);
+        appointment.setStatus(appointmentStatus);
 
         if (cancellationReason.getRefundPercent() > 0) {
             Payment payment = appointment.getPayment();
@@ -541,6 +572,28 @@ public class AppointmentService {
             throw new MessagingException(Errors.ERROR_SENDING_CODE.name());
 
         return new ResponseApi<>(true, HttpStatus.OK, false, "Notificación de cancelación enviada.");
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseApi<Appointment> findOne(Long id) {
+        try {
+            if (Validations.isInvalidId(id))
+                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.INVALID_FIELDS.name());
+
+            Optional<Appointment> optionalAppointment = iAppointmentRepository.findById(id);
+            return optionalAppointment.map(appointment ->
+                    new ResponseApi<>(appointment, HttpStatus.OK, false, "Cita")
+            ).orElseGet(() ->
+                    new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_APPOINTMENT_FOUND.name())
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseApi<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    true,
+                    Errors.SERVER_ERROR.name()
+            );
+        }
     }
 
     private String genConfirmationAppointmentEmailBody(Appointment appointment) {

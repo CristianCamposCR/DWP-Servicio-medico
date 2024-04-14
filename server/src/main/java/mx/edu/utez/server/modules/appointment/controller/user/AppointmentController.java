@@ -91,6 +91,19 @@ public class AppointmentController {
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @PostMapping("/patient/to-review/paged/")
+    public ResponseEntity<ResponseApi<Page<Appointment>>> findAllToReviewByPatient(@RequestParam(defaultValue = "0", required = false) int page,
+                                                                                   @RequestParam(defaultValue = "10", required = false) int size,
+                                                                                   @RequestParam(defaultValue = "id", required = false) String sort,
+                                                                                   @RequestParam(defaultValue = "asc", required = false) String direction,
+                                                                                   @RequestBody(required = false) @Valid SearchDto searchDto) {
+        String username = Methods.getLoggedUsername();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        ResponseApi<Page<Appointment>> responseApi = this.appointmentService.findAllToReviewByPatient(searchDto, username, pageable);
+        return new ResponseEntity<>(responseApi, responseApi.getStatus());
+    }
+
     @PreAuthorize("hasAuthority('DOCTOR')")
     @PostMapping("/doctor/assigned/paged/")
     public ResponseEntity<ResponseApi<Page<Appointment>>> findAllAssignedByDoctor(@RequestParam(defaultValue = "0", required = false) int page,
@@ -181,6 +194,20 @@ public class AppointmentController {
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.internalServerError().body(new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name()));
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseApi<Appointment>> findOne(@PathVariable("id") String encryptedId) {
+        try {
+            Long id = hashService.decryptId(encryptedId);
+            ResponseApi<Appointment> responseApi = this.appointmentService.findOne(id);
+            return new ResponseEntity<>(responseApi, responseApi.getStatus());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                    new ResponseApi<>(HttpStatus.INTERNAL_SERVER_ERROR, true, Errors.SERVER_ERROR.name())
+            );
         }
     }
 }
