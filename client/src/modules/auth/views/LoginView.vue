@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="mx-3">
-      <b-card no-body class="overflow-hidden shadow" style="width: 30rem">
+      <b-card no-body class="overflow-hidden shadow show-custom" style="width: 30rem">
         <b-tabs
-          content-class="mt-3"
+          content-class="mt-2"
           fill
           active-nav-item-class="font-weight-bold"
         >
@@ -49,18 +49,18 @@ export default Vue.extend({
 </script>
 
 <style>
-.nav-link {
+.show-custom .nav-link {
   color: grey;
   border-color: transparent !important;
   border-bottom: solid #ffffff !important;
 }
-.nav-link.active {
+.show-custom .nav-link.active {
   color: #10b981 !important;
   border-bottom: 3px solid #10b981 !important;
 }
 
 /* Estilos para los enlaces al pasar el cursor */
-.nav-link:hover {
+.show-custom .nav-link:hover {
   color: #10b981 !important;
 }
 </style>
