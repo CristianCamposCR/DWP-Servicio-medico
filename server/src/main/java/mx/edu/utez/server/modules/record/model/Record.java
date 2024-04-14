@@ -1,5 +1,6 @@
 package mx.edu.utez.server.modules.record.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +29,14 @@ import java.time.Instant;
 @Getter
 @Setter
 public class Record {
+    public Record(Long id, String diagnosis, String treatmentNotes, String medications, Appointment appointment) {
+        this.id = id;
+        this.diagnosis = diagnosis;
+        this.treatmentNotes = treatmentNotes;
+        this.medications = medications;
+        this.appointment = appointment;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

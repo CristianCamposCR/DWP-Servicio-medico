@@ -66,17 +66,14 @@ public class AppointmentService {
     final String DATE_TEXT_FORMAT = "EEEE dd 'de' MMMM 'del' yyyy";
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseApi<Boolean> save(SaveAppointmentDto dto) throws MessagingException {
-        Long patientId = dto.getPatient().getId();
+    public ResponseApi<Boolean> save(SaveAppointmentDto dto, String username) throws MessagingException {
         Long specialityId = dto.getSpeciality().getId();
         Long appointmentTypeId = dto.getAppointmentType().getId();
         Long shiftId = dto.getShift().getId();
 
-        if (!patientExists(patientId))
+        Patient patient = getPatientByUsername(username, Statuses.INACTIVO);
+        if (patient == null)
             return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_PATIENT_FOUND.name());
-
-        if (!patientIsActive(patientId))
-            return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.PATIENT_IS_INACTIVE.name());
 
         if (!specialityExists(specialityId))
             return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name());
@@ -110,6 +107,7 @@ public class AppointmentService {
         Appointment appointment = dto.getAppointmentEntity();
         appointment.setStatus(appointmentStatus.get());
         appointment.setFolio(generateFolio(dto.getScheduledAt()));
+        appointment.setPatient(patient);
 
         Appointment savedAppointment = this.iAppointmentRepository.saveAndFlush(appointment);
 
@@ -118,12 +116,11 @@ public class AppointmentService {
         payment.setStatus(paymentStatus.get());
 
         Payment savedPayment = this.iPaymentRepository.saveAndFlush(payment);
-        Optional<Patient> optionalPatient = this.iPatientRepository.findById(dto.getPatient().getId());
 
         String body = genCreationAppointmentEmailBody(savedAppointment, savedPayment);
 
         EmailDto emailDto = new EmailDto(
-                optionalPatient.get().getPerson().getEmail(),
+                patient.getPerson().getEmail(),
                 null,
                 "Compra realizada.",
                 "¡Gracias por tu compra!",
@@ -677,8 +674,9 @@ public class AppointmentService {
         return optionalStatus.orElse(null);
     }
 
-    private boolean patientExists(Long specialityId) {
-        return this.iPatientRepository.existsById(specialityId);
+    private Patient getPatientByUsername(String username, Statuses statusName) {
+        Optional<Patient> optionalPatient = this.iPatientRepository.findByPerson_User_UsernameAndPerson_User_Status_Name_Not(username, statusName);
+        return optionalPatient.orElse(null);
     }
 
     private String getCancellationReasonMessage(CancellationReasons reason) {
@@ -691,8 +689,12 @@ public class AppointmentService {
         };
     }
 
-    private boolean patientIsActive(Long specialityId) {
-        return this.iPatientRepository.existsByIdAndPerson_User_Status_Name(specialityId, Statuses.ACTIVO);
+    private boolean patientExists(Long patientId) {
+        return this.iPatientRepository.existsById(patientId);
+    }
+
+    private boolean patientIsActive(Long patientId) {
+        return this.iPatientRepository.existsByIdAndPerson_User_Status_Name(patientId, Statuses.ACTIVO);
     }
 
     private boolean specialityExists(Long specialityId) {
