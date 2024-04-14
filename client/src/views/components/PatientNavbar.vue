@@ -44,7 +44,7 @@
 <script>
 import Vue from "vue";
 export default Vue.extend({
-  name: "ManagementNavbar",
+  name: "PatientNavbar",
   data() {
     return {
       links: [
