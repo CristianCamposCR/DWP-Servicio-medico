@@ -46,6 +46,7 @@ export default Vue.extend({
         { name: "Áreas", to: "areas-management" },
         { name: "Especialidades", to: "specialties-management" },
         { name: "Pacientes", to: "patient-management" },
+        { name: "Doctores", to: "doctors-management" },
       ],
     };
   },
