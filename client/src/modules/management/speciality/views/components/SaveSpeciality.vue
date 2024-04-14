@@ -87,6 +87,7 @@
           trim
           @keypress="onlynumbers"
           min="0"
+          max="10000"
         ></b-form-input>
         <b-form-invalid-feedback
           v-if="!v$.speciality.cost.required.$response"
@@ -101,6 +102,11 @@
           v-else-if="!v$.speciality.cost.notScript.$response"
         >
           {{ errorMessages.name.noneScripts }}
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback
+          v-else-if="!v$.speciality.cost.maxCost.$response"
+        >
+          {{ errorMessages.cost.maxCost }}
         </b-form-invalid-feedback>
 
         <label class="mt-2">Descripción :&nbsp;</label>
@@ -231,6 +237,9 @@ export default Vue.extend({
           validSizeFile: "La imagen supera los 5 mb permitidos",
           validFile: "El archivo no es una imagen PNG o JPEG",
         },
+        cost:{
+          maxCost: "El costo máximo permitido es de $10000.00"
+        }
       },
       previewImage: null,
       validFile: null,
@@ -244,6 +253,7 @@ export default Vue.extend({
     async getAreas() {
       try {
         const areas = await specialityController.getAreas();
+        console.log(areas)
         this.areasOptions = areas.map((area) => ({
           value: area.id,
           text: area.name,
@@ -407,6 +417,9 @@ export default Vue.extend({
               !isNaN(parseFloat(value)) &&
               parseFloat(value) >= 0
           ),
+          maxCost: (value) => {
+            return value <= 10000
+          }
         },
         area: {
           required: helpers.withMessage(this.errorMessages.required, required),

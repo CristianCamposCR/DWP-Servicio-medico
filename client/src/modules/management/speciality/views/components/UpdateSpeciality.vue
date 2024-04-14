@@ -102,6 +102,11 @@ import { maxLength, minLength } from '@vuelidate/validators';
         >
           {{ errorMessages.name.noneScripts }}
         </b-form-invalid-feedback>
+        <b-form-invalid-feedback
+          v-else-if="!v$.speciality.cost.maxCost.$response"
+        >
+          {{ errorMessages.cost.maxCost }}
+        </b-form-invalid-feedback>
 
         <label class="mt-2">Descripción :&nbsp;</label>
         <b-form-textarea
@@ -237,6 +242,9 @@ export default Vue.extend({
         bannerImage: {
           validSizeFile: "La imagen supera los 5 mb permitidos",
           validFile: "El archivo no es una imagen PNG o JPEG",
+        },
+        cost: {
+          maxCost: "El costo máximo permitido es de $10000.00",
         },
       },
       previewImage: null,
@@ -424,6 +432,9 @@ export default Vue.extend({
               !isNaN(parseFloat(value)) &&
               parseFloat(value) >= 0
           ),
+          maxCost: (value) => {
+            return value <= 10000;
+          },
         },
         area: {
           required: helpers.withMessage(this.errorMessages.required, required),

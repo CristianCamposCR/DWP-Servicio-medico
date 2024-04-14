@@ -21,7 +21,7 @@
         </b-navbar-nav>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <div class="mt-3">Administrador</div>
+          <div class="mt-3 custom-role-nav">Administrador</div>
 
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->

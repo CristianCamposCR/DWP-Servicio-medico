@@ -499,7 +499,7 @@ export default Vue.extend({
         },
         username: {
           valid:
-            "Favor de ingresar un correo o un nombre de usuario válido (caracteres aceptados: . _)",
+            "Favor de ingresar un nombre de usuario válido (caracteres aceptados: . _)",
           minLength: "Mínimo 3 caracteres",
         },
         passwordMissmatch: "Las contraseñas no coinciden",
