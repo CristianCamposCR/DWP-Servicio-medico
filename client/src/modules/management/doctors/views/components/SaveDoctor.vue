@@ -36,10 +36,10 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Apellido paterno:">
+              <b-form-group label="Primer apellido:">
                 <b-form-input
                   id="surname"
-                  placeholder="Apellido paterno"
+                  placeholder="Primer apellido"
                   type="text"
                   required
                   v-model.trim="v$.doctor.surname.$model"
@@ -61,10 +61,10 @@
           </b-row>
           <b-row>
             <b-col cols="12" sm="6">
-              <b-form-group label="Apellido materno:">
+              <b-form-group label="Segundo apellido:">
                 <b-form-input
                   id="lastname"
-                  placeholder="Apellido materno"
+                  placeholder="Segundo apellido"
                   type="text"
                   required
                   v-model.trim="v$.doctor.lastname.$model"
@@ -87,7 +87,7 @@
             </b-col>
 
             <b-col cols="12" sm="6">
-              <b-form-group label="Correo Electrónico">
+              <b-form-group label="Correo electrónico">
                 <b-form-input
                   id="email"
                   placeholder="example@example.com"
@@ -112,7 +112,7 @@
           </b-row>
           <b-row>
             <b-col cols="12" sm="6">
-              <b-form-group label="Genero:">
+              <b-form-group label="Género:">
                 <multi-select
                   id="gender"
                   :class="{
@@ -144,7 +144,7 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Curp:">
+              <b-form-group label="CURP:">
                 <b-form-input
                   id="curp"
                   placeholder="CAAM827343HMNRDYA6"
@@ -167,7 +167,7 @@
           </b-row>
           <b-row>
             <b-col cols="12" sm="6">
-              <b-form-group label="Número de Teléfono:">
+              <b-form-group label="Número de teléfono:">
                 <b-form-input
                   id="phone"
                   placeholder="111-122-8347"
@@ -274,7 +274,7 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Dias disponibles:">
+              <b-form-group label="Días disponibles:">
                 <multi-select
                   id="softskills"
                   :class="{
@@ -308,7 +308,7 @@
 
           <b-row>
             <b-col cols="12" sm="6">
-              <b-form-group label="Selecciona una turno:">
+              <b-form-group label="Selecciona un turno:">
                 <multi-select
                   id="shift"
                   :class="{
@@ -398,10 +398,10 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Cedula profesional:">
+              <b-form-group label="Cédula profesional:">
                 <b-form-input
                   id="professionalId"
-                  placeholder="cedula profesional"
+                  placeholder="Cédula profesional"
                   type="text"
                   required
                   v-model="v$.doctor.professionalId.$model"
@@ -430,7 +430,7 @@
               <b-form-group label="Nombre de usuario:">
                 <b-form-input
                   id="username"
-                  placeholder="doctorMax"
+                  placeholder="Ej. Pablodr"
                   type="text"
                   required
                   v-model="v$.doctor.username.$model"
