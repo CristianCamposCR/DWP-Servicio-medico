@@ -57,8 +57,8 @@
                 <b-col md="12">
                   <b-card-img
                     :src="
-                      doctor.profile
-                        ? doctor.profile
+                      doctor.person.profilePhoto
+                        ? doctor.person.profilePhoto
                         : '/src/assets/image/default-area.avif'
                     "
                     alt="Image"
@@ -118,9 +118,17 @@
                     variant="outline-secondary"
                     v-b-tooltip.hover.v-info
                     title="Editar"
-                    @click="getOneDoctor(doctor.id)"
+                    @click="updateDoctor(doctor.id)"
                     ><b-icon icon="pencil"></b-icon
                   ></b-button>
+                  <b-button
+                  class="ml-3"
+                  variant="outline-secondary"
+                  v-b-tooltip.hover.v-info
+                  title="Ver detalles"
+                  @click="getOneDoctor(doctor.id)"
+                  ><b-icon icon="eye"></b-icon
+                ></b-button>
                 </div>
               </template>
             </b-card>
@@ -159,6 +167,7 @@
       :doctors="doctorSelected"
       @realoadUpdateDoctor="getAllDoctors"
     />
+    <doctor-modal-details :doctor="doctorSelected" />
   </div>
 </template>
 <script>
@@ -180,6 +189,7 @@ export default Vue.extend({
     UpdateDoctor: defineAsyncComponent(() =>
       import("./components/UpdateDoctor.vue")
     ),
+    DoctorModalDetails: defineAsyncComponent(() => import("./components/DetailsDoctor.vue")), 
     NoRegisters: defineAsyncComponent(() =>
       import("../../../../views/components/NoRegisters.vue")
     ),
@@ -209,7 +219,7 @@ export default Vue.extend({
       this.showFullDescriptionIndex =
         this.showFullDescriptionIndex === index ? -1 : index;
     },
-    async getOneDoctor(id) {
+    async updateDoctor(id) {
       try {
         this.isLoading = true;
         const cipherId = await encrypt(id);
@@ -238,6 +248,43 @@ export default Vue.extend({
           resp.availableDays = resultArray;
           this.doctorSelected = resp;
           this.$bvModal.show("update-doctor");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async getOneDoctor(id) {
+      try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await doctorController.getOne(cipherId);
+        console.log(resp);
+        const englishToSpanish = {
+          MONDAY: "Lunes",
+          TUESDAY: "Martes",
+          WEDNESDAY: "Miercoles",
+          THURSDAY: "Jueves",
+          FRIDAY: "Viernes",
+        };
+
+        const { error } = resp;
+        if (!error) {
+          // const daysArray = resp.availableDays
+          //   .replace("[", "")
+          //   .replace("]", "")
+          //   .split(", ")
+          //   .map((day) => englishToSpanish[day]);
+          // const resultArray = daysArray.map((day) => ({
+          //   name: day,
+          //   id: Object.keys(englishToSpanish).find(
+          //     (key) => englishToSpanish[key] === day
+          //   ),
+          // }));
+          // resp.availableDays = resultArray;
+          this.doctorSelected = resp;
+          this.$bvModal.show("doctor-modal-details");
         }
       } catch (error) {
         console.log(error);

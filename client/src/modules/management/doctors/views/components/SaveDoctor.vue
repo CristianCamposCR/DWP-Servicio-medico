@@ -486,11 +486,11 @@
                     </span>
                   </b-input-group-prepend>
                   <b-form-invalid-feedback
-                  v-for="error in v$.doctor.password.$errors"
-                  :key="error.$uid"
-                >
-                  {{ error.$message }}
-                </b-form-invalid-feedback>
+                    v-for="error in v$.doctor.password.$errors"
+                    :key="error.$uid"
+                  >
+                    {{ error.$message }}
+                  </b-form-invalid-feedback>
                 </b-input-group>
               </b-form-group>
             </b-col>
@@ -528,11 +528,32 @@
                     </span>
                   </b-input-group-prepend>
                   <b-form-invalid-feedback
-                  v-for="error in v$.confirmPassword.$errors"
-                  :key="error.$uid"
-                >
-                  {{ error.$message }}
-                </b-form-invalid-feedback>
+                    v-for="error in v$.confirmPassword.$errors"
+                    :key="error.$uid"
+                  >
+                    {{ error.$message }}
+                  </b-form-invalid-feedback>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
+            <b-col cols="12" sm="6">
+              <b-form-group label="Foto de perfil:">
+                <b-input-group>
+                  <b-form-file
+                    @change="handleFileChange"
+                    browse-text="Buscar"
+                    placeholder="Selecciona una imagen"
+                    drop-placeholder="Suelta el archivo aquí..."
+                    accept="image/png, image/jpeg"
+                    :state="validFile && validSizeFile"
+                    ref="profile-photo"
+                  ></b-form-file>
+                  <b-form-invalid-feedback v-if="validFile == false">{{
+                    errorMessages.validFile
+                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback v-else-if="validSizeFile == false">{{
+                    errorMessages.validSizeFile
+                  }}</b-form-invalid-feedback>
                 </b-input-group>
               </b-form-group>
             </b-col>
@@ -580,7 +601,6 @@ export default Vue.extend({
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const maxDate = new Date(today);
     maxDate.setFullYear(maxDate.getFullYear() - 20);
-
     return {
       maxDate: maxDate,
       showPasswordState: false,
@@ -604,8 +624,11 @@ export default Vue.extend({
         details: "",
         username: "",
         password: "",
+        profilePhoto: null
       },
       gendersOptions: [],
+      validFile: null,
+      validSizeFile: null,
       shiftOptions: [],
       isAuxOptions: [
         {
@@ -624,7 +647,6 @@ export default Vue.extend({
         { name: "Jueves", id: "THURSDAY" },
         { name: "Viernes", id: "FRIDAY" },
       ],
-
       specialitiesOptions: [],
       errorMessages: {
         required: "Campo obligatorio",
@@ -633,7 +655,8 @@ export default Vue.extend({
           valid: "Campos inválido - caracteres inválidos",
         },
         noneScripts: "Campo inválido no se aceptan scripts",
-        invalidPassword:"La contraseña debe tener mínimo una mayúscula, un caracter especial (# . _) y un número (longitud de 3 a 16 car.)",
+        invalidPassword:
+          "La contraseña debe tener mínimo una mayúscula, un caracter especial (# . _) y un número (longitud de 3 a 16 car.)",
         passwordMissmatch: "Las contraseñas no coinciden",
         invalidAvailableDays: "selecciona un dia",
         invalidShift: "selecciona un turno",
@@ -641,6 +664,8 @@ export default Vue.extend({
         invalidSpeciality: "selecciona una especialidad",
         invalidEmail: "Correo inválido",
         invalidGender: "Selecciona un género",
+        validFile: "El archivo seleccionado no es una imagen PNG o JPEG.",
+        validSizeFile: "La imagen supera los 5 mb permitidos",
         invalidBirthday: "La edad minima son 20 años",
       },
     };
@@ -675,6 +700,49 @@ export default Vue.extend({
       } catch (error) {
         console.log(error);
       }
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (!this.isValidImage(file)) {
+          this.validFile = false;
+          event.target.value = null;
+          this.doctor.profilePhoto = null;
+          return;
+        }
+        if (this.isInvalidSizeImage(file)) {
+          this.validFile = true;
+          this.validSizeFile = false;
+          event.target.value = null;
+          this.previewImage = null;
+          this.doctor.profilePhoto = null;
+          return;
+        }
+        this.validFile = true;
+        this.validSizeFile = true;
+        this.previewImage = URL.createObjectURL(file);
+        this.convertFileToBase64(file);
+      } else {
+        this.validFile = null;
+        this.validSizeFile = null;
+        this.previewImage = null;
+      }
+    },
+    isValidImage(file) {
+      return file.type === "image/png" || file.type === "image/jpeg";
+    },
+    isInvalidSizeImage(file) {
+      return file.size > 5 * 1024 * 1024;
+    },
+    convertFileToBase64(file) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        this.doctor.profilePhoto = base64String;
+      };
     },
     async getAllShift() {
       try {
@@ -727,6 +795,11 @@ export default Vue.extend({
       this.doctor.details = null;
       this.doctor.username = null;
       this.doctor.password = null;
+      this.$refs["profile-photo"].reset();
+      this.validFile = null;
+      this.validSizeFile = null;
+      this.previewImage = null;
+      this.doctor.profilePhoto = null;
       this.v$.doctor.$reset();
       this.$bvModal.hide("modal-save-doctor");
     },
@@ -745,9 +818,12 @@ export default Vue.extend({
   validations() {
     return {
       confirmPassword: {
-          required: helpers.withMessage(this.errorMessages.required, required),
-          sameAsPassword: helpers.withMessage(this.errorMessages.passwordMissmatch, sameAs(this.doctor.password)),
-        },
+        required: helpers.withMessage(this.errorMessages.required, required),
+        sameAsPassword: helpers.withMessage(
+          this.errorMessages.passwordMissmatch,
+          sameAs(this.doctor.password)
+        ),
+      },
       doctor: {
         experience: {
           required: helpers.withMessage(this.errorMessages.required, required),
@@ -795,7 +871,12 @@ export default Vue.extend({
         },
         password: {
           required: helpers.withMessage(this.errorMessages.required, required),
-          valid: helpers.withMessage(this.errorMessages.invalidPassword, helpers.regex(/^(?=.*[A-Z]+)(?=.*[._#]+)(?=.*[0-9]+)[a-zA-Z0-9._#]{3,16}$/)),
+          valid: helpers.withMessage(
+            this.errorMessages.invalidPassword,
+            helpers.regex(
+              /^(?=.*[A-Z]+)(?=.*[._#]+)(?=.*[0-9]+)[a-zA-Z0-9._#]{3,16}$/
+            )
+          ),
           notScript: helpers.withMessage(
             this.errorMessages.noneScripts,
             (value) => {
