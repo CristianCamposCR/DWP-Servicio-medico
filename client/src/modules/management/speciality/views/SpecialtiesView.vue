@@ -18,7 +18,9 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block>Buscar</b-button>
+              <b-button variant="primary" block @click="getAllSpecialties"
+                >Buscar</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </b-col>
@@ -37,7 +39,7 @@
     <save-speciality @reloadRegisters="getAllSpecialties" />
 
     <!-- listato -->
-    <section class="mt-4 px-5">
+    <section class="mt-4 px-5" v-if="specialties.length > 0">
       <b-row>
         <b-col
           v-for="(speciality, index) in specialties"
@@ -153,10 +155,8 @@
         </b-col>
       </b-row>
     </section>
-    <section class="mt-4">
-      <b-row
-        class="bg-light m-0 py-3 py-sm-2 py-lg-1 d-flex justify-content-center"
-      >
+    <section class="mt-4" v-if="specialties.length > 0">
+      <b-row class="m-0 py-3 py-sm-2 py-lg-1 d-flex justify-content-center">
         <b-col
           cols="6"
           md="6"
@@ -175,6 +175,10 @@
           </b-pagination>
         </b-col>
       </b-row>
+    </section>
+
+    <section class="mt-1" v-if="specialties.length === 0">
+      <no-registers :message="'áreas'" />
     </section>
 
     <update-speciality
@@ -201,6 +205,9 @@ export default Vue.extend({
       import("../../../../views/components/LoadingCustom.vue"),
     UpdateSpeciality: defineAsyncComponent(() =>
       import("./components/UpdateSpeciality.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
     ),
   },
   mounted() {

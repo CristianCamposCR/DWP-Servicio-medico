@@ -18,7 +18,9 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block>Buscar</b-button>
+              <b-button variant="primary" block @click="getAllAreas"
+                >Buscar</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </b-col>
@@ -34,7 +36,7 @@
     </section>
 
     <save-area @reloadRegisters="getAllAreas" />
-    <section class="mt-4 px-5">
+    <section class="mt-4 px-5" v-if="areas.length > 0">
       <b-row>
         <b-col
           v-for="(area, index) in areas"
@@ -64,7 +66,7 @@
                   alt="Image"
                   class="rounded-0"
                   height="160"
-                  style="object-fit: cover; object-position: center;"
+                  style="object-fit: cover; object-position: center"
                 ></b-card-img>
               </b-col>
               <b-col md="12">
@@ -110,27 +112,26 @@
                 <b-button
                   v-if="area.status.name === EStatus.ACTIVE"
                   @click="changeStatus(area.id)"
-                  v-b-tooltip.hover.v-info title="Desactivar"
+                  v-b-tooltip.hover.v-info
+                  title="Desactivar"
                   variant="outline-primary"
                 >
-                  
-                  <b-icon
-                  icon="toggle-on"
-                ></b-icon>
+                  <b-icon icon="toggle-on"></b-icon>
                 </b-button>
                 <b-button
                   v-else-if="area.status.name === EStatus.INACTIVE"
                   @click="changeStatus(area.id)"
-                  v-b-tooltip.hover.v-info title="Activar"
+                  v-b-tooltip.hover.v-info
+                  title="Activar"
                   variant="outline-danger"
-                  >
-                  <b-icon
-                  icon="toggle-off"
-                ></b-icon>
-                  
-                  </b-button
                 >
-                <b-button class="ml-3" variant="outline-secondary" v-b-tooltip.hover.v-info title="Editar"
+                  <b-icon icon="toggle-off"></b-icon>
+                </b-button>
+                <b-button
+                  class="ml-3"
+                  variant="outline-secondary"
+                  v-b-tooltip.hover.v-info
+                  title="Editar"
                   ><b-icon icon="pencil" @click="getOne(area.id)"></b-icon
                 ></b-button>
               </div>
@@ -139,8 +140,10 @@
         </b-col>
       </b-row>
     </section>
-    <section class="mt-4">
-      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
+    <section class="mt-4" v-if="areas.length > 0">
+      <b-row
+        class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center"
+      >
         <b-col
           cols="6"
           md="6"
@@ -159,6 +162,10 @@
           </b-pagination>
         </b-col>
       </b-row>
+    </section>
+
+    <section class="mt-1" v-if="areas.length === 0">
+      <no-registers :message="'áreas'" />
     </section>
 
     <update-area :areaSelected="areaSelected" @reloadRegisters2="getAllAreas" />
@@ -180,6 +187,9 @@ export default Vue.extend({
       import("../../../../views/components/LoadingCustom.vue"),
     UpdateArea: defineAsyncComponent(() =>
       import("./components/UpdateArea.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
     ),
   },
   mounted() {
