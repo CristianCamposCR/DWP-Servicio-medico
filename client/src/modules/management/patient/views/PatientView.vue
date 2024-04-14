@@ -137,7 +137,7 @@
     </section>
 
     <section class="mt-1" v-if="patients.length === 0">
-      <no-registers :message="'áreas'" />
+      <no-registers :message="'pacientes'" />
     </section>
     <ModalPatientView
       :patient="patientSelected"

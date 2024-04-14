@@ -178,7 +178,7 @@
     </section>
 
     <section class="mt-1" v-if="specialties.length === 0">
-      <no-registers :message="'áreas'" />
+      <no-registers :message="'especialidades'" />
     </section>
 
     <update-speciality
