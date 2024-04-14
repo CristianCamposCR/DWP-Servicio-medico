@@ -51,6 +51,40 @@ export default [
           role: rolesAllowed,
         },
       },
+      {
+        path: "appointments-active-management",
+        name: "appointments-active-management",
+        component: () =>
+          import("../modules/management/appointments/views/AppointmentActiveView.vue"),
+        meta: {
+          title: "Citas Activas",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+      {
+        path: "appointments-pending-management",
+        name: "appointments-pending-management",
+        component: () =>
+          import("../modules/management/appointments/views/AppointmentPendingView.vue"),
+        meta: {
+          title: "Citas Pendiente",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+      {
+        path: "appointments-history-management",
+        name: "appointments-history-management",
+        component: () =>
+          import("../modules/management/appointments/views/AppointmentHistoryView.vue"),
+        meta: {
+          title: "HIstorial de Citas",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+      
     ],
   },
 ];
