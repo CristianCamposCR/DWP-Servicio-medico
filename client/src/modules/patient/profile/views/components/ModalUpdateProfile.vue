@@ -350,7 +350,7 @@ export default Vue.extend({
             this.$emit("reloadProfile");
             setTimeout(() => {
               SweetAlertCustom.successMessage();
-            }, 1000);
+            }, 100);
             this.$nextTick(() => this.$bvModal.hide("modal-update-profile"));
             return;
           }

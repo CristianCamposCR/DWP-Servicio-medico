@@ -48,6 +48,9 @@
         >
           {{ errorMessages.name.maxLength }}
         </b-form-invalid-feedback>
+        <b-form-valid-feedback v-else-if="speciality.name.length === 45">{{
+          errorMessages.name.allowedMax
+        }}</b-form-valid-feedback>
 
         <label class="mt-2">
           Selecciona el área de la especialidad :&nbsp;
@@ -112,7 +115,7 @@
           required
           rows="3"
           max-rows="6"
-          maxlenth="200"
+          maxlength="200"
           trim
         ></b-form-textarea>
         <b-form-invalid-feedback
@@ -121,6 +124,9 @@
         >
           {{ error.$message }}
         </b-form-invalid-feedback>
+        <b-form-valid-feedback v-if="speciality.description.length === 200">{{
+          errorMessages.description.allowedMax
+        }}</b-form-valid-feedback>
         <label class="mt-2"> Imagen: </label>
         <b-form-file
           @change="handleFileChange"
@@ -128,11 +134,14 @@
           placeholder="Selecciona una imagen"
           drop-placeholder="Suelta el archivo aquí..."
           accept="image/png, image/jpeg"
-          :state="validFile"
+          :state="validFile && validSizeFile"
           ref="banner-image"
         ></b-form-file>
         <b-form-invalid-feedback v-if="validFile == false">{{
           errorMessages.bannerImage.validFile
+        }}</b-form-invalid-feedback>
+        <b-form-invalid-feedback v-else-if="validSizeFile == false">{{
+          errorMessages.bannerImage.validSizeFile
         }}</b-form-invalid-feedback>
 
         <b-row class="mt-3" v-if="previewImage">
@@ -212,16 +221,20 @@ export default Vue.extend({
           maxLength: "Máximo 45 caracteres",
           noneScripts: "Campo inválido no se aceptar scripts",
           valid: "Campos inválidos - caracteres inválidos",
+          allowedMax: "Se ha alcanzado el máximo de 45 caracteres",
         },
         description: {
           maxLength: "Máximo 200 caracteres",
+          allowedMax: "Se ha alcanzado el máximo de 200 caracteres",
         },
         bannerImage: {
+          validSizeFile: "La imagen supera los 5 mb permitidos",
           validFile: "El archivo no es una imagen PNG o JPEG",
         },
       },
       previewImage: null,
       validFile: null,
+      validSizeFile: null,
     };
   },
   methods: {
@@ -244,6 +257,7 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
+          this.speciality.area = { id: this.speciality.area };
           const resp = await specialityController.saveSpeciality(
             this.speciality
           );
@@ -252,7 +266,7 @@ export default Vue.extend({
             this.$emit("reloadRegisters");
             setTimeout(() => {
               SweetAlertCustom.successMessage();
-            }, 1000);
+            }, 900);
             this.$nextTick(() => this.$bvModal.hide("modal-save-speciality"));
             this.cleanForm();
             return;
@@ -275,6 +289,7 @@ export default Vue.extend({
       };
       this.previewImage = null;
       this.validFile = null;
+      this.validSizeFile = null;
       this.v$.speciality.$reset();
     },
     handleFileChange(event) {
@@ -284,19 +299,32 @@ export default Vue.extend({
           this.validFile = false;
           event.target.value = null;
           this.previewImage = null;
-          this.speciality.bannerImage = null;
+          this.area.bannerImage = null;
+          return;
+        }
+        if (this.isInvalidSizeImage(file)) {
+          this.validFile = true;
+          this.validSizeFile = false;
+          event.target.value = null;
+          this.previewImage = null;
+          this.area.bannerImage = null;
           return;
         }
         this.validFile = true;
+        this.validSizeFile = true;
         this.previewImage = URL.createObjectURL(file);
         this.convertFileToBase64(file);
       } else {
-        this.validFile = true;
+        this.validFile = null;
+        this.validSizeFile = null;
         this.previewImage = null;
       }
     },
     isValidImage(file) {
       return file.type === "image/png" || file.type === "image/jpeg";
+    },
+    isInvalidSizeImage(file) {
+      return file.size > 5 * 1024 * 1024;
     },
     convertFileToBase64(file) {
       const reader = new FileReader();
@@ -338,7 +366,7 @@ export default Vue.extend({
             }
           ),
           valid: helpers.withMessage(this.errorMessages.name.valid, (value) =>
-            /^[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
+            /^[a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
           ),
         },
         description: {
@@ -357,9 +385,7 @@ export default Vue.extend({
             }
           ),
           valid: helpers.withMessage(this.errorMessages.name.valid, (value) =>
-            /^(?:[a-zA-Z0-9][a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*)?$/.test(
-              value
-            )
+            /^[a-zA-ZÁÉÍÓÚáéíóúñÑäëïöü0-9()\-_/,.#\s]*$/.test(value)
           ),
         },
         cost: {

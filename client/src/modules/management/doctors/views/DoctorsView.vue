@@ -264,7 +264,6 @@ export default Vue.extend({
         }));
           resp.availableDays = resultArray
           this.doctorSelected = resp;
-          console.log("DATAONE", resp);
           this.$bvModal.show("update-doctor");
         }
       } catch (error) {

@@ -44,7 +44,6 @@ export default {
         "/open/verification-code/activate_account/",
         { code: payload }
       );
-      console.log("gate", response);
       return response.data;
     } catch (error) {
       return {

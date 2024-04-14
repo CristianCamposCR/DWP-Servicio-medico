@@ -3,13 +3,13 @@
     <b-form @submit.prevent="submitForm">
       <loading-custom :isLoading="isLoading" />
       <div>
-        <bu-button
+        <button
           class="btn btn-transparent position-absolute start-0 top-0 goBack"
           @click="goBack"
           v-b-tooltip.hover.v-info title="Regresar"
         >
           <b-icon icon="arrow-left"></b-icon>
-        </bu-button>
+        </button>
       </div>
       <b-card-img
         src="/src/assets/Hospital.jpg"
