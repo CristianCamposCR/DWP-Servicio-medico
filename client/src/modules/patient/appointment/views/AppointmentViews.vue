@@ -244,8 +244,6 @@
             </button>
 
             <!--   TODO: Change values for disables to $v.model.invalid -->
-
-
             <button class="btn btn-secondary mt-1" @click="toBack">Regresar</button>
           </div>
         </b-col>
@@ -868,8 +866,7 @@ export default Vue.extend({
     handleNextStep() {
 
       if (!this.isValidSectionData()) {
-        // TODO: change the alert
-        SweetAlertCustom.infoMessage('Por favor, complete todos los campos')
+        SweetAlertCustom.invalidForm()
         return
       }
 
