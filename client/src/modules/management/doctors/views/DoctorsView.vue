@@ -32,7 +32,7 @@
           </b-col>
         </b-row>
       </section>
-      <save-doctor @reloadRegisters="getAllDoctors"/>
+      <save-doctor @reloadRegisters="getAllDoctors" />
       <section class="mt-5">
         <b-row>
           <b-col
@@ -110,6 +110,26 @@
               <template #footer>
                 <div>
                   <b-button
+                  v-if="doctor.person.user.status.name === EStatus.ACTIVE"
+                  @click="changeStatus(doctor.person.user.id)"
+                  v-b-tooltip.hover.v-info
+                  title="Desactivar"
+                  variant="outline-primary"
+                >
+                  <b-icon icon="toggle-on"></b-icon>
+                </b-button>
+                <b-button
+                  v-else-if="
+                    doctor.person.user.status.name === EStatus.INACTIVE
+                  "
+                  @click="changeStatus(doctor.person.user.id)"
+                  v-b-tooltip.hover.v-info
+                  title="Activar"
+                  variant="outline-danger"
+                >
+                  <b-icon icon="toggle-off"></b-icon>
+                </b-button>
+                  <b-button
                     class="ml-2"
                     variant="primary"
                     @click="getOneDoctor(doctor.id)"
@@ -166,22 +186,31 @@
         </b-row>
       </section>
     </div>
-    <update-doctor :doctors="doctorSelected" @realoadUpdateDoctor="getAllDoctors" />
+    <update-doctor
+      :doctors="doctorSelected"
+      @realoadUpdateDoctor="getAllDoctors"
+    />
   </div>
 </template>
 <script>
 import Vue, { defineAsyncComponent } from "vue";
 import { EStatus } from "../../../../kernel/types";
 import { encrypt } from "../../../../kernel/hashFunctions";
+import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
 import doctorController from "../services/controller/doctor.controller";
+import boundary from "../boundary";
 
 export default Vue.extend({
   name: "DoctorsPublicView",
   components: {
     LoadingCustom: () =>
       import("../../../../views/components/LoadingCustom.vue"),
-    SaveDoctor: defineAsyncComponent(()=> import("./components/SaveDoctor.vue")),
-    UpdateDoctor: defineAsyncComponent(()=> import("./components/UpdateDoctor.vue"))
+    SaveDoctor: defineAsyncComponent(() =>
+      import("./components/SaveDoctor.vue")
+    ),
+    UpdateDoctor: defineAsyncComponent(() =>
+      import("./components/UpdateDoctor.vue")
+    ),
   },
   data() {
     return {
@@ -212,9 +241,28 @@ export default Vue.extend({
       try {
         const cipherId = await encrypt(id);
         const resp = await doctorController.getOne(cipherId);
+        const englishToSpanish = {
+          MONDAY: "Lunes",
+          TUESDAY: "Martes",
+          WEDNESDAY: "Miercoles",
+          THURSDAY: "Jueves",
+          FRIDAY: "Viernes",
+        };
+        
         const { error } = resp;
         if (!error) {
-          resp.availableDays = resp.availableDays.split(',').map(day => day.trim());
+          const daysArray = resp.availableDays
+          .replace("[", "")
+          .replace("]", "")
+          .split(", ")
+          .map((day) => englishToSpanish[day]);
+        const resultArray = daysArray.map((day) => ({
+          name: day,
+          id: Object.keys(englishToSpanish).find(
+            (key) => englishToSpanish[key] === day
+          ),
+        }));
+          resp.availableDays = resultArray
           this.doctorSelected = resp;
           console.log("DATAONE", resp);
           this.$bvModal.show("update-doctor");
@@ -239,6 +287,25 @@ export default Vue.extend({
         console.log(error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    async changeStatus(id) {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          const cipherId = await encrypt(id);
+          const resp = await boundary.userController.changeStatus(cipherId);
+          const { error } = resp;
+          if (!error) {
+            this.getAllDoctors();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 100);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
   },

@@ -38,8 +38,33 @@
             <b-col cols="12" sm="6">
               <b-form-group label="Apellido paterno:">
                 <b-form-input
-                  id="lastname"
+                  id="surname"
                   placeholder="Apellido paterno"
+                  type="text"
+                  required
+                  v-model.trim="v$.doctor.surname.$model"
+                  trim
+                  :state="
+                    v$.doctor.surname.$dirty ? !v$.doctor.surname.$error : null
+                  "
+                  @blur="v$.doctor.surname.$touch()"
+                >
+                </b-form-input>
+                <b-form-invalid-feedback
+                  v-for="error in v$.doctor.surname.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </b-form-invalid-feedback>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="12" sm="6">
+              <b-form-group label="Apellido materno:">
+                <b-form-input
+                  id="lastname"
+                  placeholder="Apellido materno"
                   type="text"
                   required
                   v-model.trim="v$.doctor.lastname.$model"
@@ -54,31 +79,6 @@
                 </b-form-input>
                 <b-form-invalid-feedback
                   v-for="error in v$.doctor.lastname.$errors"
-                  :key="error.$uid"
-                >
-                  {{ error.$message }}
-                </b-form-invalid-feedback>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col cols="12" sm="6">
-              <b-form-group label="Apellido materno:">
-                <b-form-input
-                  id="surname"
-                  placeholder="Apellido materno"
-                  type="text"
-                  required
-                  v-model.trim="v$.doctor.surname.$model"
-                  trim
-                  :state="
-                    v$.doctor.surname.$dirty ? !v$.doctor.surname.$error : null
-                  "
-                  @blur="v$.doctor.surname.$touch()"
-                >
-                </b-form-input>
-                <b-form-invalid-feedback
-                  v-for="error in v$.doctor.surname.$errors"
                   :key="error.$uid"
                 >
                   {{ error.$message }}
@@ -144,22 +144,20 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Dirección">
+              <b-form-group label="Curp:">
                 <b-form-input
-                  id="address"
-                  placeholder="Calle 0 col 3243"
+                  id="curp"
+                  placeholder="CAAM827343HMNRDYA6"
                   type="text"
                   required
-                  v-model.trim="v$.doctor.details.$model"
+                  v-model.trim="v$.doctor.curp.$model"
                   trim
-                  :state="
-                    v$.doctor.details.$dirty ? !v$.doctor.details.$error : null
-                  "
-                  @blur="v$.doctor.details.$touch()"
+                  :state="v$.doctor.curp.$dirty ? !v$.doctor.curp.$error : null"
+                  @blur="v$.doctor.curp.$touch()"
                 >
                 </b-form-input>
                 <b-form-invalid-feedback
-                  v-for="error in v$.doctor.details.$errors"
+                  v-for="error in v$.doctor.curp.$errors"
                   :key="error.$uid"
                 >
                   {{ error.$message }}
@@ -169,7 +167,7 @@
           </b-row>
           <b-row>
             <b-col cols="12" sm="6">
-              <b-form-group label="Número de Teléfono">
+              <b-form-group label="Número de Teléfono:">
                 <b-form-input
                   id="phone"
                   placeholder="111-122-8347"
@@ -194,36 +192,59 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Fecha de nacimiento">
+              <b-form-group label="Fecha de nacimiento:">
                 <b-form-datepicker
-                id="birthday"
-                class="mb-2"
-                placeholder="Selecciona una fecha"
-                :label-help="null"
-                v-model="v$.doctor.birthday.$model"
-                :state="
-                  v$.doctor.birthday.$dirty ? !v$.doctor.birthday.$error : null
-                "
-                @blur="v$.doctor.birthday.$touch()"
-                label-current-month="Fecha máxima"
-                hide-header
-                :date-format-options="{
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                }"
-                :max="maxDate"
-                @hide="v$.doctor.birthday.$touch()"
-              ></b-form-datepicker>
-              <b-form-invalid-feedback
-                v-for="error in v$.doctor.birthday.$errors"
-                :key="error.$uid"
-              >
-                {{ error.$message }}
-              </b-form-invalid-feedback>
-            </b-form-group>
+                  id="birthday"
+                  class="mb-2"
+                  placeholder="Selecciona una fecha"
+                  :label-help="null"
+                  v-model="v$.doctor.birthday.$model"
+                  :state="
+                    v$.doctor.birthday.$dirty
+                      ? !v$.doctor.birthday.$error
+                      : null
+                  "
+                  @blur="v$.doctor.birthday.$touch()"
+                  label-current-month="Fecha máxima"
+                  hide-header
+                  :date-format-options="{
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                  }"
+                  :max="maxDate"
+                  @hide="v$.doctor.birthday.$touch()"
+                ></b-form-datepicker>
+                <b-form-invalid-feedback
+                  v-for="error in v$.doctor.birthday.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </b-form-invalid-feedback>
+              </b-form-group>
             </b-col>
           </b-row>
+          <b-form-group label="Dirección:">
+            <b-form-input
+              id="address"
+              placeholder="Calle 0 col 3243"
+              type="text"
+              required
+              v-model.trim="v$.doctor.details.$model"
+              trim
+              :state="
+                v$.doctor.details.$dirty ? !v$.doctor.details.$error : null
+              "
+              @blur="v$.doctor.details.$touch()"
+            >
+            </b-form-input>
+            <b-form-invalid-feedback
+              v-for="error in v$.doctor.details.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </b-form-invalid-feedback>
+          </b-form-group>
         </b-tab>
         <b-tab title="Información Profesional">
           <b-row>
@@ -255,24 +276,26 @@
             <b-col cols="12" sm="6">
               <b-form-group label="Dias disponibles:">
                 <multi-select
-                  id="availableDays"
+                  id="softskills"
                   :class="{
                     'is-invalid': v$.doctor.availableDays.$error,
                     'is-valid': !v$.doctor.availableDays.$invalid,
                   }"
                   v-model="v$.doctor.availableDays.$model"
-                  placeholder="Selecciona de 1 a 5 días"
+                  placeholder="Selecciona por lo menos un dia"
+                  label="name"
                   :options="availableDaysOptions"
+                  track-by="name"
                   :multiple="true"
                   selectLabel="Presiona enter para seleccionar"
                   deselectLabel="Presiona enter para eliminar"
                   selectedLabel="Seleccionado"
                   @close="v$.doctor.availableDays.$touch()"
+                  ><template slot="noResult">No hay resultados</template>
+                  <template slot="noOptions"
+                    >No hay opciones</template
+                  ></multi-select
                 >
-                  <template slot="noResult">No hay resultados</template>
-                  <template slot="noOptions">No hay opciones</template>
-                </multi-select>
-
                 <b-form-invalid-feedback
                   v-for="error in v$.doctor.availableDays.$errors"
                   :key="error.$uid"
@@ -322,7 +345,7 @@
                   v-for="opc in isAuxOptions"
                   :key="opc.id"
                   name="isAux"
-                  v-model="doctor.isAux"
+                  v-model="v$.doctor.isAux.$model"
                   :state="
                     v$.doctor.isAux.$dirty ? !v$.doctor.isAux.$error : null
                   "
@@ -429,7 +452,7 @@
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Contraseña">
+              <b-form-group label="Contraseña:">
                 <b-input-group>
                   <b-form-input
                     id="password"
@@ -463,22 +486,30 @@
                     </span>
                   </b-input-group-prepend>
                   <b-form-invalid-feedback
-                    v-for="error in v$.doctor.password.$errors"
-                    :key="error.$uid"
-                  >
-                    {{ error.$message }}
-                  </b-form-invalid-feedback>
+                  v-for="error in v$.doctor.password.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </b-form-invalid-feedback>
                 </b-input-group>
               </b-form-group>
             </b-col>
             <b-col cols="12" sm="6">
-              <b-form-group label="Confirma contraseña">
+              <b-form-group label="Confirma contraseña:">
                 <b-input-group>
                   <b-form-input
                     id="confirmPassword"
                     :type="showConfirmPasswordState ? 'text' : 'password'"
                     placeholder="Confirmar contraseña"
                     style="border-right: none !important"
+                    v-model="v$.confirmPassword.$model"
+                    trim
+                    :state="
+                      v$.confirmPassword.$dirty
+                        ? !v$.confirmPassword.$error
+                        : null
+                    "
+                    @blur="v$.confirmPassword.$touch()"
                   >
                   </b-form-input>
                   <b-input-group-prepend>
@@ -496,6 +527,12 @@
                       ></b-icon>
                     </span>
                   </b-input-group-prepend>
+                  <b-form-invalid-feedback
+                  v-for="error in v$.confirmPassword.$errors"
+                  :key="error.$uid"
+                >
+                  {{ error.$message }}
+                </b-form-invalid-feedback>
                 </b-input-group>
               </b-form-group>
             </b-col>
@@ -528,6 +565,7 @@ import {
   minLength,
   maxLength,
   email,
+  sameAs,
 } from "@vuelidate/validators";
 import doctorController from "../../services/controller/doctor.controller";
 import { encrypt } from "../../../../../kernel/hashFunctions";
@@ -550,6 +588,7 @@ export default Vue.extend({
       confirmPassword: "",
       doctor: {
         professionalId: "",
+        curp: "",
         experience: "",
         isAux: null,
         availableDays: "",
@@ -579,20 +618,23 @@ export default Vue.extend({
         },
       ],
       availableDaysOptions: [
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
+        { name: "Lunes", id: "MONDAY" },
+        { name: "Martes", id: "TUESDAY" },
+        { name: "Miercoles", id: "WEDNESDAY" },
+        { name: "Jueves", id: "THURSDAY" },
+        { name: "Viernes", id: "FRIDAY" },
       ],
+
       specialitiesOptions: [],
       errorMessages: {
         required: "Campo obligatorio",
         experience: {
           minLength: "Mínimo 1 digito",
-          noneScripts: "Campo inválido no se aceptan scripts",
           valid: "Campos inválido - caracteres inválidos",
         },
+        noneScripts: "Campo inválido no se aceptan scripts",
+        invalidPassword:"La contraseña debe tener mínimo una mayúscula, un caracter especial (# . _) y un número (longitud de 3 a 16 car.)",
+        passwordMissmatch: "Las contraseñas no coinciden",
         invalidAvailableDays: "selecciona un dia",
         invalidShift: "selecciona un turno",
         invalidIsAux: "selecciona si es auxiliar",
@@ -608,18 +650,25 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
-          const password = await encrypt(this.doctor.password);
-          this.doctor.password = password;
-          const professional = await encrypt(this.doctor.professionalId);
-          this.doctor.professionalId = professional;
-          const resp = await doctorController.saveDoctor(this.doctor);
+          console.log(this.doctor.availableDays);
+          const englishDaysString =
+            "[" +
+            this.doctor.availableDays.map((day) => day.id).join(", ") +
+            "]";
+          const resp = await doctorController.saveDoctor({
+            ...this.doctor,
+            professionalId: await encrypt(this.doctor.professionalId),
+            password: await encrypt(this.doctor.password),
+            availableDays: englishDaysString,
+          });
           const { error } = resp;
           if (!error) {
             this.$emit("reloadRegisters");
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 1000);
-            this.$nextTick(() => this.$bvModal.hide("save-doctor"));
+            this.v$.doctor.$reset();
+            this.$nextTick(() => this.$bvModal.hide("modal-save-doctor"));
             return;
           }
         }
@@ -695,6 +744,10 @@ export default Vue.extend({
   },
   validations() {
     return {
+      confirmPassword: {
+          required: helpers.withMessage(this.errorMessages.required, required),
+          sameAsPassword: helpers.withMessage(this.errorMessages.passwordMissmatch, sameAs(this.doctor.password)),
+        },
       doctor: {
         experience: {
           required: helpers.withMessage(this.errorMessages.required, required),
@@ -703,7 +756,7 @@ export default Vue.extend({
             minLength(1)
           ),
           notScript: helpers.withMessage(
-            this.errorMessages.experience.noneScripts,
+            this.errorMessages.noneScripts,
             (value) => {
               return !/<.*?script.*\/?>/gi.test(value);
             }
@@ -742,13 +795,13 @@ export default Vue.extend({
         },
         password: {
           required: helpers.withMessage(this.errorMessages.required, required),
-          valid: helpers.withMessage(
-            "Formato incorrecto, la contraseñá Debe tener al menos 8 caracteres de longitud, debe contener al menos una letra mayúscula (A-Z), debe contener al menos una letra minúscula (a-z), debe contener al menos un número (0-9), debe contener al menos un caracter especial",
-            helpers.regex(
-              /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+\\\|\[\]{};:'",.<>/?]).{8,}$/
-            )
+          valid: helpers.withMessage(this.errorMessages.invalidPassword, helpers.regex(/^(?=.*[A-Z]+)(?=.*[._#]+)(?=.*[0-9]+)[a-zA-Z0-9._#]{3,16}$/)),
+          notScript: helpers.withMessage(
+            this.errorMessages.noneScripts,
+            (value) => {
+              return !/<.*?script.*\/?>/gi.test(value);
+            }
           ),
-          minLength: helpers.withMessage("Mínimo 8 caracteres", minLength(8)),
         },
         name: {
           required: helpers.withMessage(this.errorMessages.required, required),
@@ -768,7 +821,7 @@ export default Vue.extend({
           minLength: helpers.withMessage("Mínimo 3 caracteres", minLength(3)),
           maxLength: helpers.withMessage("Máximo 50 caracteres", maxLength(50)),
         },
-        lastname: {
+        surname: {
           required: helpers.withMessage(this.errorMessages.required, required),
           valid: helpers.withMessage(
             "Campo inválido, solo se aceptan letras y puntos",
@@ -786,7 +839,7 @@ export default Vue.extend({
           minLength: helpers.withMessage("Mínimo 3 caracteres", minLength(3)),
           maxLength: helpers.withMessage("Máximo 20 caracteres", maxLength(20)),
         },
-        surname: {
+        lastname: {
           valid: helpers.withMessage(
             "Campo inválido, solo se aceptan letras y puntos",
             (value) => {
@@ -845,5 +898,11 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
+<style>
+.is-invalid > .multiselect__tags {
+  border-color: #dc3545;
+}
+.is-valid > .multiselect__tags {
+  border-color: #28a745;
+}
 </style>

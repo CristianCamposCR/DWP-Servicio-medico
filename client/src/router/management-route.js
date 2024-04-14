@@ -40,6 +40,18 @@ export default [
           role: rolesAllowed,
         },
       },
+      {
+        path: "doctors-management",
+        name: "doctors-management",
+        component: () =>
+          import("../modules/management/doctors/views/DoctorsView.vue"),
+        meta: {
+          title: "Doctores",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+
     ],
   },
 ];

@@ -95,7 +95,7 @@
                       v-model="v$.patient.person.gender.$model"
                       placeholder="Selecciona un género"
                       label="name"
-                      :options="genders"
+                      :options="gendersOptions"
                       track-by="name"
                       :multiple="false"
                       selectLabel="Presiona enter para seleccionar"
@@ -302,10 +302,7 @@ export default Vue.extend({
     maxDate.setFullYear(maxDate.getFullYear());
     return {
       maxDate: maxDate,
-      genders: [
-        { name: "Masculino", id: 1 },
-        { name: "Femenino", id: 2 },
-      ],
+      gendersOptions: [],
       patient: {
         person: {
         id: this.patients.person.id,
@@ -313,9 +310,7 @@ export default Vue.extend({
         lastname: this.patients.person.lastname,
         surname: this.patients.person.surname,
         curp: this.patients.person.curp,
-        gender: {
-          id: this.patients.person.gender.id
-        },
+        gender: this.patients.person.gender,
         phoneNumber: this.patients.person.phoneNumber,
         details: this.patients.person.details,
         email: this.patients.person.email,
@@ -333,6 +328,17 @@ export default Vue.extend({
   methods: {
     onClose() {
       this.$bvModal.hide("modal-update-profile");
+    },
+    async getAllGender() {
+      try {
+        const genders = await boundary.genderController.getAllGender();
+        this.gendersOptions = genders.map((gender) => ({
+          id: gender.id,
+          name: gender.name,
+        }));
+      } catch (error) {
+        console.error("Error al obtener los turnos:", error);
+      }
     },
     async updateProfile() {
       try {
@@ -353,6 +359,9 @@ export default Vue.extend({
         console.log(error);
       }
     },
+  },
+  mounted(){
+    this.getAllGender();
   },
   validations() {
     return {
