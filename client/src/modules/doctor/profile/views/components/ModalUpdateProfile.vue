@@ -248,7 +248,25 @@
                       {{ error.$message }}
                     </b-form-invalid-feedback>
                   </b-form-group>
-                 
+                  <b-form-group label="Foto de perfil:">
+                <b-input-group>
+                  <b-form-file
+                    @change="handleFileChange"
+                    browse-text="Buscar"
+                    placeholder="Selecciona una imagen"
+                    drop-placeholder="Suelta el archivo aquí..."
+                    accept="image/png, image/jpeg"
+                    :state="validFile && validSizeFile"
+                    ref="profile-photo"
+                  ></b-form-file>
+                  <b-form-invalid-feedback v-if="validFile == false">{{
+                    errorMessages.validFile
+                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback v-else-if="validSizeFile == false">{{
+                    errorMessages.validSizeFile
+                  }}</b-form-invalid-feedback>
+                </b-input-group>
+              </b-form-group>
                 </div>
               </div>
             </div>
@@ -315,6 +333,7 @@ export default Vue.extend({
         details: this.doctors.person.details,
         email: this.doctors.person.email,
         birthday: this.doctors.person.birthday,
+        profilePhoto: this.doctors.person.profilePhoto,
       }
       },
       errorMessagges: {
@@ -322,12 +341,54 @@ export default Vue.extend({
         invalidEmail: "Correo inválido",
         invalidGender: "Selecciona un género",
         invalidBirthday: "La fecha debe ser al menos hace un mes anterior a este",
+        validFile: "El archivo seleccionado no es una imagen PNG o JPEG.",
+        validSizeFile: "La imagen supera los 5 mb permitidos",
       },
     };
   },
   methods: {
     onClose() {
       this.$bvModal.hide("modal-update-profile");
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (!this.isValidImage(file)) {
+          this.validFile = false;
+          event.target.value = null;
+          this.doctor.person.profilePhoto = null;
+          return;
+        }
+        if (this.isInvalidSizeImage(file)) {
+          this.validFile = true;
+          this.validSizeFile = false;
+          event.target.value = null;
+          this.doctor.person.profilePhoto = null;
+          return;
+        }
+        this.validFile = true;
+        this.validSizeFile = true;
+        this.convertFileToBase64(file);
+      } else {
+        this.validFile = null;
+        this.validSizeFile = null;
+      }
+    },
+    isValidImage(file) {
+      return file.type === "image/png" || file.type === "image/jpeg";
+    },
+    isInvalidSizeImage(file) {
+      return file.size > 5 * 1024 * 1024;
+    },
+    convertFileToBase64(file) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        this.doctor.person.profilePhoto = base64String;
+      };
     },
     async getAllGender() {
       try {

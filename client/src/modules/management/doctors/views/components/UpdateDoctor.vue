@@ -4,6 +4,7 @@
     centered
     hide-footer
     scrollable
+    :no-close-on-backdrop="true"
     title="Actualizar Doctor"
   >
     <b-form fluid>
@@ -162,6 +163,27 @@
                 {{ error.$message }}
               </b-form-invalid-feedback>
             </b-form-group>
+            <b-col cols="12" sm="6">
+              <b-form-group label="Foto de perfil:">
+                <b-input-group>
+                  <b-form-file
+                    @change="handleFileChange"
+                    browse-text="Buscar"
+                    placeholder="Selecciona una imagen"
+                    drop-placeholder="Suelta el archivo aquí..."
+                    accept="image/png, image/jpeg"
+                    :state="validFile && validSizeFile"
+                    ref="profile-photo"
+                  ></b-form-file>
+                  <b-form-invalid-feedback v-if="validFile == false">{{
+                    errorMessages.validFile
+                  }}</b-form-invalid-feedback>
+                  <b-form-invalid-feedback v-else-if="validSizeFile == false">{{
+                    errorMessages.validSizeFile
+                  }}</b-form-invalid-feedback>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
         </b-col>
       </b-row>
       <div class="col-12 mt-4 px-5 d-flex justify-content-between">
@@ -214,6 +236,8 @@ export default Vue.extend({
         { name: "Jueves", id: "THURSDAY" },
         { name: "Viernes", id: "FRIDAY" },
       ],
+      validFile: null,
+      validSizeFile: null,
       specialitiesOptions: [],
       errorMessages: {
         required: "Campo obligatorio",
@@ -224,6 +248,8 @@ export default Vue.extend({
         },
         invalidAvailableDays: "selecciona un dia",
         invalidShift: "selecciona un turno",
+        validFile: "El archivo seleccionado no es una imagen PNG o JPEG.",
+        validSizeFile: "La imagen supera los 5 mb permitidos",
         invalidIsAux: "selecciona si es auxiliar",
         invalidSpeciality: "selecciona una especialidad",
       },
@@ -254,6 +280,46 @@ export default Vue.extend({
       } catch (error) {
         console.log(error);
       }
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (!this.isValidImage(file)) {
+          this.validFile = false;
+          event.target.value = null;
+          this.doctor.profilePhoto = null;
+          return;
+        }
+        if (this.isInvalidSizeImage(file)) {
+          this.validFile = true;
+          this.validSizeFile = false;
+          event.target.value = null;
+          this.doctor.profilePhoto = null;
+          return;
+        }
+        this.validFile = true;
+        this.validSizeFile = true;
+        this.convertFileToBase64(file);
+      } else {
+        this.validFile = null;
+        this.validSizeFile = null;
+      }
+    },
+    isValidImage(file) {
+      return file.type === "image/png" || file.type === "image/jpeg";
+    },
+    isInvalidSizeImage(file) {
+      return file.size > 5 * 1024 * 1024;
+    },
+    convertFileToBase64(file) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result;
+        this.doctor.profilePhoto = base64String;
+      };
     },
     async getAllShift() {
       try {

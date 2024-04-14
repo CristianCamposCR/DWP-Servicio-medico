@@ -3,28 +3,43 @@
     <h1 class="title">Perfil</h1>
     <div class="profile-container">
       <div class="profile-section">
-        <div class="profile-image"></div>
+        <div class="profile-image">
+          <b-img
+            v-if="doctor.person.profilePhoto"
+            :src="doctor.person.profilePhoto"
+            alt="Perfil" class="profile-image"
+            fluid
+            rounded
+          ></b-img>
+        </div>
       </div>
       <div class="profile-section">
         <div class="user-info">
-          <h2>{{ doctor.person.name}} {{ doctor.person.surname  }} {{ doctor.person.lastname }}</h2>
+          <h2>
+            {{ doctor.person.name }} {{ doctor.person.surname }}
+            {{ doctor.person.lastname }}
+          </h2>
           <p><b>Email: </b>{{ doctor.person.email }}</p>
           <p><b>Teléfono: </b>{{ doctor.person.phoneNumber }}</p>
-          <p><b>Dirección: </b>{{ doctor.person.details ? doctor.person.details : 'N/A' }}</p>
+          <p>
+            <b>Dirección: </b
+            >{{ doctor.person.details ? doctor.person.details : "N/A" }}
+          </p>
         </div>
-        <b-button class="custom-button" @click="editProfile">Editar Perfil</b-button>
+        <b-button class="custom-button" @click="editProfile"
+          >Editar Perfil</b-button
+        >
       </div>
     </div>
-    <ModalUpdateProfile :doctors="doctor" @reloadProfile="getProfile"/>
+    <ModalUpdateProfile :doctors="doctor" @reloadProfile="getProfile" />
   </div>
 </template>
 
-
 <script>
-import ModalUpdateProfile from './components/ModalUpdateProfile.vue';
-import profileController from '../services/controlller/profile.controller'
+import ModalUpdateProfile from "./components/ModalUpdateProfile.vue";
+import profileController from "../services/controlller/profile.controller";
 export default {
-  components:{ModalUpdateProfile},
+  components: { ModalUpdateProfile },
   data() {
     return {
       doctor: {},
@@ -53,19 +68,16 @@ export default {
 };
 </script>
 
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #434547;
-
 }
 
 .title {
   position: absolute;
   top: 90px;
   left: 20px;
-
 }
 
 .profile-container {
@@ -73,7 +85,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-
 }
 
 .profile-section {
@@ -97,7 +108,6 @@ export default {
   background-color: #495157;
   margin-right: 20px;
   border-radius: 15px;
-
 }
 
 .user-info {
