@@ -14,7 +14,8 @@
             v-for="link in links"
             :key="link.name"
             :to="link.to"
-            class="custom-nav-font"
+            class="custom-nav-font custom-link"
+            exact-active-class="active-link"
           >
             {{ link.name }}
           </b-nav-item>
@@ -73,3 +74,25 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style scoped>
+.custom-link {
+  transition: all 0.3s;
+}
+.active-link {
+  color: #10b981 !important;
+}
+
+.custom-link:hover {
+  scale: 1.1;
+
+}
+
+@media (max-width: 1000px) {
+  .custom-link {
+    &:hover {
+      scale: 1.01;
+    }
+  }
+}
+</style>
