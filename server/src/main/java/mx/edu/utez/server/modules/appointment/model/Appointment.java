@@ -113,7 +113,7 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "cancellation_reason_id", referencedColumnName = "id")
-    @JsonIncludeProperties({"id", "name"})
+    @JsonIncludeProperties({"id", "reason", "refundPercent"})
     private CancellationReason cancellationReason;
 
     // Relationships ->

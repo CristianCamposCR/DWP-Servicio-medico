@@ -1,6 +1,6 @@
 package mx.edu.utez.server.modules.review.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -28,6 +27,12 @@ import java.time.Instant;
 @Getter
 @Setter
 public class Review {
+    public Review(String comment, Integer ranking, Boolean wasSkipped) {
+        this.comment = comment;
+        this.ranking = ranking;
+        this.wasSkipped = wasSkipped;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,24 +50,16 @@ public class Review {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
 
-    @Column(columnDefinition = "DATETIME", insertable = false)
-    private Instant updatedAt;
-
     // Relationships <-
     @ManyToOne
     @JoinColumn(name = "doctor_id", referencedColumnName = "id",
             nullable = false)
-    @JsonIgnoreProperties({"reviews"})
+    @JsonIgnore
     private Doctor doctor;
 
     // Methods
     @PrePersist
     public void setCreatedAt() {
         this.createdAt = Instant.now();
-    }
-
-    @PreUpdate
-    public void setUpdatedAt() {
-        this.updatedAt = Instant.now();
     }
 }
