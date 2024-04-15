@@ -84,6 +84,28 @@
         required: true,
       },
     },
+    data() {
+    return {
+      daysTranslate: {
+        MONDAY: "Lunes",
+        TUESDAY: "Martes",
+        WEDNESDAY: "Miércoles",
+        THURSDAY: "Jueves",
+        FRIDAY: "Viernes",
+      },
+    };
+  },
+  computed: {
+    daysTranslates() {
+      const cleanedDays = this.doctor.availableDays
+        .replace("[", "")
+        .replace("]", "");
+      console.log(cleanedDays);
+      const days = cleanedDays.split(", ");
+      console.log(days);
+      return days.map((day) => this.daysTranslate[day]);
+    },
+  },
     methods: {
       calculateAge(birthday) {
         const today = new Date();
