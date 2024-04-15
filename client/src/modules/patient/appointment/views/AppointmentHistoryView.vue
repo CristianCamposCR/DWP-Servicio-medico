@@ -4,7 +4,7 @@
       <section class="mx-2 px-5">
         <b-row>
           <b-col>
-            <h1 class="title-views">Citas Asignadas</h1>
+            <h1 class="title-views">Citas</h1>
           </b-col>
         </b-row>
         <b-row>
@@ -13,12 +13,12 @@
               <b-form-input
                 placeholder="Escribe la cita"
                 v-model="pagination.data.name"
-                @keyup.enter="getAllAppointmentsByDoctor"
+                @keyup.enter="getAllAppointmentsHistory"
                 class="custom-placeholder"
               ></b-form-input>
   
               <b-input-group-append>
-                <b-button variant="primary" block @click="getAllAppointmentsByDoctor">Buscar</b-button>
+                <b-button variant="primary" block @click="getAllAppointmentsHistory">Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -73,7 +73,7 @@
               :total-rows="pagination.totalRows"
               :per-page="pagination.size"
               aria-controls="table-transition-example"
-              @input="getAllAppointmentsByDoctor"
+              @input="getAllAppointmentsHistory"
             >
             </b-pagination>
           </b-col>
@@ -89,7 +89,7 @@
   <script>
   import Vue from "vue";
   import { defineAsyncComponent } from "vue";
-  import appointmentsController from "../services/controller/appointments.controller";
+  import appointmentsController from "../services/controller/appointment.controller";
   
   export default Vue.extend({
     components: {
@@ -114,10 +114,10 @@
       };
     },
     methods: {
-      async getAllAppointmentsByDoctor() {
+      async getAllAppointmentsHistory() {
         try {
           this.isLoading = true;
-          const response = await appointmentsController.getAllAppointmentsByDoctor({
+          const response = await appointmentsController.getAllAppointmentsHistory({
             page: this.pagination.page - 1,
             size: this.pagination.size,
             sort: this.pagination.sort,
@@ -144,7 +144,7 @@
       async changeStatus(id) {},
     },
     mounted() {
-      this.getAllAppointmentsByDoctor();
+      this.getAllAppointmentsHistory();
     },
   });
   </script>

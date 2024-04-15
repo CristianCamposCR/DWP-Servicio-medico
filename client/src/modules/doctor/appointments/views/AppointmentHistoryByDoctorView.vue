@@ -89,9 +89,6 @@
   <script>
   import Vue from "vue";
   import { defineAsyncComponent } from "vue";
-  import { EStatus } from "../../../../kernel/types";
-  import { encrypt } from "../../../../kernel/hashFunctions";
-  import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
   import appointmentsController from "../services/controller/appointments.controller";
   
   export default Vue.extend({
