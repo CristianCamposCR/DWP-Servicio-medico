@@ -207,7 +207,7 @@ export default Vue.extend({
           );
           const { error } = resp;
           if (!error) {
-            this.getAllAppointmentsPending();
+            this.getAllAppointmentsByDoctor();
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 900);
@@ -231,7 +231,7 @@ export default Vue.extend({
           );
           const { error } = resp;
           if (!error) {
-            this.getAllAppointmentsPending();
+            this.getAllAppointmentsByDoctor();
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 900);
