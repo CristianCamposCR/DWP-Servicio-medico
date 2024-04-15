@@ -146,7 +146,6 @@
       async viewAppointment(appointment) {
         this.appointmentSelected = appointment;
         this.$bvModal.show("details-appointment");
-        console.log("abre modal:", appointment);
       },
       async reescheduleAppointment(appointment) {
         console.log("Actualizar cita:", appointment);
