@@ -55,7 +55,7 @@
                   <b-icon icon="door-closed"></b-icon>
                 </b-button>
                 <b-button class="mr-2" @click="reassigDoctor(appointment.id)" v-b-tooltip.hover.v-info
-                  title="Asignar doctor" variant="outline-success">
+                  title="Resignar doctor" variant="outline-success">
                   <b-icon icon="person-plus"></b-icon>
                 </b-button>
                 <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"

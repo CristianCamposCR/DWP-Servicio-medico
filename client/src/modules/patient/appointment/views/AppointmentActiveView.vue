@@ -52,9 +52,16 @@
                 <td>{{ appointment.scheduledHour }}</td>
                 <td>{{ appointment.status.name }}</td>
                 <td>
-                  <b-button @click="viewAppointment(appointment)" variant="primary">Ver</b-button>
-                  <b-button @click="updateAppointment(appointment)" variant="info">Actualizar</b-button>
-                  <b-button @click="deactivateAppointment(appointment)" variant="danger">Desactivar</b-button>
+                  <b-button class="mr-2" @click="cancelVoluntarily(appointment.id)" v-b-tooltip.hover.v-info
+                  title="Cancelar" variant="outline-danger">
+                  <b-icon icon="calendar-x"></b-icon>
+                </b-button>
+                <b-button class="mr-2" @click="reescheduleAppointment(appointment.id)" v-b-tooltip.hover.v-info title="Solicitar reagenda de cita"
+                  variant="outline-success">
+                  <b-icon icon="calendar-event"></b-icon>
+                </b-button>
+                  <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
+                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
                 </td>
               </tr>
             </tbody>
@@ -87,9 +94,10 @@
   </template>
   
   <script>
-  import Vue from "vue";
-  import { defineAsyncComponent } from "vue";
+  import Vue, { defineAsyncComponent } from "vue";
   import appointmentsController from "../services/controller/appointment.controller";
+  import { encrypt } from "../../../../kernel/hashFunctions";
+  import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
   
   export default Vue.extend({
     components: {
@@ -135,13 +143,33 @@
       async viewAppointment(appointment) {
         console.log("Ver cita:", appointment);
       },
-      async updateAppointment(appointment) {
+      async reescheduleAppointment(appointment) {
         console.log("Actualizar cita:", appointment);
       },
-      async deactivateAppointment(appointment) {
-        console.log("Desactivar cita:", appointment);
-      },
-      async changeStatus(id) {},
+      async cancelVoluntarily(id) {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
+          this.isLoading = true;
+          const cipherId = await encrypt(id);
+          const resp = await appointmentsController.cancelAppointment(cipherId, {
+            reason: "VOLUNTARIA"
+          });
+          const { error } = resp;
+          if (!error) {
+            this.getAllAppointmentsPending();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 900);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
     },
     mounted() {
       this.getAllAppointmentsActive();
