@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!--   Navbar  -->
-    <Navbar/>
-
     <!--   Landing Page Content  -->
     <div class="landing-page-content">
       <div class="container">

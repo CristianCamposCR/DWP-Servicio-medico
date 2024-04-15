@@ -141,7 +141,7 @@ export default Vue.extend({
       this.showPasswordState = !this.showPasswordState;
     },
     async goBack() {
-      await this.$router.push("/landing");
+      await this.$router.push("/cimi");
     },
     submitForm() {
       //prefer not active button submit if not valid the captcha

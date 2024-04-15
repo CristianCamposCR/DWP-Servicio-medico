@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import managementRoute from "./management-route";
 import patientRoute from "./patient-router";
+import publicRoute from "./public-router";
 import { jwtDecode } from "jwt-decode";
 import doctorRoute from "./doctor-route";
 import { ERoles } from "../kernel/types";
@@ -15,18 +16,12 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
-      redirect: { name: "landing" },
+      redirect: "/cimi",
     },
     {
       path: "/",
       component: { render: (c) => c("router-view") },
       children: [
-        {
-          path: "/landing",
-          name: "landing",
-          component: () =>
-            import("../modules/public/views/LandingPageView.vue"),
-        },
         {
           path: "/login",
           props: true,
@@ -37,38 +32,10 @@ const router = new VueRouter({
             requireAuth: false,
           },
         },
-        {
-          path: "doctors",
-          name: "doctors",
-          component: () =>
-            import("../modules/public/doctors/views/DoctorsView.vue"),
-          meta: {
-            title: "Doctores",
-            requireAuth: false,
-          },
-        },
-        {
-          path: "areas",
-          name: "public areas",
-          component: () => import("../modules/public/areas/views/AreasView.vue"),
-          meta: {
-            title: "Areas",
-            requireAuth: false,
-          },
-        },
-        {
-          path: "specialities",
-          name: "public specialities",
-          component: () =>
-            import("../modules/public/speciality/views/SpecialitiesView.vue"),
-          meta: {
-            title: "Especialidades",
-            requireAuth: false,
-          },
-        },
         ...managementRoute,
         ...doctorRoute,
-        ...patientRoute
+        ...patientRoute,
+        ...publicRoute,
       ],
     },
   ],
@@ -79,8 +46,31 @@ router.beforeEach((to, from, next) => {
     const rl = jwtDecode(localStorage.token);
     const roles = rl.roles;
     const role = roles[0].authority;
-    if((role === ERoles.ADMIN && to.matched.some((route) => route.path === "/landing")) ||(role === ERoles.ADMIN && to.matched.some((route) => route.path === "/login"))) next("/management")
-    if((role === ERoles.DOCTOR && to.matched.some((route) => route.path === "/landing")) ||(role === ERoles.DOCTOR && to.matched.some((route) => route.path === "/login"))) next("/doctor")
+    if (
+      (role === ERoles.ADMIN &&
+        to.matched.some((route) => route.path === "/cimi")) ||
+      (role === ERoles.ADMIN &&
+        to.matched.some((route) => route.path === "/landing")) ||
+      (role === ERoles.ADMIN &&
+        to.matched.some((route) => route.path === "/login"))
+    )
+      next("/management");
+    if (
+      (role === ERoles.DOCTOR &&
+        to.matched.some((route) => route.path === "/cimi")) ||
+      (role === ERoles.DOCTOR &&
+        to.matched.some((route) => route.path === "/landing")) ||
+      (role === ERoles.DOCTOR &&
+        to.matched.some((route) => route.path === "/login"))
+    )
+      next("/doctor");
+    if (
+      (role === ERoles.PATIENT &&
+        to.matched.some((route) => route.path === "/cimi")) ||
+      (role === ERoles.PATIENT &&
+        to.matched.some((route) => route.path === "/login"))
+    )
+      next("/patient");
     if (role && to.matched.some((route) => route.meta.requireAuth)) {
       const allowedRoles = to.meta.role;
       if (allowedRoles.includes(role)) {
@@ -99,7 +89,6 @@ router.beforeEach((to, from, next) => {
   }
   next("/login");
 });
-
 
 router.afterEach((to, from) => {
   Vue.nextTick(() => {

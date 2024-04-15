@@ -523,7 +523,7 @@ export default Vue.extend({
       signal(evt);
     },
     async goBack() {
-      await this.$router.push("/landing");
+      await this.$router.push("/cimi");
     },
     todayDate() {
       return moment().subtract(18, "years").format("YYYY-MM-DD");
