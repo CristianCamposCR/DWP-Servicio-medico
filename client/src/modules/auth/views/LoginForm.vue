@@ -82,7 +82,7 @@
           </b-form-group>
         </b-col>
         <b-col class="d-flex justify-content-center">
-          <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" />
+          <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" ref="reloadState"/>
         </b-col>
       </div>
       <div class="d-flex justify-content-center mt-3 mb-5 mx-4">
@@ -164,6 +164,10 @@ export default Vue.extend({
                 SweetAlertCustom.welcomeMessage();
             } else {
               this.isValidFriendlyCaptcha = false;
+              this.$refs.CaptchaFriendly.$emit(
+                "custom-event",
+                "Datos opcionales"
+              );
             }
           }
         }
