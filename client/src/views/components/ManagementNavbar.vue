@@ -2,7 +2,10 @@
   <div class="sticky-top">
     <b-navbar toggleable="md" type="light" variant="white" class="shadow-sm">
       <b-navbar-brand to="/" class="custom-nav-font">
-        <b-img src="https://cdn-icons-png.flaticon.com/512/1055/1055685.png" style="height: 40px"></b-img>
+        <b-img
+          src="https://cdn-icons-png.flaticon.com/512/1055/1055685.png"
+          style="height: 40px"
+        ></b-img>
         &nbsp; CIMI
       </b-navbar-brand>
 
@@ -27,7 +30,11 @@
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template #button-content>
-              <b-avatar variant="secondary" size="md" icon="person-fill"></b-avatar>
+              <b-avatar
+                variant="secondary"
+                size="md"
+                icon="person-fill"
+              ></b-avatar>
             </template>
             <b-dropdown-item disabled>Rol: Administrador</b-dropdown-item>
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
@@ -85,7 +92,6 @@ export default Vue.extend({
 
 .custom-link:hover {
   scale: 1.1;
-
 }
 
 @media (max-width: 1000px) {

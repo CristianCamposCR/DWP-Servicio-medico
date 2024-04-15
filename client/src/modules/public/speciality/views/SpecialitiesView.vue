@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Navbar />
     <div class="container-fluid mt-4">
       <loading-custom :isLoading="isLoading" />
       <section class="mx-2 px-5">
@@ -148,7 +147,6 @@ import specialityController from "../services/controller/speciality.controller";
 export default Vue.extend({
   name: "SpecialtiesView",
   components: {
-    Navbar: () => import("../../../public/components/Navbar.vue"),
     LoadingCustom: () =>
       import("../../../../views/components/LoadingCustom.vue"),
   },

@@ -1,8 +1,11 @@
 <template>
   <div class="sticky-top">
     <b-navbar type="light " variant="white" class="shadow-sm">
-      <b-navbar-brand to="/" class="custom-nav-font">
-        <b-img src="https://cdn-icons-png.flaticon.com/512/1055/1055685.png" style="height: 40px"></b-img>
+      <b-navbar-brand to="landing" class="custom-nav-font">
+        <b-img
+          src="https://cdn-icons-png.flaticon.com/512/1055/1055685.png"
+          style="height: 40px"
+        ></b-img>
         &nbsp; CIMI</b-navbar-brand
       >
 
@@ -14,7 +17,8 @@
             v-for="link in links"
             :key="link.name"
             :to="link.to"
-            class="custom-nav-font"
+            class="custom-nav-font custom-link"
+            exact-active-class="active-link"
           >
             {{ link.name }}
           </b-nav-item>
@@ -31,25 +35,31 @@
                 icon="person-fill"
               ></b-avatar>
             </template>
-            <b-dropdown-item @click="profile()"
-              >Perfil</b-dropdown-item
-            >
+            <b-dropdown-item @click="profile()">Perfil</b-dropdown-item>
             <b-dropdown-item @click="logout()">Cerrar sesión</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+    <ProgressIndicator v-if="this.$route.path === '/patient/landing'" />
   </div>
 </template>
 <script>
 import Vue from "vue";
+import ProgressIndicator from "@/components/ProgressIndicator.vue";
+
 export default Vue.extend({
   name: "PatientNavbar",
+  components: {
+    ProgressIndicator,
+  },
   data() {
     return {
       links: [
+        { name: "Áreas", to: "areas" },
+        { name: "Especialidades", to: "specialities" },
+        { name: "Doctores", to: "doctors" },
         { name: "Citas", to: "appointment-patient" },
-
       ],
     };
   },
@@ -74,8 +84,28 @@ export default Vue.extend({
         });
     },
     profile() {
-              this.$router.push({ name: "profile-patient" });
-      },
+      this.$router.push({ name: "profile-patient" });
+    },
   },
 });
 </script>
+<style scoped>
+.custom-link {
+  transition: all 0.3s;
+}
+.active-link {
+  color: #10b981 !important;
+}
+
+.custom-link:hover {
+  scale: 1.1;
+}
+
+@media (max-width: 1000px) {
+  .custom-link {
+    &:hover {
+      scale: 1.01;
+    }
+  }
+}
+</style>
