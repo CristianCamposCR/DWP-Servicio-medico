@@ -73,4 +73,28 @@ export default {
           };
         }
       },
+      async getOne(id) {
+        try {
+          const data = await ApiService.getOne(id);
+          return data;
+        } catch (error) {
+          return {
+            code: error.data?.code,
+            error: true,
+            message: error.data?.message,
+          };
+        }
+      },
+      async reescheduleAppointment(id, payload) {
+        try {
+          const data = await ApiService.reescheduleAppointment(id, payload);
+          return data;
+        } catch (error) {
+          return {
+            code: error.data?.code,
+            error: true,
+            message: error.data?.message,
+          };
+        }
+      },
 };

@@ -119,8 +119,8 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     @Query(value = """
             SELECT scheduled_hour
             FROM appointments
-            WHERE scheduled_at = '2024-04-12'
-              AND doctor_id = 1
+            WHERE scheduled_at = ?1
+              AND doctor_id = ?2
             """, nativeQuery = true)
     List<Integer> getBusyHours(LocalDate scheduledAt, Long doctorId);
 }
