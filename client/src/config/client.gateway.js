@@ -143,11 +143,16 @@ function handle400Error(error) {
       messageAlert =
         "Información en uso";
       break;
-      case "DUPLICATED_USER":
-        titleAlert = "Registro duplicado";
-        messageAlert =
-          "Información en uso";
-        break;
+    case "DUPLICATED_USER":
+      titleAlert = "Registro duplicado";
+      messageAlert =
+        "Información en uso";
+      break;
+    case "NO_AVAILABILITY":
+      titleAlert = "Sin disponibilidad";
+      messageAlert =
+        "No hay disponibilidad en esa fecha";
+      break;
   }
   if (message !== "Review request")
     Vue.swal({
