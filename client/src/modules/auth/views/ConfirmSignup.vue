@@ -24,7 +24,7 @@
           :state="v$.code.$dirty ? !v$.code.$error : null"
           @blur="v$.code.$touch()"
           required
-          maxlength="45"
+          maxlength="5"
           trim
         ></b-form-input>
         <b-form-invalid-feedback v-if="!v$.code.required.$response">{{
@@ -95,6 +95,7 @@ export default Vue.extend({
     return {
       code: {
         required: helpers.withMessage(this.errorMessages.required, required),
+        
       },
     };
   },

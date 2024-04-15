@@ -32,11 +32,13 @@ AxiosClient.interceptors.response.use(
   },
   async (error) => {
     if (!error.response) {
+      console.log("ENTROERROR", error);
       await SweetAlertCustom.ErrorServer();
       return Promise.reject(error);
     }
 
     const { status } = error.response;
+    console.log("interceptor", error);
 
     switch (status) {
       case 400:
@@ -44,6 +46,7 @@ AxiosClient.interceptors.response.use(
         handle400Error(error);
         break;
       case 401:
+      case "UNAUTHORIZED":
         handle401Error(error);
         break;
       case 403:
@@ -54,6 +57,7 @@ AxiosClient.interceptors.response.use(
         );
         break;
       case 404:
+      case "NOT_FOUND":
         handle404Error(error);
         break;
       case 500:
@@ -126,7 +130,8 @@ function handle400Error(error) {
       break;
     case "DUPLICATED_DOCTOR":
       titleAlert = "Registro duplicado";
-      messageAlert = "Verifica la informacion del doctor los campos unicos son: Cedula profesional, Curp y Correo electronico";
+      messageAlert =
+        "Verifica la informacion del doctor los campos unicos son: Cedula profesional, Curp y Correo electronico";
       break;
     // APPOINTMENTS
     case "NO_RESCHEDULES_REMAINING":
@@ -135,7 +140,13 @@ function handle400Error(error) {
       break;
   }
   if (message !== "Review request")
-    Vue.swal(titleAlert, messageAlert, "warning");
+    Vue.swal({
+      title: titleAlert,
+      text: messageAlert,
+      icon: "warning",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#10B981",
+    });
 }
 
 function handle401Error(error) {
@@ -162,7 +173,13 @@ function handle401Error(error) {
       break;
   }
   if (message !== "EXPIRED_SESSION")
-    Vue.swal(titleAlert, messageAlert, "warning");
+    Vue.swal({
+      title: titleAlert,
+      text: messageAlert,
+      icon: "warning",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#10B981",
+    });
 }
 
 function handle404Error(error) {
@@ -188,13 +205,23 @@ function handle404Error(error) {
       titleAlert = "No se encontro el usuario";
       messageAlert = "No se encontró el usuario";
       break;
+    case "CREDENTIALS_MISMATCH":
+      titleAlert = "Credenciales incorrectas";
+      messageAlert = "Usuario y/o contraseña erróneos";
+      break;
     default:
       titleAlert = "No encontrado";
       messageAlert = "No se encontró el recurso";
       break;
   }
   if (message !== "Review request")
-    Vue.swal(titleAlert, messageAlert, "warning");
+    Vue.swal({
+      title: titleAlert,
+      text: messageAlert,
+      icon: "warning",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#10B981",
+    });
 }
 
 export default {
