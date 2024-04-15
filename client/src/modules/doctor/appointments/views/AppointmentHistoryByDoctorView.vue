@@ -54,7 +54,7 @@
                 <td>{{ appointment.status.name }}</td>
                 <td>
                   <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
-                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
+                  @click="viewAppointment(appointment.id)"><b-icon icon="eye"></b-icon></b-button>
                 </td>
               </tr>
             </tbody>
@@ -84,18 +84,26 @@
     <section class="mt-1" v-if="appointments.length === 0">
       <no-registers :message="'citas'" />
     </section>
+    <details-appointment :appointmentData="appointmentSelected" />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { defineAsyncComponent } from "vue";
+import { encrypt } from "../../../../kernel/hashFunctions";
 import appointmentsController from "../services/controller/appointments.controller";
+import boundary from "../boundary";
 
 export default Vue.extend({
   components: {
     LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
     NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+    DetailsAppointment: defineAsyncComponent(() =>
+      import(
+        "../../../patient/appointment/views/components/DetailsAppointment.vue"
+      )
+    ),
   },
   name: "PatientView",
   data() {
@@ -111,6 +119,7 @@ export default Vue.extend({
           name: null,
         },
       },
+      appointmentSelected: {},
       appointments: [],
     };
   },
@@ -134,15 +143,22 @@ export default Vue.extend({
           this.isLoading = false;
         }
       },
-      async viewAppointment(appointment) {
-        console.log("Ver cita:", appointment);
+      async viewAppointment(id) {
+        try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+          this.$bvModal.show("details-appointment");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
       },
-    async updateAppointment(appointment) {
-      console.log("Actualizar cita:", appointment);
-    },
-    async deactivateAppointment(appointment) {
-      console.log("Desactivar cita:", appointment);
-    },
     async changeStatus(id) {},
   },
   mounted() {

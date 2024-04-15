@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Modal -->
     <b-modal
       id="details-appointment"
       :no-close-on-backdrop="true"
@@ -11,10 +10,8 @@
       title="Detalles de la Cita"
       size="lg"
     >
-      <!-- Contenido del modal -->
       <div class="container">
         <div class="row">
-          <!-- Sección de Información del Paciente -->
           <div class="col-md-6">
             <div class="info-section">
               <div class="info-header">
@@ -46,35 +43,36 @@
               </div>
             </div>
           </div>
-          <!-- Sección de Información del Médico -->
           <div class="col-md-6">
             <div class="info-section">
               <div class="info-header">
                 <h5>Información del Médico</h5>
               </div>
               <div class="info-content">
-                <p>
+                <p v-if="appointmentData.doctor">
                   <strong>Nombre:</strong>
                   {{ appointmentData.doctor.person.name }}
                   {{ appointmentData.doctor.person.surname }}
                   {{ appointmentData.doctor.person.lastname }}
                 </p>
-                <p>
+                <p v-else>
+                  <strong>No se ha asignado aún un doctor</strong>
+                </p>
+                <p v-if="appointmentData.doctor">
                   <strong>Email:</strong>
                   {{ appointmentData.doctor.person.email }}
                 </p>
-                <p>
+                <p v-if="appointmentData.doctor">
                   <strong>Teléfono:</strong>
                   {{ appointmentData.doctor.person.phoneNumber }}
                 </p>
-                <p>
+                <p v-if="appointmentData.doctor">
                   <strong>Sexo:</strong>
                   {{ appointmentData.doctor.person.gender.name }}
                 </p>
               </div>
             </div>
           </div>
-          <!-- Sección de Detalles de la Cita -->
           <div class="col-md-12">
             <div class="info-section">
               <div class="info-header">
@@ -167,13 +165,12 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos personalizados */
 .info-section {
   margin-bottom: 20px;
 }
 
 .info-header {
-  background-color: #007bff;
+  background-color: #10B981;
   color: #fff;
   padding: 10px;
   border-top-left-radius: 10px;

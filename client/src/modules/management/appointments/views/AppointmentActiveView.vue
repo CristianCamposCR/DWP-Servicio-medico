@@ -59,7 +59,7 @@
                   <b-icon icon="person-plus"></b-icon>
                 </b-button>
                 <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
-                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
+                  @click="viewAppointment(appointment.id)"><b-icon icon="eye"></b-icon></b-button>
               </td>
             </tr>
           </tbody>
@@ -85,6 +85,7 @@
     <reassign-doctor :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsActive"
     @showLoading="showLoading" @hideLoading="hideLoading">
     </reassign-doctor>
+    <details-appointment :appointmentData="appointmentSelected"/>
   </div>
 </template>
 
@@ -93,12 +94,15 @@ import Vue, { defineAsyncComponent } from "vue";
 import appointmentsController from "../services/controller/appointments.controller";
 import { encrypt } from "../../../../kernel/hashFunctions";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
+import boundary from "../boundary"
 
 export default Vue.extend({
   components: {
     LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
     NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
-    ReassignDoctor: defineAsyncComponent(() => import("./components/ReassignDoctor.vue"))
+    ReassignDoctor: defineAsyncComponent(() => import("./components/ReassignDoctor.vue")),
+    DetailsAppointment: defineAsyncComponent(()=> import("../../../patient/appointment/views/components/DetailsAppointment.vue"))
+
   },
   name: "PatientView",
   data() {
@@ -143,9 +147,21 @@ export default Vue.extend({
         this.isLoading = false;
       }
     },
-    async viewAppointment(appointment) {
-      console.log("Ver cita:", appointment);
-    },
+    async viewAppointment(id) {
+      try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+        this.$bvModal.show("details-appointment");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }    },
     async reassigDoctor(id) {
       try {
         this.isLoading = true;
