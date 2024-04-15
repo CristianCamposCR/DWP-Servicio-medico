@@ -90,6 +90,7 @@
       <section class="mt-1" v-if="appointments.length === 0">
         <no-registers :message="'citas'" />
       </section>
+      <details-appointment :appointmentData="appointmentSelected"/>
     </div>
   </template>
   
@@ -103,6 +104,7 @@
     components: {
       LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
       NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+      DetailsAppointment: defineAsyncComponent(()=> import("./components/DetailsAppointment.vue"))
     },
     name: "PatientView",
     data() {
@@ -118,6 +120,7 @@
             name: null,
           },
         },
+        appointmentSelected:{},
         appointments: [],
       };
     },
@@ -141,7 +144,9 @@
         }
       },
       async viewAppointment(appointment) {
-        console.log("Ver cita:", appointment);
+        this.appointmentSelected = appointment;
+        this.$bvModal.show("details-appointment");
+        console.log("abre modal:", appointment);
       },
       async reescheduleAppointment(appointment) {
         console.log("Actualizar cita:", appointment);
