@@ -1,22 +1,22 @@
 <template>
-  <b-overlay :show="isLoading && sectionActive === 4 "  style="height: 100vh">
-   <template #overlay>
-     <div>
-       <div class="d-flex justify-content-center">
-         <b-img
-             src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGJ3Y3RwZnAwNHNqeXN0c2d5amRkbGtrbGVud2dxcnRzdzhudjdiYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/QKW9AtBQifEfWKV8iV/giphy.gif"
-             style="object-fit: cover; object-position: center; margin-bottom: 0"
-             width="350px"
-             height="300px"
-         >
-         </b-img>
-       </div>
-       <div class="d-flex justify-content-center">
-         <div class="text-center not-registers-font mt-0">
-           Estamos agendando tu cita, por favor espera un momento...
-         </div>
-       </div>
-     </div>
+  <b-overlay :show="isLoading && sectionActive === 4 " style="height: 100vh">
+    <template #overlay>
+      <div>
+        <div class="d-flex justify-content-center">
+          <b-img
+              src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGJ3Y3RwZnAwNHNqeXN0c2d5amRkbGtrbGVud2dxcnRzdzhudjdiYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/QKW9AtBQifEfWKV8iV/giphy.gif"
+              style="object-fit: cover; object-position: center; margin-bottom: 0"
+              width="350px"
+              height="300px"
+          >
+          </b-img>
+        </div>
+        <div class="d-flex justify-content-center">
+          <div class="text-center not-registers-font mt-0">
+            Estamos agendando tu cita, por favor espera un momento...
+          </div>
+        </div>
+      </div>
 
     </template>
 
@@ -232,12 +232,7 @@
 
             <button class="btn btn-primary mt-3"
                     v-if="sectionActive === 4"
-                    :disabled="!appointment.isAcceptedTerms   ||
-                  !creditCard.cvv ||
-                  !creditCard.expirationDate.month ||
-                   !creditCard.expirationDate.year ||
-                   !creditCard.number ||
-                   !creditCard.owner || isLoading"
+                    :disabled="!appointment.isAcceptedTerms || isLoading || v$.creditCard.$invalid"
                     @click="saveAppointment"
             >
               Pagar
@@ -249,27 +244,29 @@
         </b-col>
 
 
-        <b-col class="">
+        <b-col>
 
-          <custom-not-found-registers :show="!isLoading && pagination.totalRows === 0"></custom-not-found-registers>
+          <not-registers v-if="!isLoading && pagination.totalRows === 0"
+                         :message="(sectionActive === 1 ? 'áreas' : sectionActive === 2 ? 'especialidades' : 'registros')"
+          />
 
-          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 1">
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5"
+                   v-if="sectionActive === 1 && pagination.totalRows > 0">
             <custom-loading-section :busy="isLoading  "/>
             <b-row>
               <b-col
                   v-for="(area, index) in listItems"
                   :key="index"
                   cols="12" sm="6" md="4" xl="3"
-                  class="d-flex justify-content-center"
+                  class="d-flex justify-content-center my-2"
               >
                 <b-card
                     @dragover.prevent
                     @dragenter.prevent
                     @dragstart="startDrag($event, area, 'area')"
                     draggable="true"
-
                     no-body
-                    class="overflow-hidden mt-3 mx-2 shadow card-animation"
+                    class="overflow-hidden my-3 mx-2 shadow card-animation h-100 d-flex justify-content-between"
                     style="max-width: 270px; max-height: 800px; min-width: 100%"
                     footer-bg-variant="transparent"
                     footer-border-variant="white"
@@ -357,14 +354,15 @@
             </section>
           </section>
 
-          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 2">
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5"
+                   v-if="sectionActive === 2 && pagination.totalRows > 0">
             <custom-loading-section :busy="isLoading  "/>
             <b-row>
               <b-col
                   v-for="(speciality, index) in specialtyList"
                   :key="index"
                   cols="12" sm="6" md="4" xl="3"
-                  class="d-flex justify-content-center"
+                  class="d-flex justify-content-center my-3"
               >
                 <b-card
                     @dragover.prevent
@@ -372,7 +370,7 @@
                     @dragstart="startDrag($event, speciality, 'specialty')"
                     draggable="true"
                     no-body
-                    class="overflow-hidden mt-3 mx-2 shadow card-animation"
+                    class="overflow-hidden mt-3 mx-2 shadow card-animation h-100 d-flex justify-content-between"
                     style="max-width: 270px; max-height: 800px; min-width: 100%"
                     footer-bg-variant="transparent"
                     footer-border-variant="white"
@@ -503,7 +501,7 @@
                          class="my-4 my-md-0 d-flex justify-content-center px-lg-5"
                   >
                     <b-card
-                        class="shadow img-custom-card card-animation my-2"
+                        class="shadow img-custom-card card-animation my-2 h-100 d-flex justify-content-between"
                         style="width: 100%;"
                         :img-src="shift.image"
                         img-alt="Image"
@@ -539,7 +537,6 @@
                     </b-card>
                   </b-col>
                 </b-row>
-
               </b-col>
             </b-row>
 
@@ -552,7 +549,7 @@
               <b-col v-for="(appointmentType, index) in appointmentTypeList" :key="index"
                      class="my-4 my-md-0 pt-2 d-flex align-content-stretch">
                 <b-card
-                    class="shadow img-custom-card card-animation h-100"
+                    class="shadow img-custom-card card-animation h-100 d-flex justify-content-between"
                     style="width: 100%;"
                     @dragover.prevent
                     @dragenter.prevent
@@ -586,7 +583,6 @@
             </b-row>
           </section>
 
-
           <section class="mt-2 mt-md-3 position-relative h-75 pb-5" v-else-if="sectionActive === 4">
             <b-card>
               <h3 class="text-center pb-4 text-primary">Ingresa los datos de la tarjeta</h3>
@@ -615,14 +611,15 @@
                           placeholder="645879654123"
                           type="text"
                           required
+                          @keydown="onlyCustomNumber"
                           v-model.trim="v$.creditCard.number.$model"
                           trim maxlength="16"
                           :state=" v$.creditCard.number.$dirty ? !v$.creditCard.number.$error : null"
                           @blur="v$.creditCard.number.$touch()"
                       >
                       </b-form-input>
-                      <b-form-invalid-feedback v-for="error in v$.creditCard.number.$errors" :key="error.$uid">
-                        {{ error.$message }}
+                      <b-form-invalid-feedback v-for="(error, i) in v$.creditCard.number.$errors" :key="error.$uid">
+                        {{ i === 0 ? error.$message : null }}
                       </b-form-invalid-feedback>
                     </b-form-group>
 
@@ -630,36 +627,62 @@
                       <label for="cardNumber">Titular de la tarjeta</label>
                       <b-form-input
                           id="cardNumber"
-                          placeholder="645879654123"
+                          placeholder="Ej. Joel Alejandro Herrera Hernandez"
                           type="text"
                           required
                           v-model.trim="v$.creditCard.owner.$model"
                           trim maxlength="50"
                           :state=" v$.creditCard.owner.$dirty ? !v$.creditCard.owner.$error : null"
+                          lazy-formatter
+                          :formatter="text => formatStyleText(text, 'uppercase')"
                           @blur="v$.creditCard.owner.$touch()"
                       >
                       </b-form-input>
-                      <b-form-invalid-feedback v-for="error in v$.creditCard.owner.$errors" :key="error.$uid">
-                        {{ error.$message }}
+                      <b-form-invalid-feedback v-for="(error, i) in v$.creditCard.owner.$errors" :key="error.$uid">
+                        {{ i === 0 ? error.$message : '' }}
                       </b-form-invalid-feedback>
+
+
+                      <b-form-valid-feedback v-if="v$.creditCard.owner.$model?.length === 50">
+                        Haz alcanzado el límite de caracteres
+                      </b-form-valid-feedback>
+
                     </b-form-group>
-                    <b-form-group>
+                    <div>
                       <label for="expirationDate">Fecha de expiración</label>
                       <b-row>
                         <b-col>
-                          <p class="m-0 text-black-50">Mes</p>
-                          <b-form-select :options="listMonths" v-model="creditCard.expirationDate.month">
-                            <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
-                          </b-form-select>
+                          <b-form-group>
+                            <p class="m-0 text-black-50">Mes</p>
+                            <b-form-select :options="listMonths"
+                                           v-model="v$.creditCard.expirationDate.month.$model"
+                                           :state=" v$.creditCard.expirationDate.month.$dirty ? !v$.creditCard.expirationDate.month.$error : null"
+                                           @blur.native="v$.creditCard.expirationDate.month.$touch()">
+                              <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
+                            </b-form-select>
+                            <b-form-invalid-feedback v-for="(error, i) in v$.creditCard.expirationDate.month.$errors"
+                                                     :key="error.$uid">
+                              {{ i === 0 ? error.$message : '' }}
+                            </b-form-invalid-feedback>
+                          </b-form-group>
                         </b-col>
                         <b-col>
-                          <p class="m-0 text-black-50">Año</p>
-                          <b-form-select :options="listYears" v-model="creditCard.expirationDate.year">
-                            <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
-                          </b-form-select>
+                          <b-form-group>
+                            <p class="m-0 text-black-50">Año</p>
+                            <b-form-select :options="listMonths"
+                                           v-model="v$.creditCard.expirationDate.year.$model"
+                                           :state=" v$.creditCard.expirationDate.year.$dirty ? !v$.creditCard.expirationDate.year.$error : null"
+                                           @blur.native="v$.creditCard.expirationDate.year.$touch()">
+                              <b-form-select-option :value="null" disabled>Selecciona una opción</b-form-select-option>
+                            </b-form-select>
+                            <b-form-invalid-feedback v-for="(error, i) in v$.creditCard.expirationDate.year.$errors"
+                                                     :key="error.$uid">
+                              {{ i === 0 ? error.$message : '' }}
+                            </b-form-invalid-feedback>
+                          </b-form-group>
                         </b-col>
                       </b-row>
-                    </b-form-group>
+                    </div>
 
                     <b-form-group>
                       <label for="cvv">CVV</label>
@@ -670,6 +693,7 @@
                           required
                           v-model.trim="v$.creditCard.cvv.$model"
                           trim
+                          @keydown="onlyCustomNumber"
                           maxlength="3"
                           :state=" v$.creditCard.cvv.$dirty ? !v$.creditCard.cvv.$error : null"
                           @blur="v$.creditCard.cvv.$touch()"
@@ -685,14 +709,12 @@
               </b-row>
             </b-card>
           </section>
-
         </b-col>
       </b-row>
 
-      <term-and-condition-view @close="handleShowModal('termAndCondition')" :show="modalsShow.termAndCondition"
+      <term-and-condition-view @close="handleShowModal('termAndCondition')"
+                               :show="modalsShow.termAndCondition"
                                @ok="handleIsAcceptedTerms"/>
-
-
     </div>
   </b-overlay>
 </template>
@@ -712,6 +734,7 @@ import appointmentController from "@/modules/patient/appointment/services/contro
 import {helpers, maxLength, minLength, numeric, required} from "@vuelidate/validators";
 import {useVuelidate} from "@vuelidate/core";
 import {decrypt, encrypt} from "@/kernel/hashFunctions";
+import {formatStyleText, onlyCustomNumber} from "@/kernel/functions";
 
 
 export default Vue.extend({
@@ -723,6 +746,7 @@ export default Vue.extend({
     TermAndConditionView: () => import("@/modules/patient/appointment/views/components/TermAndConditionView.vue"),
     BankCard: () => import("@/modules/patient/appointment/views/components/BankCard.vue"),
     CustomLoadingSection: () => import("@/views/components/CustomLoadingSection.vue"),
+    NotRegisters: () => import("@/views/components/NoRegisters.vue"),
   },
   mounted() {
     window.addEventListener('beforeunload', this.handleBeforeRouteLeave);
@@ -804,7 +828,7 @@ export default Vue.extend({
       pagination: {
         page: 1,
         sort: "id",
-        size: 8,
+        size: 9,
         direction: "desc",
         totalRows: 0,
         data: {
@@ -828,15 +852,31 @@ export default Vue.extend({
         required: 'Este campo es requerido',
         numbers: 'Este campo solo acepta números',
         creditCard: {
+          owner:{
+            valueAllows: "Campo inválido, solo se aceptan letras"
+          },
           minLenght: 'El número de tarjeta debe tener al menos 16 dígitos',
           maxLenght: 'El número de tarjeta debe tener máximo 16 dígitos',
           date: 'La fecha de expiración debe ser mayor a la fecha actual',
-          cvv: 'El CVV debe tener 3 dígitos',
+          cvv: {
+            minLenght: 'El CVV debe tener al menos 3 dígitos',
+            maxLenght: 'El CVV debe tener máximo 3 dígitos',
+            valueAllows: 'Campo inválido, solo se aceptan números'
+          }
         }
+      },
+
+      regex: {
+        creditCard: {
+          owner: /^[a-zA-Z ÁÉÍÓÚáéíóúñÑäëïöü\s]+$/,
+          cvv: /^[0-9]+$/
+        },
       },
     };
   },
   methods: {
+    formatStyleText,
+    onlyCustomNumber,
     isValidSectionData() {
       if (this.sectionActive === 1) {
         return Boolean(this.appointment.area && this.appointment.isAcceptedTerms)
@@ -875,7 +915,18 @@ export default Vue.extend({
         this.sectionActive = 1
       } else if (this.sectionActive === 1 && !this.appointment.specialty) {
         this.sectionActive = 2;
-        this.pagination.data.name = null;
+
+        this.pagination = {
+          page: 1,
+          sort: "id",
+          size: 9,
+          direction: "desc",
+          totalRows: 0,
+          data: {
+            name: null,
+          },
+        }
+
         this.getAllSpecialtiesByArea();
       } else if (
           this.sectionActive === 2 &&
@@ -1041,6 +1092,12 @@ export default Vue.extend({
     async saveAppointment() {
       try {
 
+
+        if(this.v$.creditCard.$invalid){
+          SweetAlertCustom.invalidForm()
+          return
+        }
+
         const responseAlert = await SweetAlertCustom.questionMessage('Una vez agendada no se podrá cancelar', '¿Estás seguro de que deseas agendar la cita?')
         if (!responseAlert.isConfirmed) return;
 
@@ -1103,15 +1160,13 @@ export default Vue.extend({
     },
     formatDate(date) {
       const local = moment(date);
-      moment.locale('es');
-      moment.lang('es', {
-            months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
-            monthsShort: 'Enero._Feb._Mar_Abr._May_Jun_Jul._Ago_Sept._Oct._Nov._Dec.'.split('_'),
-            weekdays: 'Domingo_Lunes_Martes_Miercoles_Jueves_Viernes_Sabado'.split('_'),
-            weekdaysShort: 'Dom._Lun._Mar._Mier._Jue._Vier._Sab.'.split('_'),
-            weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sa'.split('_')
-          }
-      );
+      moment.updateLocale('es', {
+        months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
+        monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
+        weekdays: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
+        weekdaysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
+        weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sá'.split('_')
+      });
       local.locale(false);
       return local.format('dddd, D [de] MMMM [de] YYYY');
     },
@@ -1133,10 +1188,10 @@ export default Vue.extend({
       return window.confirm('¿Estás seguro de que quieres salir?');
     },
     handleBeforeRouteLeave(e) {
-      if(this.wasAppointmentSaved) {
+      if (this.wasAppointmentSaved) {
         e.preventDefault();
         e.returnValue = '';
-      }else if (this.questionToLeave()) {
+      } else if (this.questionToLeave()) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -1170,6 +1225,11 @@ export default Vue.extend({
       creditCard: {
         owner: {
           required: helpers.withMessage(this.errorMessagges.required, required),
+          valid: helpers.withMessage(this.errorMessagges.creditCard.owner.valueAllows,
+              helpers.regex(this.regex.creditCard.owner)
+          ),
+          minLength: helpers.withMessage("Mínimo 3 caracteres", minLength(3)),
+          maxLength: helpers.withMessage("Máximo 50 caracteres", maxLength(50)),
         },
         number: {
           required: helpers.withMessage(this.errorMessagges.required, required),
@@ -1188,9 +1248,9 @@ export default Vue.extend({
         },
         cvv: {
           required: helpers.withMessage(this.errorMessagges.required, required),
-          numeric: helpers.withMessage(this.errorMessagges.numbers, numeric),
-          minLength: helpers.withMessage(this.errorMessagges.creditCard.cvv, minLength(3)),
-          maxLength: helpers.withMessage(this.errorMessagges.creditCard.cvv, maxLength(3)),
+          numeric: helpers.withMessage(this.errorMessagges.creditCard.cvv.valueAllows, helpers.regex(this.regex.creditCard.cvv)),
+          minLength: helpers.withMessage(this.errorMessagges.creditCard.minLenght, minLength(3)),
+          maxLength: helpers.withMessage(this.errorMessagges.creditCard.maxLenght, maxLength(3)),
         },
       }
     }
