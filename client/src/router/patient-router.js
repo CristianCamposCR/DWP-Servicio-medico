@@ -70,6 +70,39 @@ export default [
           role: rolesAllowed,
         },
       },
+      {
+        path: "appointments-active-patient",
+        name: "appointments-active-patient",
+        component: () =>
+          import("../modules/patient/appointment/views/AppointmentActiveView.vue"),
+        meta: {
+          title: "Citas Activas",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+      {
+        path: "appointments-pending-patient",
+        name: "appointments-pending-patient",
+        component: () =>
+          import("../modules/patient/appointment/views/AppointmentPendingView.vue"),
+        meta: {
+          title: "Citas Pendiente",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
+      {
+        path: "appointments-history-patient",
+        name: "appointments-history-patient",
+        component: () =>
+          import("../modules/patient/appointment/views/AppointmentHistoryView.vue"),
+        meta: {
+          title: "HIstorial de Citas",
+          requireAuth: true,
+          role: rolesAllowed,
+        },
+      },
     ],
   },
 ];
