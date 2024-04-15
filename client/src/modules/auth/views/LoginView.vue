@@ -1,7 +1,11 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="mx-3">
-      <b-card no-body class="overflow-hidden shadow show-custom" style="width: 30rem">
+      <b-card
+        no-body
+        class="overflow-hidden shadow show-custom"
+        style="width: 30rem"
+      >
         <b-tabs
           content-class="mt-2"
           fill
@@ -12,18 +16,19 @@
               <b-icon icon="person-fill"></b-icon>
               Iniciar sesión
             </template>
-            <login-form />
+            <login-form @reloadFromLogin="showConfirmVerification"/>
           </b-tab>
           <b-tab :active="activeTab === 'register'">
             <template #title>
               <b-icon icon="person-lines-fill"></b-icon>
               Crear cuenta
             </template>
-            <create-account />
+            <create-account  @reloadFromSignup="showConfirmVerification"/>
           </b-tab>
         </b-tabs>
       </b-card>
     </div>
+    <confirm-signup/>
   </div>
 </template>
 
@@ -39,11 +44,17 @@ export default Vue.extend({
     LoginForm: defineAsyncComponent(() =>
       import("@/modules/auth/views/LoginForm.vue")
     ),
+    ConfirmSignup: defineAsyncComponent(() => import("./ConfirmSignup.vue")),
   },
   data() {
     return {
       activeTab: this.$route.query.action || "login",
     };
+  },
+  methods: {
+    async showConfirmVerification() {
+      this.$bvModal.show("modal-confirm-signup");
+    },
   },
 });
 </script>

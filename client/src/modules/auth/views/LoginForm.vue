@@ -82,7 +82,10 @@
           </b-form-group>
         </b-col>
         <b-col class="d-flex justify-content-center">
-          <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" ref="reloadState"/>
+          <CaptchaFriendly
+            @update="isValidFriendlyCaptcha = $event"
+            ref="captchaFriendly"
+          />
         </b-col>
       </div>
       <div class="d-flex justify-content-center mt-3 mb-5 mx-4">
@@ -106,7 +109,7 @@
   </div>
 </template>
 <script>
-import Vue from "vue";
+import Vue, { defineAsyncComponent } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import CaptchaFriendly from "@/components/FriendlyCaptcha/CaptchaFriendly.vue";
@@ -158,16 +161,19 @@ export default Vue.extend({
             this.signinPayload.password != ""
           ) {
             const response = await authController.login(this.signinPayload);
+            if (
+              response.data === null &&
+              response.message === "USER_IS_NOT_VERIFIED"
+            ) {
+              this.$emit("reloadFromLogin");
+            }
             if (!response.error) {
               localStorage.setItem("token", response.token);
               if (await this.checkNextRedirect())
                 SweetAlertCustom.welcomeMessage();
             } else {
               this.isValidFriendlyCaptcha = false;
-              this.$refs.CaptchaFriendly.$emit(
-                "custom-event",
-                "Datos opcionales"
-              );
+              this.$refs.captchaFriendly.$emit("reload-event");
             }
           }
         }

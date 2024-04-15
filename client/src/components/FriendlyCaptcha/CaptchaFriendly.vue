@@ -1,7 +1,5 @@
 <template>
-  <div ref="container" class="frc-captcha"
-       :data-sitekey="dataKey"
-  ></div>
+  <div ref="container" class="frc-captcha" :data-sitekey="dataKey"></div>
 </template>
 
 <script>
@@ -23,7 +21,7 @@ export default {
     },
     async doneCallback(solution) {
       const response = await this.verifyCaptcha(solution);
-      const { success, errors} = response;
+      const { success, errors } = response;
       if (success) {
         console.info("Captcha solved");
         this.$emit("update", true);
@@ -41,6 +39,9 @@ export default {
       //reset the captcha
       this.widget.reset();
     },
+    handleReloadEvent() {
+      this.widget.reset();
+    },
   },
   mounted() {
     if (this.$refs.container) {
@@ -52,6 +53,7 @@ export default {
         language: "es",
         solutionFieldName: "frc-captcha-solution",
       });
+      this.$on("reload-event", this.handleReloadEvent);
     }
   },
   beforeDestroy() {

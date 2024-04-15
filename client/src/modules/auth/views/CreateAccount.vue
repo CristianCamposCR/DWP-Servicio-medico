@@ -383,7 +383,10 @@
       </b-row>
       <b-row class="mx-4">
         <b-col class="d-flex justify-content-center mb-2" v-if="step !== 0">
-          <CaptchaFriendly @update="isValidFriendlyCaptcha = $event" />
+          <CaptchaFriendly
+            @update="isValidFriendlyCaptcha = $event"
+            ref="captchaFriendly"
+          />
         </b-col>
       </b-row>
     </div>
@@ -432,7 +435,6 @@
         </b-button>
       </b-col>
     </b-row>
-    <confirm-signup />
   </div>
 </template>
 
@@ -456,7 +458,6 @@ export default Vue.extend({
   name: "CreateAccount",
   components: {
     CaptchaFriendly,
-    ConfirmSignup: defineAsyncComponent(() => import("./ConfirmSignup.vue")),
     LoadingCustom: () => import("../../../views/components/LoadingCustom.vue"),
   },
   setup() {
@@ -557,7 +558,7 @@ export default Vue.extend({
             };
             const response = await authController.signup(payload);
             if (!response.error) {
-              this.$bvModal.show("modal-confirm-signup");
+              this.$emit("reloadFromSignup");
               this.v$.newAccount.$reset();
               this.v$.personalNewAccount.$reset();
               this.v$.confirmPassword.$reset();
@@ -579,6 +580,7 @@ export default Vue.extend({
               this.step = 0;
             } else {
               this.isValidFriendlyCaptcha = false;
+              this.$refs.captchaFriendly.$emit("reload-event");
             }
           }
         }
