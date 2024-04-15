@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal id="modal-assign-doctor" title="Asignar doctor" centered hide-footer scrollable
+        <b-modal id="modal-reassign-doctor" title="Asignar doctor" centered hide-footer scrollable
             :no-close-on-backdrop="true" @hidden="cleanForm" @close="cleanForm">
             <b-form>
                 <label>Selecciona el doctor:
@@ -137,7 +137,7 @@ export default Vue.extend({
                                 SweetAlertCustom.successMessage();
                             }, 100);
                             this.$nextTick(() =>
-                                this.$bvModal.hide("modal-assign-doctor")
+                                this.$bvModal.hide("modal-reassign-doctor")
                             );
                             this.cleanForm();
                             return;
@@ -157,7 +157,7 @@ export default Vue.extend({
             this.v$.selectedHour.$reset();
         },
         closeModal() {
-            this.$bvModal.hide("modal-assign-doctor");
+            this.$bvModal.hide("modal-reassign-doctor");
         },
     },
     validations() {
