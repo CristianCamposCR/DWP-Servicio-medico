@@ -49,4 +49,16 @@ export default {
       };
     }
   },
+  async cancelAppointment(id, payload) {
+    try {
+      const response = await axios.doPost(`/appointment/cancel/${id}`, payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 }
