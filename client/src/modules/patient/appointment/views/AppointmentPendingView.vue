@@ -4,7 +4,7 @@
       <section class="mx-2 px-5">
         <b-row>
           <b-col>
-            <h1 class="title-views">Citas</h1>
+            <h1 class="title-views">Citas Pendientes</h1>
           </b-col>
         </b-row>
         <b-row>

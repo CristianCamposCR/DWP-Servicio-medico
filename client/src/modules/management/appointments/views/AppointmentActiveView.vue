@@ -4,7 +4,7 @@
       <section class="mx-2 px-5">
         <b-row>
           <b-col>
-            <h1 class="title-views">Citas</h1>
+            <h1 class="title-views">Citas Agendadas</h1>
           </b-col>
         </b-row>
         <b-row>
@@ -89,9 +89,6 @@
   <script>
   import Vue from "vue";
   import { defineAsyncComponent } from "vue";
-  import { EStatus } from "../../../../kernel/types";
-  import { encrypt } from "../../../../kernel/hashFunctions";
-  import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
   import appointmentsController from "../services/controller/appointments.controller";
   
   export default Vue.extend({
