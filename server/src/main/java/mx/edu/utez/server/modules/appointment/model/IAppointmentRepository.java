@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -418,50 +419,10 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
                      INNER JOIN users u on pe.id = u.person_id
                      INNER JOIN statuses s on u.status_id = s.id
                      INNER JOIN statuses s2 on a.status_id = s2.id
-            WHERE LOWER(a.folio) LIKE LOWER(CONCAT('%', ?1, '%'))
-                AND u.username = ?2
-                AND s2.name = 'ATENDIDA'
-                AND s.name = 'ACTIVO'
-                AND NOT a.has_review
-            """, nativeQuery = true,
-            countQuery = """
-                    SELECT COUNT(*) FROM appointments a
-                              INNER JOIN patients pa on a.patient_id = pa.id
-                              INNER JOIN people pe on pa.person_id = pe.id
-                              INNER JOIN users u on pe.id = u.person_id
-                              INNER JOIN statuses s on u.status_id = s.id
-                              INNER JOIN statuses s2 on a.status_id = s2.id
-                    WHERE LOWER(a.folio) LIKE LOWER(CONCAT('%', ?1, '%'))
-                        AND u.username = ?2
-                        AND s2.name = 'ATENDIDA'
-                        AND s.name = 'ACTIVO'
-                        AND NOT a.has_review
-                    """)
-    Page<Appointment> findAllToReviewByPatientAndSearchValue(String searchValue, String username, Pageable pageable);
-
-    @Query(value = """
-            SELECT a.* FROM appointments a
-                     INNER JOIN patients pa on a.patient_id = pa.id
-                     INNER JOIN people pe on pa.person_id = pe.id
-                     INNER JOIN users u on pe.id = u.person_id
-                     INNER JOIN statuses s on u.status_id = s.id
-                     INNER JOIN statuses s2 on a.status_id = s2.id
             WHERE u.username = ?1
                 AND s2.name = 'ATENDIDA'
                 AND s.name = 'ACTIVO'
                 AND NOT a.has_review
-            """, nativeQuery = true,
-            countQuery = """
-                    SELECT COUNT(*) FROM appointments a
-                            INNER JOIN patients pa on a.patient_id = pa.id
-                            INNER JOIN people pe on pa.person_id = pe.id
-                            INNER JOIN users u on pe.id = u.person_id
-                            INNER JOIN statuses s on u.status_id = s.id
-                            INNER JOIN statuses s2 on a.status_id = s2.id
-                    WHERE u.username = ?1
-                        AND s2.name = 'ATENDIDA'
-                        AND s.name = 'ACTIVO'
-                        AND NOT a.has_review
-                    """)
-    Page<Appointment> findAllToReviewByPatient(String username, Pageable pageable);
+            """, nativeQuery = true)
+    Set<Appointment> findAllToReviewByPatient(String username);
 }

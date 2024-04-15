@@ -103,7 +103,7 @@ public class MainSecurity {
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/pending/paged/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/active/paged/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/patient/history/paged/").hasAuthority(Roles.PATIENT.name())
-                        .requestMatchers(HttpMethod.POST, "/api/appointment/patient/to-review/paged/").hasAuthority(Roles.PATIENT.name())
+                        .requestMatchers(HttpMethod.GET, "/api/appointment/patient/to-review/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/check-availability/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/").hasAuthority(Roles.PATIENT.name())
                         .requestMatchers(HttpMethod.POST, "/api/appointment/doctor/assigned/paged/").hasAuthority(Roles.DOCTOR.name())

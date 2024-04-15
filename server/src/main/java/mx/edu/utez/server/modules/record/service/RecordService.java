@@ -2,11 +2,14 @@ package mx.edu.utez.server.modules.record.service;
 
 import lombok.RequiredArgsConstructor;
 import mx.edu.utez.server.kernel.Errors;
+import mx.edu.utez.server.kernel.StatusType;
 import mx.edu.utez.server.kernel.Statuses;
 import mx.edu.utez.server.modules.appointment.model.Appointment;
 import mx.edu.utez.server.modules.appointment.model.IAppointmentRepository;
 import mx.edu.utez.server.modules.record.controller.dto.RecordDto;
 import mx.edu.utez.server.modules.record.model.IRecordRepository;
+import mx.edu.utez.server.modules.status.model.IStatusRepository;
+import mx.edu.utez.server.modules.status.model.Status;
 import mx.edu.utez.server.utils.ResponseApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,7 @@ public class RecordService {
     Logger logger = LoggerFactory.getLogger(RecordService.class);
     private final IRecordRepository iRecordRepository;
     private final IAppointmentRepository iAppointmentRepository;
+    private final IStatusRepository iStatusRepository;
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseApi<Boolean> save(RecordDto recordDto) {
@@ -35,6 +39,12 @@ public class RecordService {
             if (appointment.getStatus().getName() != Statuses.CONFIRMADA)
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.APPOINTMENT_IS_NOT_ACTIVE.name());
 
+            Status newAppointmentStatus = getStatus(Statuses.ATENDIDA, StatusType.CITAS);
+            if (newAppointmentStatus == null)
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_USER_FOUND.name());
+
+            appointment.setStatus(newAppointmentStatus);
+            iAppointmentRepository.saveAndFlush(appointment);
             iRecordRepository.saveAndFlush(recordDto.getRecordEntity());
 
             return new ResponseApi<>(
@@ -87,5 +97,10 @@ public class RecordService {
     private Appointment getAppointment(Long appointmentId) {
         Optional<Appointment> optionalAppointment = iAppointmentRepository.findById(appointmentId);
         return optionalAppointment.orElse(null);
+    }
+
+    private Status getStatus(Statuses statusName, StatusType statusType) {
+        Optional<Status> optionalStatus = this.iStatusRepository.findByNameAndStatusType(statusName, statusType);
+        return optionalStatus.orElse(null);
     }
 }

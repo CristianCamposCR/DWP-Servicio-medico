@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping(value = "/api/appointment")
 @CrossOrigin(origins = {"*"})
@@ -92,15 +94,10 @@ public class AppointmentController {
     }
 
     @PreAuthorize("hasAuthority('PATIENT')")
-    @PostMapping("/patient/to-review/paged/")
-    public ResponseEntity<ResponseApi<Page<Appointment>>> findAllToReviewByPatient(@RequestParam(defaultValue = "0", required = false) int page,
-                                                                                   @RequestParam(defaultValue = "10", required = false) int size,
-                                                                                   @RequestParam(defaultValue = "id", required = false) String sort,
-                                                                                   @RequestParam(defaultValue = "asc", required = false) String direction,
-                                                                                   @RequestBody(required = false) @Valid SearchDto searchDto) {
+    @GetMapping("/patient/to-review/")
+    public ResponseEntity<ResponseApi<Set<Appointment>>> findAllToReviewByPatient() {
         String username = Methods.getLoggedUsername();
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
-        ResponseApi<Page<Appointment>> responseApi = this.appointmentService.findAllToReviewByPatient(searchDto, username, pageable);
+        ResponseApi<Set<Appointment>> responseApi = this.appointmentService.findAllToReviewByPatient(username);
         return new ResponseEntity<>(responseApi, responseApi.getStatus());
     }
 

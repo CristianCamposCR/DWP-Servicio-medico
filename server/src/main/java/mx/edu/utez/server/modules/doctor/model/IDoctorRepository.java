@@ -87,7 +87,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     Long checkAvailability(Long specialityId, Long shiftId, String dayName);
 
     @Query(value = """
-            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, ' ', p.lastname)) as 'fullName' 
+            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, ''))) as 'fullName' 
             FROM appointments a
                      INNER JOIN doctors d ON a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
@@ -101,7 +101,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     Set<IDoctorListView> findAllAvailableDoctors(LocalDate scheduledAt, Long specialityId, Long shiftId);
 
     @Query(value = """
-            SELECT d.id,TRIM(CONCAT(p.name, ' ', p.surname, ' ', p.lastname)) as 'fullName' 
+            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, ''))) as 'fullName' 
             FROM appointments a
                      INNER JOIN doctors d ON a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
