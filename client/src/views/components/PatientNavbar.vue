@@ -27,10 +27,10 @@
              <b class="custom-nav-font">Citas </b>
               <b-icon icon="calendar"> </b-icon>
             </template>
-            <b-dropdown-item to="appointment-patient">Agendar cita</b-dropdown-item>
+            <b-dropdown-item to="appointment-patient">Agendar Cita</b-dropdown-item>
             <b-dropdown-item to="appointments-active-patient">Citas Activas</b-dropdown-item>
             <b-dropdown-item to="appointments-pending-patient">Citas Pendientes</b-dropdown-item>
-            <b-dropdown-item to="appointments-history-patient">Historial de citas</b-dropdown-item>
+            <b-dropdown-item to="appointments-history-patient">Historial de Citas</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <!-- Right aligned nav items -->
