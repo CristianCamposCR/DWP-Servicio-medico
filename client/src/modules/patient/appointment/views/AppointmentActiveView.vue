@@ -61,7 +61,7 @@
                   <b-icon icon="calendar-event"></b-icon>
                 </b-button>
                   <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
-                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
+                  @click="viewAppointment(appointment.id)"><b-icon icon="eye"></b-icon></b-button>
                 </td>
               </tr>
             </tbody>
@@ -99,7 +99,8 @@
   import appointmentsController from "../services/controller/appointment.controller";
   import { encrypt } from "../../../../kernel/hashFunctions";
   import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
-  
+  import boundary from "../boundary"
+
   export default Vue.extend({
     components: {
       LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
@@ -143,9 +144,21 @@
           this.isLoading = false;
         }
       },
-      async viewAppointment(appointment) {
-        this.appointmentSelected = appointment;
+      async viewAppointment(id) {
+        try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
         this.$bvModal.show("details-appointment");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
       },
       async reescheduleAppointment(appointment) {
         console.log("Actualizar cita:", appointment);

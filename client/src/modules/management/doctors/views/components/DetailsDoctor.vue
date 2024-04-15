@@ -3,25 +3,16 @@
     <b-modal
       hide-footer
       :no-close-on-backdrop="true"
-      scrollable
       id="doctor-modal-details"
       title="Detalles del Doctor"
       centered
     >
-      <header class="text-center border-bottom" style="margin-bottom: 20px">
-        <h4 style="font-family: 'Arial', sans-serif; color: #333">
-          Información del doctor
-        </h4>
-      </header>
+
       <div class="modal-container">
         <div class="doctor-details fullscreen">
           <div class="modal-content">
             <div class="profile-section">
-              <img
-                class="profile-picture"
-                src="https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg"
-                alt="Profile Picture"
-              />
+              <img class="profile-picture" :src="doctor && doctor.person.profilePhoto ? doctor.person.profilePhoto : 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg'" alt="Profile Picture">
             </div>
           </div>
           <div class="info-section">

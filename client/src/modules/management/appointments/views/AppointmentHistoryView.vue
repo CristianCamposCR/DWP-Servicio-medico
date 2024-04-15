@@ -18,7 +18,12 @@
             ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block @click="getAllAppointmentsHistory">Buscar</b-button>
+              <b-button
+                variant="primary"
+                block
+                @click="getAllAppointmentsHistory"
+                >Buscar</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </b-col>
@@ -44,17 +49,30 @@
             </thead>
             <tbody>
               <tr v-for="(appointment, index) in appointments" :key="index">
-                <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{ appointment.patient.person.lastname }}</td>
+                <td>
+                  {{ appointment.patient.person.name }}
+                  {{ appointment.patient.person.surname }}
+                  {{ appointment.patient.person.lastname }}
+                </td>
                 <td>{{ appointment.speciality.name }}</td>
                 <td>{{ appointment.scheduledAt }}</td>
-                <td>{{ appointment.doctor.person.name }} {{ appointment.doctor.person.surname }} {{ appointment.doctor.person.lastname }}</td>
+                <td>
+                  {{ appointment.doctor.person.name }}
+                  {{ appointment.doctor.person.surname }}
+                  {{ appointment.doctor.person.lastname }}
+                </td>
                 <td>{{ appointment.preferentialShift.name }}</td>
                 <td>{{ appointment.appointmentType.name }}</td>
                 <td>{{ appointment.scheduledHour }}</td>
                 <td>{{ appointment.status.name }}</td>
                 <td>
-                  <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
-                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
+                  <b-button
+                    variant="outline-secondary"
+                    v-b-tooltip.hover.v-info
+                    title="Ver detalles"
+                    @click="viewAppointment(appointment.id)"
+                    ><b-icon icon="eye"></b-icon
+                  ></b-button>
                 </td>
               </tr>
             </tbody>
@@ -64,8 +82,14 @@
     </section>
 
     <section class="mt-4" v-if="appointments.length > 0">
-      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
-        <b-col cols="6" md="6" class="d-flex align-items-end align-items-md-center justify-content-center">
+      <b-row
+        class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center"
+      >
+        <b-col
+          cols="6"
+          md="6"
+          class="d-flex align-items-end align-items-md-center justify-content-center"
+        >
           <b-pagination
             align="center"
             size="sm"
@@ -84,18 +108,30 @@
     <section class="mt-1" v-if="appointments.length === 0">
       <no-registers :message="'citas'" />
     </section>
+    <details-appointment :appointmentData="appointmentSelected" />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { defineAsyncComponent } from "vue";
+import { encrypt } from "../../../../kernel/hashFunctions";
 import appointmentsController from "../services/controller/appointments.controller";
+import boundary from "../boundary";
 
 export default Vue.extend({
   components: {
-    LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
-    NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+    LoadingCustom: defineAsyncComponent(() =>
+      import("../../../../views/components/LoadingCustom.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
+    ),
+    DetailsAppointment: defineAsyncComponent(() =>
+      import(
+        "../../../patient/appointment/views/components/DetailsAppointment.vue"
+      )
+    ),
   },
   name: "PatientView",
   data() {
@@ -111,39 +147,49 @@ export default Vue.extend({
           name: null,
         },
       },
+      appointmentSelected: {},
       appointments: [],
     };
   },
 
-    methods: {
-      async getAllAppointmentsHistory() {
-        try {
-          this.isLoading = true;
-          const response = await appointmentsController.getAllAppointmentsHistory({
+  methods: {
+    async getAllAppointmentsHistory() {
+      try {
+        this.isLoading = true;
+        const response = await appointmentsController.getAllAppointmentsHistory(
+          {
             page: this.pagination.page - 1,
             size: this.pagination.size,
             sort: this.pagination.sort,
             direction: this.pagination.direction,
             data: this.pagination.data,
-          });
-          this.appointments = response.content;
-          this.pagination.totalRows = response.totalElements;
-        } catch (error) {
-          console.log(error);
-        } finally {
-          this.isLoading = false;
+          }
+        );
+        this.appointments = response.content;
+        this.pagination.totalRows = response.totalElements;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async viewAppointment(id) {
+      try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+          this.$bvModal.show("details-appointment");
         }
-      },
-      async viewAppointment(appointment) {
-        console.log("Ver cita:", appointment);
-      },
-   
-    async updateAppointment(appointment) {
-      console.log("Actualizar cita:", appointment);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
-    async deactivateAppointment(appointment) {
-      console.log("Desactivar cita:", appointment);
-    },
+
     async changeStatus(id) {},
   },
   mounted() {
@@ -154,25 +200,24 @@ export default Vue.extend({
 
 <style>
 .appointments-table {
-  border-radius: 10px; 
-  overflow: hidden; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .appointments-table table {
-  width: 100%; 
-  border-collapse: collapse; 
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .appointments-table th,
 .appointments-table td {
-  padding: 10px; 
-  text-align: center; 
-  border: 1px solid #dee2e6; 
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #dee2e6;
 }
 
 .appointments-table th {
   background-color: #f8f9fa;
 }
-
 </style>

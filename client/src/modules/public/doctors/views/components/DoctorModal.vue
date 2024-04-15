@@ -1,75 +1,80 @@
 <template>
     <div>
-      <b-modal hide-footer hide-header id="modal-doctor" title="Detalles del Doctor" centered>
-        <header class="text-center border-bottom" style="margin-bottom: 20px">
-        <h4 style="font-family: 'Arial', sans-serif; color: #333">
-          Información del doctor
-        </h4>
-      </header>
-        <div class="modal-container">
-          
-            <div class="doctor-details fullscreen">
-            <div class="modal-content">  
-                <div class="profile-section">
-                <img class="profile-picture" src='https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg' alt="Profile Picture">
-              </div>
+      <b-modal 
+      hide-footer
+      :no-close-on-backdrop="true"
+      id="modal-doctor"
+      title="Detalles del Doctor"
+      centered
+    >
+
+    <div class="modal-container">
+        <div class="doctor-details fullscreen">
+          <div class="modal-content">
+            <div class="profile-section">
+              <img class="profile-picture" :src="doctor && doctor.person.profilePhoto ? doctor.person.profilePhoto : 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg'" alt="Profile Picture">
             </div>
-              <div class="info-section">
-                <div class="header">
-                  <h1 class="doctor-name">{{ doctor.person.name }} {{ doctor.person.surname }} {{ doctor.person.lastname }}</h1>
-                  <p class="specialty">{{ doctor.speciality.name}}</p>
+          </div>
+          <div class="info-section">
+            <div class="header">
+              <h1 class="doctor-name">
+                {{ doctor.person.name }} {{ doctor.person.surname }}
+                {{ doctor.person.lastname }}
+              </h1>
+              <p class="specialty">{{ doctor.speciality.name }}</p>
+            </div>
+            <div class="details">
+              <div class="personal-info">
+                <div class="info-item">
+                  <strong>Edad:</strong>
+                  {{ calculateAge(doctor.person.birthday) }}
                 </div>
-                <div class="details">
-                  <div class="personal-info">
-                    <div class="info-item">
-                      <strong>Edad:</strong> {{ calculateAge(doctor.person.birthday) }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Género:</strong> {{ doctor.person.gender.name }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Email:</strong> {{ doctor.person.email }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Teléfono:</strong> {{ doctor.person.phoneNumber }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Días Disponibles:</strong> {{ doctor.availableDays }}
-                    </div>
-                  </div>
-                  <div class="professional-info">
-                    <div class="info-item">
-                      <strong>CURP:</strong> {{ doctor.person.curp }}
-                    </div>
-                    <div class="info-item">
-                      <strong>Experiencia:</strong> {{ doctor.experience }} años
-                    </div>
-                    <div class="info-item">
-                      <strong>¿Es Auxiliar?</strong> {{ doctor.isAux ? 'Sí' : 'No' }}
-                    </div>
-                    
-                    <div class="info-item">
-                      <strong>Turno:</strong> {{ doctor.shift.name }}
-                    </div>
-                  </div>
+                <div class="info-item">
+                  <strong>Género:</strong> {{ doctor.person.gender.name }}
+                </div>
+                <div class="info-item">
+                  <strong>Email:</strong> {{ doctor.person.email }}
+                </div>
+                <div class="info-item">
+                  <strong>Teléfono:</strong> {{ doctor.person.phoneNumber }}
+                </div>
+                <div class="info-item">
+                  <strong>Turno:</strong> {{ doctor.shift.name }}
+                </div>
+                <div class="info-item">
+                  <strong>Experiencia:</strong> {{ doctor.experience }} años
                 </div>
               </div>
+              <div class="professional-info">
+                <div class="info-item">
+                  <strong>CURP:</strong> {{ doctor.person.curp }}
+                </div>
+
+                <div class="info-item">
+                  <strong>¿Es Auxiliar?</strong>
+                  {{ doctor.isAux ? "Sí" : "No" }}
+                </div>
+
+                <div class="info-item">
+                  <strong>Días Disponibles:</strong>
+                  <li v-for="day in daysTranslates" :key="day">{{ day }}</li>
+                </div>
+              </div>
             </div>
-          
+          </div>
         </div>
-        <footer class="text-center mt-5">
-          <div class="btn-group">
-            <b-button variant="danger" class="mr-4" @click="onClose"
+      </div>
+      <footer class="text-center mt-5">
+        <div class="btn-group">
+          <b-button variant="danger" class="mr-4" @click="onClose"
             >Cerrar</b-button
           >
-          <b-button variant="primary">
-            Aceptar
-          </b-button>
-          </div>
-        </footer>
-      </b-modal>
-    </div>
-  </template>
+          <b-button variant="primary"> Aceptar </b-button>
+        </div>
+      </footer>
+    </b-modal>
+  </div>
+</template>
   <script>
   export default {
     name: 'DoctorModal',
