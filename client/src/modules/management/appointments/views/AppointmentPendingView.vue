@@ -1,177 +1,194 @@
 <template>
-    <div class="container-fluid mt-4">
-      <loading-custom :isLoading="isLoading" />
-      <section class="mx-2 px-5">
-        <b-row>
-          <b-col>
-            <h1 class="title-views">Citas Pendientes</h1>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col cols="12" md="6">
-            <b-input-group>
-              <b-form-input
-                placeholder="Escribe la cita"
-                v-model="pagination.data.name"
-                @keyup.enter="getAllAppointmentsPending"
-                class="custom-placeholder"
-              ></b-form-input>
-  
-              <b-input-group-append>
-                <b-button variant="primary" block @click="getAllAppointmentsPending">Buscar</b-button>
-              </b-input-group-append>
-            </b-input-group>
-          </b-col>
-        </b-row>
-      </section>
-  
-      <section class="mx-2 px-5" v-if="appointments.length > 0">
-        <div class="mt-4 shadow appointments-table">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Paciente</th>
-                <th>Especialidad</th>
-                <th>Fecha</th>
-                <th>Doctor</th>
-                <th>Turno</th>
-                <th>Tipo</th>
-                <th>Hora</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(appointment, index) in appointments" :key="index">
-                <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{ appointment.patient.person.lastname }}</td>
-                <td>{{ appointment.speciality.name }}</td>
-                <td>{{ appointment.scheduledAt }}</td>
-                <td>{{ appointment.doctor.person.name }} {{ appointment.doctor.person.surname }} {{ appointment.doctor.person.lastname }}</td>
-                <td>{{ appointment.preferentialShift.name }}</td>
-                <td>{{ appointment.appointmentType.name }}</td>
-                <td>{{ appointment.scheduledHour }}</td>
-                <td>{{ appointment.status.name }}</td>
-                <td>
-                  <b-button @click="viewAppointment(appointment)" variant="primary">Ver</b-button>
-                  <b-button @click="updateAppointment(appointment)" variant="info">Actualizar</b-button>
-                  <b-button @click="deactivateAppointment(appointment)" variant="danger">Desactivar</b-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-  
-      <section class="mt-4" v-if="appointments.length > 0">
-        <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
-          <b-col cols="6" md="6" class="d-flex align-items-end align-items-md-center justify-content-center">
-            <b-pagination
-              align="center"
-              size="sm"
-              class="my-0"
-              v-model="pagination.page"
-              :total-rows="pagination.totalRows"
-              :per-page="pagination.size"
-              aria-controls="table-transition-example"
-              @input="getAllAppointmentsPending"
-            >
-            </b-pagination>
-          </b-col>
-        </b-row>
-      </section>
-  
-      <section class="mt-1" v-if="appointments.length === 0">
-        <no-registers :message="'citas'" />
-      </section>
-    </div>
-  </template>
-  
-  <script>
-  import Vue from "vue";
-  import { defineAsyncComponent } from "vue";
-  import appointmentsController from "../services/controller/appointments.controller";
-  
-  export default Vue.extend({
-    components: {
-      LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
-      NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
-    },
-    name: "PatientView",
-    data() {
-      return {
-        isLoading: false,
-        pagination: {
-          page: 1,
-          sort: "id",
-          size: 8,
-          direction: "desc",
-          totalRows: 0,
-          data: {
-            name: null,
-          },
+  <div class="container-fluid mt-4">
+    <loading-custom :isLoading="isLoading" />
+    <section class="mx-2 px-5">
+      <b-row>
+        <b-col>
+          <h1 class="title-views">Citas Pendientes</h1>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col cols="12" md="6">
+          <b-input-group>
+            <b-form-input placeholder="Escribe la cita" v-model="pagination.data.name"
+              @keyup.enter="getAllAppointmentsPending" class="custom-placeholder"></b-form-input>
+
+            <b-input-group-append>
+              <b-button variant="primary" block @click="getAllAppointmentsPending">Buscar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-col>
+      </b-row>
+    </section>
+
+    <section class="mx-2 px-5" v-if="appointments.length > 0">
+      <div class="mt-4 shadow appointments-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Especialidad</th>
+              <th>Fecha</th>
+              <th>Doctor</th>
+              <th>Turno</th>
+              <th>Tipo</th>
+              <th>Hora</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(appointment, index) in appointments" :key="index">
+              <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{
+                appointment.patient.person.lastname }}</td>
+              <td>{{ appointment.speciality.name }}</td>
+              <td>{{ appointment.scheduledAt }}</td>
+              <td>{{ appointment.dotor ? `${appointment.doctor.person.name} ${appointment.doctor.person.surname}
+                ${appointment.doctor.person.lastname}` :
+                `Sin doctor asignado` }}</td>
+              <td>{{ appointment.preferentialShift.name }}</td>
+              <td>{{ appointment.appointmentType.name }}</td>
+              <td>{{ appointment.scheduledHour ? appointment.scheduledHour : 'Sin hora asignada' }}</td>
+              <td>{{ appointment.status.name }}</td>
+              <td>
+                <b-button class="mr-2" @click="cancelDueNonAval(appointment.id)" v-b-tooltip.hover.v-info
+                  title="Cancelar por no disponibilidad" variant="outline-danger">
+                  <b-icon icon="door-closed"></b-icon>
+                </b-button>
+                <b-button class="mr-2" @click="assigDoctor(appointment.id)" v-b-tooltip.hover.v-info title="Asignar doctor"
+                  variant="outline-success">
+                  <b-icon icon="person-plus"></b-icon>
+                </b-button>
+                <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
+                  @click="viewAppointment(appointment)"><b-icon icon="eye"></b-icon></b-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-4" v-if="appointments.length > 0">
+      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
+        <b-col cols="6" md="6" class="d-flex align-items-end align-items-md-center justify-content-center">
+          <b-pagination align="center" size="sm" class="my-0" v-model="pagination.page"
+            :total-rows="pagination.totalRows" :per-page="pagination.size" aria-controls="table-transition-example"
+            @input="getAllAppointmentsPending">
+          </b-pagination>
+        </b-col>
+      </b-row>
+    </section>
+
+    <section class="mt-1" v-if="appointments.length === 0">
+      <no-registers :message="'citas'" />
+    </section>
+  </div>
+</template>
+
+<script>
+import Vue, { defineAsyncComponent } from "vue";
+import appointmentsController from "../services/controller/appointments.controller";
+import { encrypt } from "../../../../kernel/hashFunctions";
+import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
+
+export default Vue.extend({
+  components: {
+    LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
+    NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+  },
+  name: "PatientView",
+  data() {
+    return {
+      isLoading: false,
+      pagination: {
+        page: 1,
+        sort: "id",
+        size: 8,
+        direction: "desc",
+        totalRows: 0,
+        data: {
+          name: null,
         },
-        appointments: [],
-      };
+      },
+      appointments: [],
+    };
+  },
+  methods: {
+    async getAllAppointmentsPending() {
+      try {
+        this.isLoading = true;
+        const response = await appointmentsController.getAllAppointmentsPending({
+          page: this.pagination.page - 1,
+          size: this.pagination.size,
+          sort: this.pagination.sort,
+          direction: this.pagination.direction,
+          data: this.pagination.data,
+        });
+        this.appointments = response.content;
+        this.pagination.totalRows = response.totalElements;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
-    methods: {
-      async getAllAppointmentsPending() {
-        try {
+    async viewAppointment(appointment) {
+      console.log("Ver cita:", appointment);
+    },
+    async assigDoctor(appointment) {
+      console.log("Actualizar cita:", appointment);
+    },
+    async cancelDueNonAval(id) {
+      try {
+        const result = await SweetAlertCustom.questionMessage();
+        if (result.isConfirmed) {
           this.isLoading = true;
-          const response = await appointmentsController.getAllAppointmentsPending({
-            page: this.pagination.page - 1,
-            size: this.pagination.size,
-            sort: this.pagination.sort,
-            direction: this.pagination.direction,
-            data: this.pagination.data,
+          const cipherId = await encrypt(id);
+          const resp = await appointmentsController.cancelAppointment(cipherId, {
+            reason: "SIN_DISPONIBILIDAD"
           });
-          this.appointments = response.content;
-          this.pagination.totalRows = response.totalElements;
-        } catch (error) {
-          console.log(error);
-        } finally {
-          this.isLoading = false;
+          const { error } = resp;
+          if (!error) {
+            this.getAllAppointmentsPending();
+            setTimeout(() => {
+              SweetAlertCustom.successMessage();
+            }, 900);
+            return;
+          }
         }
-      },
-      async viewAppointment(appointment) {
-        console.log("Ver cita:", appointment);
-      },
-      async updateAppointment(appointment) {
-        console.log("Actualizar cita:", appointment);
-      },
-      async deactivateAppointment(appointment) {
-        console.log("Desactivar cita:", appointment);
-      },
-      async changeStatus(id) {},
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
-    mounted() {
-      this.getAllAppointmentsPending();
-    },
-  });
-  </script>
-  
-  <style>
+  },
+  mounted() {
+    this.getAllAppointmentsPending();
+  },
+});
+</script>
+
+<style>
 .appointments-table {
-  border-radius: 10px; 
-  overflow: hidden; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .appointments-table table {
-  width: 100%; 
-  border-collapse: collapse; 
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .appointments-table th,
 .appointments-table td {
-  padding: 10px; 
-  text-align: center; 
-  border: 1px solid #dee2e6; 
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #dee2e6;
 }
 
 .appointments-table th {
   background-color: #f8f9fa;
 }
-
 </style>
-
-  

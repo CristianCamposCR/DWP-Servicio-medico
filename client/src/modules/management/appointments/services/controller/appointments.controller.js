@@ -37,4 +37,16 @@ export default {
       };
     }
   },
+  async cancelAppointment(id, payload) {
+    try {
+      const data = await ApiService.cancelAppointment(id, payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 }

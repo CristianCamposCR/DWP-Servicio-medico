@@ -555,7 +555,7 @@ public class AppointmentService {
         EmailDto emailDto = new EmailDto(
                 appointment.getPatient().getPerson().getEmail(),
                 patientFullName,
-                "Cita cancelata",
+                "Cita cancelada",
                 "Tu cita ha sido cancelada",
                 body
         );
@@ -629,7 +629,8 @@ public class AppointmentService {
     }
 
     private String genCancellationAppEmailBody(Appointment appointment, String reason) {
-        String doctorFullName = Methods.getFullName(appointment.getDoctor().getPerson());
+        String doctorFullName = appointment.getDoctor() != null ? Methods.getFullName(appointment.getDoctor().getPerson()) : "Sin doctor asignado.";
+        String scheduledHour = appointment.getScheduledHour() != null ? appointment.getScheduledHour() + ":00 HRS" : "Sin hora asignada.";
         String formattedScheduledAt = Methods.formatScheduledAt(appointment.getScheduledAt(), DATE_TEXT_FORMAT);
 
         return "<p>Información de la cita cancelada.</p>\n" +
@@ -638,9 +639,9 @@ public class AppointmentService {
                 "                <p><strong>Tipo de cita: </strong> " + appointment.getAppointmentType().getName() + "</p>\n" +
                 "                <p><strong>Folio de cita: </strong> " + appointment.getFolio() + "</p>\n" +
                 "                <p><strong>Doctor asignado: </strong> " + doctorFullName + "</p>\n" +
-                "                <p><strong>Especialidad: </strong> " + appointment.getDoctor().getSpeciality().getName() + "</p>\n" +
+                "                <p><strong>Especialidad: </strong> " + appointment.getSpeciality().getName() + "</p>\n" +
                 "                <p><strong>Fecha: </strong> " + formattedScheduledAt + "</p>\n" +
-                "                <p><strong>Hora: </strong> " + appointment.getScheduledHour() + ":00 HRS </p>\n" +
+                "                <p><strong>Hora: </strong> " + scheduledHour + " </p>\n" +
                 "            </div>";
     }
 
