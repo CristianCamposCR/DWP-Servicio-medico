@@ -90,6 +90,10 @@
       <section class="mt-1" v-if="appointments.length === 0">
         <no-registers :message="'citas'" />
       </section>
+      <reeschedule :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsActive"
+      @showLoading="showLoading" @hideLoading="hideLoading">
+      </reeschedule>
+
       <details-appointment :appointmentData="appointmentSelected"/>
     </div>
   </template>
@@ -105,7 +109,8 @@
     components: {
       LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
       NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
-      DetailsAppointment: defineAsyncComponent(()=> import("./components/DetailsAppointment.vue"))
+      DetailsAppointment: defineAsyncComponent(()=> import("./components/DetailsAppointment.vue")),
+      Reeschedule: defineAsyncComponent(() => import("./components/Reeschedule.vue"))
     },
     name: "PatientView",
     data() {
@@ -126,6 +131,12 @@
       };
     },
     methods: {
+      showLoading(){
+      this.isLoading = true
+      },
+      hideLoading(){
+        this.isLoading = false
+      },
       async getAllAppointmentsActive() {
         try {
           this.isLoading = true;
@@ -160,8 +171,21 @@
         this.isLoading = false;
       }
       },
-      async reescheduleAppointment(appointment) {
-        console.log("Actualizar cita:", appointment);
+      async reescheduleAppointment(id) {
+        try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+          this.$bvModal.show("modal-reeschedule-appointment");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
       },
       async cancelVoluntarily(id) {
       try {
@@ -174,7 +198,7 @@
           });
           const { error } = resp;
           if (!error) {
-            this.getAllAppointmentsPending();
+            this.getAllAppointmentsActive();
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 900);

@@ -87,4 +87,28 @@ export default {
           };
         }
       },
+      async getOne(id) {
+        try {
+          const response = await axios.doGet(`/appointment/${id}`);
+          return response.data.data;
+        } catch (error) {
+          return {
+            code: error.data?.code,
+            error: true,
+            message: error.data?.message,
+          };
+        }
+      },
+      async reescheduleAppointment(id, payload) {
+        try {
+          const response = await axios.doPost(`/appointment/reschedule/${id}`, payload);
+          return response.data.data;
+        } catch (error) {
+          return {
+            code: error.data?.code,
+            error: true,
+            message: error.data?.message,
+          };
+        }
+      },
 };
