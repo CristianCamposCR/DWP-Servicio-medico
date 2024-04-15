@@ -87,30 +87,32 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     Long checkAvailability(Long specialityId, Long shiftId, String dayName);
 
     @Query(value = """
-            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, ''))) as 'fullName' 
-            FROM appointments a
-                     INNER JOIN doctors d ON a.doctor_id = d.id
+            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(CONCAT(' ', p.lastname), ''))) AS 'fullName'
+            FROM doctors d
                      INNER JOIN people p on d.person_id = p.id
-            WHERE a.scheduled_at = ?1
-              AND a.speciality_id = ?2
-              AND a.shift_id = ?3
+                     LEFT JOIN (SELECT a.doctor_id, COUNT(*) AS appointment_count
+                                FROM appointments a
+                                WHERE a.scheduled_at = ?1
+                                GROUP BY a.doctor_id) AS appointment_counts ON d.id = appointment_counts.doctor_id
+            WHERE d.speciality_id = ?2
+              AND d.shift_id = ?3
               AND NOT d.is_aux
-            GROUP BY d.id
-            HAVING COUNT(*) < 6
+              AND (appointment_counts.appointment_count IS NULL OR appointment_counts.appointment_count < 6)
             """, nativeQuery = true)
     Set<IDoctorListView> findAllAvailableDoctors(LocalDate scheduledAt, Long specialityId, Long shiftId);
 
     @Query(value = """
-            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(' ' || p.lastname, ''))) as 'fullName' 
-            FROM appointments a
-                     INNER JOIN doctors d ON a.doctor_id = d.id
+            SELECT d.id, TRIM(CONCAT(p.name, ' ', p.surname, COALESCE(CONCAT(' ', p.lastname), ''))) AS 'fullName'
+            FROM doctors d
                      INNER JOIN people p on d.person_id = p.id
-            WHERE a.scheduled_at = ?1
-              AND a.speciality_id = ?2
-              AND a.shift_id = ?3
+                     LEFT JOIN (SELECT a.doctor_id, COUNT(*) AS appointment_count
+                                FROM appointments a
+                                WHERE a.scheduled_at = ?1
+                                GROUP BY a.doctor_id) AS appointment_counts ON d.id = appointment_counts.doctor_id
+            WHERE d.speciality_id = ?2
+              AND d.shift_id = ?3
               AND d.is_aux
-            GROUP BY d.id
-            HAVING COUNT(*) < 6
+              AND (appointment_counts.appointment_count IS NULL OR appointment_counts.appointment_count < 6)
             """, nativeQuery = true)
     Set<IDoctorListView> findAllAvailableAuxDoctors(LocalDate scheduledAt, Long specialityId, Long shiftId);
 

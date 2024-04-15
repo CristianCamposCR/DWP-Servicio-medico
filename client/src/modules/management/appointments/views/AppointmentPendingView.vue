@@ -55,7 +55,7 @@
                   title="Cancelar por no disponibilidad" variant="outline-danger">
                   <b-icon icon="door-closed"></b-icon>
                 </b-button>
-                <b-button class="mr-2" @click="assigDoctor(appointment.id)" v-b-tooltip.hover.v-info title="Asignar doctor"
+                <b-button class="mr-2" @click="assignDoctor(appointment.id)" v-b-tooltip.hover.v-info title="Asignar doctor"
                   variant="outline-success">
                   <b-icon icon="person-plus"></b-icon>
                 </b-button>
@@ -82,6 +82,10 @@
     <section class="mt-1" v-if="appointments.length === 0">
       <no-registers :message="'citas'" />
     </section>
+
+    <assign-doctor :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsPending"
+    @showLoading="showLoading" @hideLoading="hideLoading">
+    </assign-doctor>
   </div>
 </template>
 
@@ -95,6 +99,7 @@ export default Vue.extend({
   components: {
     LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
     NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+    AssignDoctor: defineAsyncComponent(() => import("./components/AssignDoctor.vue")),
   },
   name: "PatientView",
   data() {
@@ -111,9 +116,16 @@ export default Vue.extend({
         },
       },
       appointments: [],
+      appointmentSelected: {}
     };
   },
   methods: {
+    showLoading(){
+      this.isLoading = true
+    },
+    hideLoading(){
+      this.isLoading = false
+    },
     async getAllAppointmentsPending() {
       try {
         this.isLoading = true;
@@ -135,8 +147,21 @@ export default Vue.extend({
     async viewAppointment(appointment) {
       console.log("Ver cita:", appointment);
     },
-    async assigDoctor(appointment) {
-      console.log("Actualizar cita:", appointment);
+    async assignDoctor(id) {
+      try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+          this.$bvModal.show("modal-assign-doctor");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
     async cancelDueNonAval(id) {
       try {
