@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -225,17 +226,10 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseApi<Page<Appointment>> findAllToReviewByPatient(SearchDto dto, String username, Pageable pageable) {
+    public ResponseApi<Set<Appointment>> findAllToReviewByPatient(String username) {
         try {
-            Page<Appointment> appointments;
-            if (dto != null && dto.getSearchValue() != null && !dto.getSearchValue().isBlank()) {
-                appointments = this.iAppointmentRepository.findAllToReviewByPatientAndSearchValue(dto.getSearchValue(), username, pageable);
-            } else {
-                appointments = this.iAppointmentRepository.findAllToReviewByPatient(username, pageable);
-            }
-
             return new ResponseApi<>(
-                    appointments,
+                    this.iAppointmentRepository.findAllToReviewByPatient(username),
                     HttpStatus.OK,
                     false,
                     "Citas sin reseña."
@@ -418,6 +412,7 @@ public class AppointmentService {
             return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_STATUS_FOUND.name());
 
         existentAppointment.setDoctor(null);
+        existentAppointment.setScheduledHour(null);
         existentAppointment.setStatus(optionalStatus.get());
         existentAppointment.setScheduledAt(dto.getScheduledAt());
         existentAppointment.setPreferentialShift(dto.getShift());
