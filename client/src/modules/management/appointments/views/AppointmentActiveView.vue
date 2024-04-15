@@ -40,11 +40,11 @@
           <tbody>
             <tr v-for="(appointment, index) in appointments" :key="index">
               <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{
-                appointment.patient.person.lastname }}</td>
+      appointment.patient.person.lastname }}</td>
               <td>{{ appointment.speciality.name }}</td>
               <td>{{ appointment.scheduledAt }}</td>
               <td>{{ appointment.doctor.person.name }} {{ appointment.doctor.person.surname }} {{
-                appointment.doctor.person.lastname }}</td>
+      appointment.doctor.person.lastname }}</td>
               <td>{{ appointment.preferentialShift.name }}</td>
               <td>{{ appointment.appointmentType.name }}</td>
               <td>{{ appointment.scheduledHour }}</td>
@@ -54,7 +54,7 @@
                   title="Cancelar por no disponibilidad" variant="outline-danger">
                   <b-icon icon="door-closed"></b-icon>
                 </b-button>
-                <b-button class="mr-2" @click="assigDoctor(appointment.id)" v-b-tooltip.hover.v-info
+                <b-button class="mr-2" @click="reassigDoctor(appointment.id)" v-b-tooltip.hover.v-info
                   title="Asignar doctor" variant="outline-success">
                   <b-icon icon="person-plus"></b-icon>
                 </b-button>
@@ -81,6 +81,10 @@
     <section class="mt-1" v-if="appointments.length === 0">
       <no-registers :message="'citas'" />
     </section>
+
+    <reassign-doctor :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsActive"
+    @showLoading="showLoading" @hideLoading="hideLoading">
+    </reassign-doctor>
   </div>
 </template>
 
@@ -94,6 +98,7 @@ export default Vue.extend({
   components: {
     LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
     NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
+    ReassignDoctor: defineAsyncComponent(() => import("./components/ReassignDoctor.vue"))
   },
   name: "PatientView",
   data() {
@@ -110,9 +115,16 @@ export default Vue.extend({
         },
       },
       appointments: [],
+      appointmentSelected: {}
     };
   },
   methods: {
+    showLoading(){
+      this.isLoading = true
+    },
+    hideLoading(){
+      this.isLoading = false
+    },
     async getAllAppointmentsActive() {
       try {
         this.isLoading = true;
@@ -134,8 +146,21 @@ export default Vue.extend({
     async viewAppointment(appointment) {
       console.log("Ver cita:", appointment);
     },
-    async assigDoctor(appointment) {
-      console.log("Actualizar cita:", appointment);
+    async reassigDoctor(id) {
+      try {
+        this.isLoading = true;
+        const cipherId = await encrypt(id);
+        const resp = await appointmentsController.getOne(cipherId);
+        const { error } = resp;
+        if (!error) {
+          this.appointmentSelected = resp;
+          this.$bvModal.show("modal-assign-doctor");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
     async cancelDueNonAval(id) {
       try {

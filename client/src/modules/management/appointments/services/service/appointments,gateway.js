@@ -61,4 +61,40 @@ export default {
       };
     }
   },
+  async getOne(id) {
+    try {
+      const response = await axios.doGet(`/appointment/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async assignDoctor(id, payload) {
+    try {
+      const response = await axios.doPost(`appointment/management/assign-doctor/${id}`, payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async reassignDoctor(id, payload) {
+    try {
+      const response = await axios.doPost(`appointment/management/reassign-doctor/${id}`, payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 }

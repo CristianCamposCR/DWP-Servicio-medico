@@ -49,4 +49,40 @@ export default {
       };
     }
   },
+  async getOne(id) {
+    try {
+      const data = await ApiService.getOne(id);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async assignDoctor(id, payload) {
+    try {
+      const data = await ApiService.assignDoctor(id, payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async reassignDoctor(id, payload) {
+    try {
+      const data = await ApiService.reassignDoctor(id, payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 }

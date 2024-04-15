@@ -51,4 +51,43 @@ export default {
       };
     }
   },
+
+  async getAllAvailableDoctors(payload) {
+    try {
+      const data = await ApiService.getAvailableDoctors(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async getAllAvailableAuxDoctors(payload) {
+    try {
+      const data = await ApiService.getAvailableAuxDoctors(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  
+  async getAvailableHours(payload) {
+    try {
+      const data = await ApiService.getAvailableHours(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };

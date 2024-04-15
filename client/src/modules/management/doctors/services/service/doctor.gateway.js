@@ -58,4 +58,43 @@ export default {
     }
   },
 
+  async getAvailableDoctors(payload) {
+    try {
+      const response = await axios.doPost("/management/doctor/available/", payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async getAvailableAuxDoctors(payload) {
+    try {
+      const response = await axios.doPost("/management/doctor/aux/available/", payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
+  async getAvailableHours(payload) {
+    try {
+      const response = await axios.doPost("/management/doctor/available-hours/", payload);
+      return response.data.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+
 };
