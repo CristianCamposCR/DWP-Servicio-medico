@@ -1,3 +1,4 @@
+import { refresh } from "aos";
 import axios from "../../../../config/client.gateway";
 import { encrypt } from "../../../../kernel/hashFunctions";
 export default {
@@ -8,6 +9,12 @@ export default {
         username: payload.username,
         password: encryptPassword,
       });
+      if (
+        response.data.data === null &&
+        response.data.message === "USER_IS_NOT_VERIFIED" &&
+        response.data.status === "OK"
+      )
+        return response.data;
       return response.data.data;
     } catch (error) {
       return {
@@ -45,6 +52,21 @@ export default {
         { code: payload }
       );
       return response.data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
+  async refreshActivationCode(payload) {
+    try {
+      const response = await axios.doPost(
+        "/open/verification-code/refresh-activation-code/",
+        payload
+      );
+      return response.data.data;
     } catch (error) {
       return {
         code: error.data?.code,

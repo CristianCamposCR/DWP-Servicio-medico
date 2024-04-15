@@ -37,4 +37,16 @@ export default {
       };
     }
   },
+  async refreshActivationCode(payload) {
+    try {
+      const data = await ApiService.refreshActivationCode(payload);
+      return data;
+    } catch (error) {
+      return {
+        code: error.data?.code,
+        error: true,
+        message: error.data?.message,
+      };
+    }
+  },
 };

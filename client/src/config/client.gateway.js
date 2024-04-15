@@ -42,7 +42,7 @@ AxiosClient.interceptors.response.use(
 
     switch (status) {
       case 400:
-        case "BAD_REQUEST":
+      case "BAD_REQUEST":
         handle400Error(error);
         break;
       case 401:
@@ -131,13 +131,23 @@ function handle400Error(error) {
     case "DUPLICATED_DOCTOR":
       titleAlert = "Registro duplicado";
       messageAlert =
-        "Verifica la informacion del doctor los campos unicos son: Cedula profesional, Curp y Correo electronico";
+        "Información en uso";
       break;
     // APPOINTMENTS
     case "NO_RESCHEDULES_REMAINING":
       titleAlert = "Sin reagendas disponibles";
       messageAlert = "Ya has usado tu oportunidad de reagendar en esat cita";
       break;
+    case "DUPLICATED_PATIENT":
+      titleAlert = "Registro duplicado";
+      messageAlert =
+        "Información en uso";
+      break;
+      case "DUPLICATED_USER":
+        titleAlert = "Registro duplicado";
+        messageAlert =
+          "Información en uso";
+        break;
   }
   if (message !== "Review request")
     Vue.swal({
