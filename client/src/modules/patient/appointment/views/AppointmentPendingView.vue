@@ -46,7 +46,7 @@
                 <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{ appointment.patient.person.lastname }}</td>
                 <td>{{ appointment.speciality.name }}</td>
                 <td>{{ appointment.scheduledAt }}</td>
-                <td>{{ appointment.doctor }}</td>
+                <td>{{ appointment.doctor.person.name }} {{ appointment.doctor.person.surname }} {{ appointment.doctor.person.lastname }}</td>
                 <td>{{ appointment.preferentialShift.name }}</td>
                 <td>{{ appointment.appointmentType.name }}</td>
                 <td>{{ appointment.scheduledHour }}</td>

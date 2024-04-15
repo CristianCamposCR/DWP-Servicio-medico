@@ -25,7 +25,7 @@
               <b-icon icon="calendar"> </b-icon>
             </template>
             <b-dropdown-item to="appointments-active-doctor">Citas Asignadas</b-dropdown-item>
-            <b-dropdown-item to="appointments-history-doctor">Historial de citas</b-dropdown-item>
+            <b-dropdown-item to="appointments-history-doctor">Historial de Citas</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <!-- Right aligned nav items -->
