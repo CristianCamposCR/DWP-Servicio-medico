@@ -154,7 +154,7 @@ export default Vue.extend({
         const { error } = resp;
         if (!error) {
           this.appointmentSelected = resp;
-          this.$bvModal.show("modal-assign-doctor");
+          this.$bvModal.show("modal-reassign-doctor");
         }
       } catch (error) {
         console.log(error);
