@@ -260,29 +260,8 @@ export default Vue.extend({
         this.isLoading = true;
         const cipherId = await encrypt(id);
         const resp = await doctorController.getOne(cipherId);
-        console.log(resp);
-        const englishToSpanish = {
-          MONDAY: "Lunes",
-          TUESDAY: "Martes",
-          WEDNESDAY: "Miercoles",
-          THURSDAY: "Jueves",
-          FRIDAY: "Viernes",
-        };
-
         const { error } = resp;
         if (!error) {
-          // const daysArray = resp.availableDays
-          //   .replace("[", "")
-          //   .replace("]", "")
-          //   .split(", ")
-          //   .map((day) => englishToSpanish[day]);
-          // const resultArray = daysArray.map((day) => ({
-          //   name: day,
-          //   id: Object.keys(englishToSpanish).find(
-          //     (key) => englishToSpanish[key] === day
-          //   ),
-          // }));
-          // resp.availableDays = resultArray;
           this.doctorSelected = resp;
           this.$bvModal.show("doctor-modal-details");
         }
