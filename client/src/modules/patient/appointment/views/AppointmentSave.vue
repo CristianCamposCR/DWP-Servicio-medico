@@ -24,7 +24,7 @@
 
       <b-row v-if="promotion.isActive">
         <b-col>
-          <b-alert show variant="info" class="text-center text-dark">
+          <b-alert show variant="warning" class="text-center text-dark">
             Hoy es lunes, por lo que tienes un 20% de descuento en todas las citas
           </b-alert>
         </b-col>
@@ -252,12 +252,12 @@
 
           <section class="mt-5 mt-md-0 position-relative h-100 pb-5"
                    v-if="sectionActive === 1 && pagination.totalRows > 0">
-            <custom-loading-section :busy="isLoading  "/>
+            <custom-loading-section :busy="isLoading" :opacity="0.6"/>
             <b-row>
               <b-col
                   v-for="(area, index) in listItems"
                   :key="index"
-                  cols="12" sm="6" md="4" xl="3"
+                  cols="12" sm="6" xl="3"
                   class="d-flex justify-content-center my-2"
               >
                 <b-card
@@ -354,14 +354,13 @@
             </section>
           </section>
 
-          <section class="mt-5 mt-md-0 position-relative h-100 pb-5"
-                   v-if="sectionActive === 2 && pagination.totalRows > 0">
-            <custom-loading-section :busy="isLoading  "/>
+          <section class="mt-5 mt-md-0 position-relative h-100 pb-5" v-if="sectionActive === 2 && pagination.totalRows > 0">
+            <custom-loading-section :busy="isLoading"  :opacity="0.6"/>
             <b-row>
               <b-col
                   v-for="(speciality, index) in specialtyList"
                   :key="index"
-                  cols="12" sm="6" md="4" xl="3"
+                  cols="12" sm="6" xl="3"
                   class="d-flex justify-content-center my-3"
               >
                 <b-card
@@ -735,6 +734,7 @@ import {helpers, maxLength, minLength, numeric, required} from "@vuelidate/valid
 import {useVuelidate} from "@vuelidate/core";
 import {decrypt, encrypt} from "@/kernel/hashFunctions";
 import {formatStyleText, onlyCustomNumber} from "@/kernel/functions";
+import {formatDate} from "@/kernel/functions";
 
 
 export default Vue.extend({
@@ -750,7 +750,6 @@ export default Vue.extend({
   },
   mounted() {
     window.addEventListener('beforeunload', this.handleBeforeRouteLeave);
-    this.handleShowModal('termAndCondition')
     this.getAllAreas();
     this.user = jwtDecode(localStorage.token).sub;
     this.user = this.user.charAt(0).toUpperCase() + this.user.slice(1);
@@ -828,7 +827,7 @@ export default Vue.extend({
       pagination: {
         page: 1,
         sort: "id",
-        size: 9,
+        size: 8,
         direction: "desc",
         totalRows: 0,
         data: {
@@ -919,7 +918,7 @@ export default Vue.extend({
         this.pagination = {
           page: 1,
           sort: "id",
-          size: 9,
+          size: 8,
           direction: "desc",
           totalRows: 0,
           data: {
@@ -1158,18 +1157,7 @@ export default Vue.extend({
       }
 
     },
-    formatDate(date) {
-      const local = moment(date);
-      moment.updateLocale('es', {
-        months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
-        monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
-        weekdays: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
-        weekdaysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
-        weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sá'.split('_')
-      });
-      local.locale(false);
-      return local.format('dddd, D [de] MMMM [de] YYYY');
-    },
+    formatDate,
     dateTomorrow() {
       const today = moment();
       today.add(1, 'days').format('YYYY-MM-DD');

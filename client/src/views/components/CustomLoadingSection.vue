@@ -7,6 +7,7 @@
         <b-spinner small type="grow" class="color"></b-spinner>
         <!-- We add an SR only text for screen readers -->
         <span class="sr-only">Cargando...</span>
+
       </div>
     </template>
   </b-overlay>

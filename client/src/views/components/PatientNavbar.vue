@@ -27,10 +27,10 @@
              <b class="custom-nav-font">Citas </b>
               <b-icon icon="calendar"> </b-icon>
             </template>
-            <b-dropdown-item to="appointment-patient">Agendar Cita</b-dropdown-item>
-            <b-dropdown-item to="appointments-active-patient">Citas Activas</b-dropdown-item>
-            <b-dropdown-item to="appointments-pending-patient">Citas Pendientes</b-dropdown-item>
-            <b-dropdown-item to="appointments-history-patient">Historial de Citas</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'appointment-save-patient' }">Agendar Cita</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'appointment-active-patient' }">Citas Activas</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'appointment-pending-patient'}">Citas Pendientes</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'appointment-history-patient'}">Historial de Citas</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
         <!-- Right aligned nav items -->
@@ -66,9 +66,9 @@ export default Vue.extend({
   data() {
     return {
       links: [
-        { name: "Áreas", to: "areas" },
-        { name: "Especialidades", to: "specialities" },
-        { name: "Doctores", to: "doctors" },
+        { name: "Áreas", to: { name: "areas-patient" } },
+        { name: "Especialidades", to: {name: "specialities-patient"} },
+        { name: "Doctores", to : {name: "doctors-patient"} },
       ],
     };
   },
@@ -118,3 +118,6 @@ export default Vue.extend({
   }
 }
 </style>
+
+
+
