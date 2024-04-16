@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const signal = (event) => {
   if (isNaN(event.key) && onlyPositive(event)) return false;
   else return true;
@@ -39,8 +41,26 @@ export const onlyCustomNumber = (event) => {
 
 
 export const formatStyleText = (text, type) => {
+    if (!text) return '---'
     let newText = text?.trim();
     if (type === 'uppercase') newText = text.toUpperCase();
     if (type === 'lowercase') newText = text.toLowerCase();
     return newText;
 }
+
+
+
+/*
+  * @Section: Date Moment
+ */
+
+moment.updateLocale('es', {
+    months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
+    monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
+    weekdays: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
+    weekdaysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
+    weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sá'.split('_')
+});
+moment.locale('es');
+
+export const formatDate = (date) => moment(date).format('dddd, D [de] MMMM [de] YYYY')

@@ -42,7 +42,14 @@ export default [
             role: rolesAllowed,
           },
         },
-        
+        {
+          path: '*',
+          component: () => import('@/views/NotFound404.vue'),
+          meta: {
+            title: '404',
+            requireAuth: false,
+          },
+        }
       ],
     },
   ];

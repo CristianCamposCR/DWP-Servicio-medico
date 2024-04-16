@@ -38,6 +38,14 @@ const router = new VueRouter({
         ...publicRoute,
       ],
     },
+    {
+      path: '*',
+      component: () => import('@/views/NotFound404.vue'),
+      meta: {
+        title: '404',
+        requireAuth: false,
+      },
+    }
   ],
 });
 

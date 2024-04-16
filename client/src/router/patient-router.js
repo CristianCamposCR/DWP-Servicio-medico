@@ -8,15 +8,53 @@ export default [
     name: "patient",
     children: [
       {
-        path: "appointment-patient",
+        path: "appointment",
         name: "appointment-patient",
-        component: () =>
-          import("@/modules/patient/appointment/views/AppointmentViews.vue"),
-        meta: {
-          title: "Citas",
-          requireAuth: true,
-          role: rolesAllowed,
-        },
+        redirect: { name: "appointment-active" },
+        component: () => import("@/modules/patient/appointment/views/AppointmentView.vue"),
+        children: [
+          {
+            path: "save",
+            name: "appointment-save-patient",
+            component: () => import("@/modules/patient/appointment/views/AppointmentSave.vue"),
+            meta: {
+              title: "Citas",
+              requireAuth: true,
+              role: rolesAllowed,
+            },
+          },
+          {
+            path: "active",
+            name: "appointment-active-patient",
+            component: () => import("@/modules/patient/appointment/views/AppointmentActiveView.vue"),
+            meta: {
+              title: "Citas Activas",
+              requireAuth: true,
+              role: rolesAllowed,
+            },
+          },
+          {
+            path: "pending",
+            name: "appointment-pending-patient",
+            component: () => import("@/modules/patient/appointment/views/AppointmentPendingView.vue"),
+            meta: {
+              title: "Citas Pendiente",
+              requireAuth: true,
+              role: rolesAllowed,
+            },
+          },
+          {
+            path: "history",
+            name: "appointment-history-patient",
+            component: () => import("@/modules/patient/appointment/views/AppointmentHistoryView.vue"),
+            meta: {
+              title: "Historial de Citas",
+              requireAuth: true,
+              role: rolesAllowed,
+            },
+          },
+        ],
+
       },
       {
         path: "profile-patient",
@@ -71,38 +109,13 @@ export default [
         },
       },
       {
-        path: "appointments-active-patient",
-        name: "appointments-active-patient",
-        component: () =>
-          import("../modules/patient/appointment/views/AppointmentActiveView.vue"),
+        path: '*',
+        component: () => import('@/views/NotFound404.vue'),
         meta: {
-          title: "Citas Activas",
-          requireAuth: true,
-          role: rolesAllowed,
+          title: '404',
+          requireAuth: false,
         },
-      },
-      {
-        path: "appointments-pending-patient",
-        name: "appointments-pending-patient",
-        component: () =>
-          import("../modules/patient/appointment/views/AppointmentPendingView.vue"),
-        meta: {
-          title: "Citas Pendiente",
-          requireAuth: true,
-          role: rolesAllowed,
-        },
-      },
-      {
-        path: "appointments-history-patient",
-        name: "appointments-history-patient",
-        component: () =>
-          import("../modules/patient/appointment/views/AppointmentHistoryView.vue"),
-        meta: {
-          title: "HIstorial de Citas",
-          requireAuth: true,
-          role: rolesAllowed,
-        },
-      },
+      }
     ],
   },
 ];
