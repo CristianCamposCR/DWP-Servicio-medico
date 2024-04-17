@@ -121,11 +121,11 @@ function handle400Error(error) {
       break;
     case "The curp is already registered":
       titleAlert = "Registro duplicado";
-      messageAlert = "Está CURP ya existe";
+      messageAlert = "Esta CURP ya existe";
       break;
     case "DUPLICATED_AREA":
       titleAlert = "Registro duplicado";
-      messageAlert = "Está área ya existe";
+      messageAlert = "Esta área ya existe";
       break;
     case "DUPLICATED_DOCTOR":
       titleAlert = "Registro duplicado";
@@ -158,7 +158,7 @@ function handle400Error(error) {
       break;
     case "DUPLICATED_SPECIALITY":
       titleAlert = "Registro duplicado";
-      messageAlert = "Está área ya existe";
+      messageAlert = "Esta área ya existe";
       break;
     case "SPECIALITY_HAS_DEPENDENCIES":
       titleAlert = "Especialidad con dependencias";
