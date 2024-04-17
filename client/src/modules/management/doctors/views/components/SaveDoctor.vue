@@ -663,9 +663,11 @@ export default Vue.extend({
       availableDaysOptions: [
         { name: "Lunes", id: "MONDAY" },
         { name: "Martes", id: "TUESDAY" },
-        { name: "Miercoles", id: "WEDNESDAY" },
+        { name: "Miércoles", id: "WEDNESDAY" },
         { name: "Jueves", id: "THURSDAY" },
         { name: "Viernes", id: "FRIDAY" },
+        { name: "Sábado", id: "SATURDAY" },
+        { name: "Domingo", id: "SUNDAY" },
       ],
       specialitiesOptions: [],
       errorMessages: {

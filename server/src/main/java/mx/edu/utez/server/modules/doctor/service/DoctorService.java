@@ -114,7 +114,7 @@ public class DoctorService {
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SHIFT_FOUND.name());
 
             if (!specialityExists(doctorDto.getSpeciality().getId()))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SPECIALITY_FOUND.name());
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name());
 
             if (!specialityIsActive(doctorDto.getSpeciality().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SPECIALITY_IS_INACTIVE.name());
@@ -291,10 +291,10 @@ public class DoctorService {
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.DUPLICATED_DOCTOR.name());
 
             if (!this.iShiftRepository.existsById(dto.getShift().getId()))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SHIFT_FOUND.name());
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SHIFT_FOUND.name());
 
             if (!specialityExists(dto.getSpeciality().getId()))
-                return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.NO_SPECIALITY_FOUND.name());
+                return new ResponseApi<>(HttpStatus.NOT_FOUND, true, Errors.NO_SPECIALITY_FOUND.name());
 
             if (!specialityIsActive(dto.getSpeciality().getId()))
                 return new ResponseApi<>(HttpStatus.BAD_REQUEST, true, Errors.SPECIALITY_IS_INACTIVE.name());

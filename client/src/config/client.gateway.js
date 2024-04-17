@@ -50,6 +50,7 @@ AxiosClient.interceptors.response.use(
         handle401Error(error);
         break;
       case 403:
+      case "FORBIDEN":
         Vue.swal(
           "Acceso restringido",
           "No cuentas con permisos necesarios para acceder al recurso",
@@ -61,6 +62,7 @@ AxiosClient.interceptors.response.use(
         handle404Error(error);
         break;
       case 500:
+      case "INTERNAL_SERVER_ERROR":
         Vue.swal(
           "Error interno",
           "Se ha presentado un error en los servicios, vuelve a intentarlo",
@@ -122,16 +124,15 @@ function handle400Error(error) {
       break;
     case "The curp is already registered":
       titleAlert = "Registro duplicado";
-      messageAlert = "Esta CURP ya existe";
+      messageAlert = "Está CURP ya existe";
       break;
     case "DUPLICATED_AREA":
       titleAlert = "Registro duplicado";
-      messageAlert = "Esta área ya existe";
+      messageAlert = "Está área ya existe";
       break;
     case "DUPLICATED_DOCTOR":
       titleAlert = "Registro duplicado";
-      messageAlert =
-        "Información en uso";
+      messageAlert = "Información en uso";
       break;
     // APPOINTMENTS
     case "NO_RESCHEDULES_REMAINING":
@@ -140,18 +141,52 @@ function handle400Error(error) {
       break;
     case "DUPLICATED_PATIENT":
       titleAlert = "Registro duplicado";
-      messageAlert =
-        "Información en uso";
+      messageAlert = "Información en uso";
       break;
     case "DUPLICATED_USER":
       titleAlert = "Registro duplicado";
-      messageAlert =
-        "Información en uso";
+      messageAlert = "Información en uso";
       break;
     case "NO_AVAILABILITY":
       titleAlert = "Sin disponibilidad";
+      messageAlert = "No hay disponibilidad en esa fecha";
+      break;
+    case "AREA_HAS_DEPENDENCIES":
+      titleAlert = "Área con dependencias";
+      messageAlert = "El área está siendo utilizada";
+      break;
+    case "AREA_IS_INACTIVE":
+      titleAlert = "Área inactiva";
+      messageAlert = "El área está inactiva";
+      break;
+    case "DUPLICATED_SPECIALITY":
+      titleAlert = "Registro duplicado";
+      messageAlert = "Está área ya existe";
+      break;
+    case "SPECIALITY_HAS_DEPENDENCIES":
+      titleAlert = "Especialidad con dependencias";
+      messageAlert = "La especialidad está siendo utilizada";
+      break;
+    case "SPECIALITY_IS_INACTIVE":
+      titleAlert = "Especialidad inactiva";
+      messageAlert = "La espacialidad está inactiva";
+      break;
+    case "USER_HAS_DEPENDENCIES":
+      titleAlert = "Usuario con dependencias";
+      messageAlert = "El usuario está siendo utilizado";
+      break;
+    case "INCORRECT_CURRENT_PASSWORD":
+      titleAlert = "Contraseña incorrecta";
+      messageAlert = "Contreaseña incorrecta";
+      break;
+    case "PASSWORD_ARE_THE_SAME":
+      titleAlert = "Coincidencia de contraseña";
       messageAlert =
-        "No hay disponibilidad en esa fecha";
+        "La nueva contraseña no puede ser la misma que ya has utilizado";
+      break;
+    case "DUPLICATED_PATIENT":
+      titleAlert = "Registro duplicado";
+      messageAlert = "Este paciente ya existe";
       break;
   }
   if (message !== "Review request")
@@ -186,6 +221,14 @@ function handle401Error(error) {
       });
       localStorage.clear();
       break;
+    case "USER_IS_INACTIVE":
+      titleAlert = "Usuario inactivo";
+      messageAlert = "EL usuario se encuentra deshabilitado";
+      break;
+    case "USER_IS_BLOCKED":
+      titleAlert = "Usuario bloqueado";
+      messageAlert = "EL usuario está bloqueado";
+      break;
   }
   if (message !== "EXPIRED_SESSION")
     Vue.swal({
@@ -204,6 +247,15 @@ function handle404Error(error) {
   let messageAlert = "";
 
   switch (message.trim()) {
+    case "NO_AREA_FOUND":
+      titleAlert = "No se encontró";
+      messageAlert = "No se encontró el área";
+      break;
+    case "NO_SPECIALITY_FOUND":
+      titleAlert = "No se encontró";
+      messageAlert = "No se encontró la especialidad";
+
+      break;
     case "NO_DATA_FOUND":
       titleAlert = "No hay datos";
       messageAlert = "No se encontraron datos";
@@ -213,7 +265,7 @@ function handle404Error(error) {
       messageAlert = "Los registros no están relacionados";
       break;
     case "NO_STATUS_FOUND":
-      titleAlert = "No se econtro el estado";
+      titleAlert = "No se econtró el estado";
       messageAlert = "No se encontró el estado";
       break;
     case "NO_USER_FOUND":
@@ -223,6 +275,14 @@ function handle404Error(error) {
     case "CREDENTIALS_MISMATCH":
       titleAlert = "Credenciales incorrectas";
       messageAlert = "Usuario y/o contraseña erróneos";
+      break;
+    case "NO_ROLE_FOUND":
+      titleAlert = "No se encontró";
+      messageAlert = "No se encontró el rol";
+      break;
+    case "NO_DOCTOR_FOUND":
+      titleAlert = "No se encontró";
+      messageAlert = "No se encontró el doctor";
       break;
     default:
       titleAlert = "No encontrado";
