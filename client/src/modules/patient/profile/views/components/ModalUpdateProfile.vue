@@ -351,6 +351,7 @@ export default Vue.extend({
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 100);
+            this.$v.$reset();
             this.$nextTick(() => this.$bvModal.hide("modal-update-profile"));
             return;
           }

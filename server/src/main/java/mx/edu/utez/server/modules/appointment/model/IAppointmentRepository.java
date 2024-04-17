@@ -218,7 +218,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     @Query(value = """
             SELECT a.* FROM appointments a
-                     INNER JOIN doctors d on a.patient_id = d.id
+                     INNER JOIN doctors d on a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
                      INNER JOIN users u on p.id = u.person_id
                      INNER JOIN statuses s on u.status_id = s.id
@@ -230,7 +230,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             """, nativeQuery = true,
             countQuery = """
                     SELECT COUNT(*) FROM appointments a
-                             INNER JOIN doctors d on a.patient_id = d.id
+                             INNER JOIN doctors d on a.doctor_id = d.id
                              INNER JOIN people p on d.person_id = p.id
                              INNER JOIN users u on p.id = u.person_id
                              INNER JOIN statuses s on u.status_id = s.id
@@ -244,7 +244,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     @Query(value = """
             SELECT a.* FROM appointments a
-                     INNER JOIN doctors d on a.patient_id = d.id
+                     INNER JOIN doctors d on a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
                      INNER JOIN users u on p.id = u.person_id
                      INNER JOIN statuses s on u.status_id = s.id
@@ -255,7 +255,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             """, nativeQuery = true,
             countQuery = """
                     SELECT COUNT(*) FROM appointments a
-                             INNER JOIN doctors d on a.patient_id = d.id
+                             INNER JOIN doctors d on a.doctor_id = d.id
                              INNER JOIN people p on d.person_id = p.id
                              INNER JOIN users u on p.id = u.person_id
                              INNER JOIN statuses s on u.status_id = s.id
@@ -268,7 +268,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     @Query(value = """
             SELECT a.* FROM appointments a
-                     INNER JOIN doctors d on a.patient_id = d.id
+                     INNER JOIN doctors d on a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
                      INNER JOIN users u on p.id = u.person_id
                      INNER JOIN statuses s on u.status_id = s.id
@@ -282,7 +282,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             """, nativeQuery = true,
             countQuery = """
                     SELECT COUNT(*) FROM appointments a
-                             INNER JOIN doctors d on a.patient_id = d.id
+                             INNER JOIN doctors d on a.doctor_id = d.id
                              INNER JOIN people p on d.person_id = p.id
                              INNER JOIN users u on p.id = u.person_id
                              INNER JOIN statuses s on u.status_id = s.id
@@ -298,7 +298,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     @Query(value = """
             SELECT a.* FROM appointments a
-                     INNER JOIN doctors d on a.patient_id = d.id
+                     INNER JOIN doctors d on a.doctor_id = d.id
                      INNER JOIN people p on d.person_id = p.id
                      INNER JOIN users u on p.id = u.person_id
                      INNER JOIN statuses s on u.status_id = s.id
@@ -311,7 +311,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             """, nativeQuery = true,
             countQuery = """
                     SELECT COUNT(*) FROM appointments a
-                             INNER JOIN doctors d on a.patient_id = d.id
+                             INNER JOIN doctors d on a.doctor_id = d.id
                              INNER JOIN people p on d.person_id = p.id
                              INNER JOIN users u on p.id = u.person_id
                              INNER JOIN statuses s on u.status_id = s.id

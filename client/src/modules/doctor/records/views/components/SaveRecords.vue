@@ -142,8 +142,7 @@ export default {
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 1000);
-            this.v$.recordData.$reset();
-            this.$bvModal.hide("save-records");
+            this.onClose
             return;
           }
         }

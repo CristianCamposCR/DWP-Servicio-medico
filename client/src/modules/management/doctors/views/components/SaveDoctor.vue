@@ -626,6 +626,26 @@ export default Vue.extend({
         password: "",
         profilePhoto: null
       },
+      doctorDefault: {
+        professionalId: "",
+        curp: "",
+        experience: "",
+        isAux: null,
+        availableDays: "",
+        shift: null,
+        speciality: null,
+        name: "",
+        surname: "",
+        lastname: "",
+        email: "",
+        birthday: null,
+        gender: null,
+        phoneNumber: "",
+        details: "",
+        username: "",
+        password: "",
+        profilePhoto: null
+      },
       gendersOptions: [],
       validFile: null,
       validSizeFile: null,
@@ -675,7 +695,6 @@ export default Vue.extend({
       try {
         const result = await SweetAlertCustom.questionMessage();
         if (result.isConfirmed) {
-          console.log(this.doctor.availableDays);
           const englishDaysString =
             "[" +
             this.doctor.availableDays.map((day) => day.id).join(", ") +
@@ -692,7 +711,7 @@ export default Vue.extend({
             setTimeout(() => {
               SweetAlertCustom.successMessage();
             }, 1000);
-            this.v$.doctor.$reset();
+            this.cleanForm();
             this.$nextTick(() => this.$bvModal.hide("modal-save-doctor"));
             return;
           }
@@ -782,6 +801,7 @@ export default Vue.extend({
       this.doctor.professionalId = null;
       this.doctor.experience = null;
       this.doctor.isAux = null;
+      this.doctor.curp=null
       this.doctor.availableDays = null;
       this.doctor.shift = null;
       this.doctor.speciality = null;
@@ -800,8 +820,43 @@ export default Vue.extend({
       this.validSizeFile = null;
       this.previewImage = null;
       this.doctor.profilePhoto = null;
+      this.confirmPassword=null;
+      this.v$.confirmPassword.$reset();
+      this.doctor = { ...this.doctorDefault };
+      this.v$.doctor.isAux.$reset();
+      this.v$.$reset();
       this.v$.doctor.$reset();
       this.$bvModal.hide("modal-save-doctor");
+    },
+    cleanForm(){
+      this.doctor.professionalId = null;
+      this.doctor.experience = null;
+      this.doctor.isAux = null;
+      this.doctor.availableDays = null;
+      this.doctor.shift = null;
+      this.doctor.speciality = null;
+      this.doctor.name = null;
+      this.doctor.surname = null;
+      this.doctor.lastname = null;
+      this.doctor.email = null;
+      this.doctor.curp=null;
+      this.doctor.birthday = null;
+      this.doctor.gender = null;
+      this.doctor.phoneNumber = null;
+      this.doctor.details = null;
+      this.doctor.username = null;
+      this.doctor.password = null;
+      this.$refs["profile-photo"].reset();
+      this.validFile = null;
+      this.validSizeFile = null;
+      this.previewImage = null;
+      this.doctor = { ...this.doctorDefault };
+      this.v$.$reset();
+      this.doctor.profilePhoto = null;
+      this.confirmPassword=null;
+      this.v$.confirmPassword.$reset();
+      this.v$.doctor.isAux.$reset();
+      this.v$.doctor.$reset();
     },
     showPassword() {
       this.showPasswordState = !this.showPasswordState;
@@ -846,10 +901,14 @@ export default Vue.extend({
           ),
         },
         isAux: {
-          required: helpers.withMessage(
-            this.errorMessages.invalidIsAux,
-            required
-          ),
+          // required: helpers.withMessage(
+          //   this.errorMessages.invalidIsAux,
+          //   required
+          // ),
+          required: helpers.withMessage("Campo obligatorio", (value) => {
+            if (value === false) return false;
+            else return true;
+          }),
         },
         availableDays: {
           required: helpers.withMessage(
