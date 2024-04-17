@@ -32,14 +32,11 @@ AxiosClient.interceptors.response.use(
   },
   async (error) => {
     if (!error.response) {
-      console.log("ENTROERROR", error);
       await SweetAlertCustom.ErrorServer();
       return Promise.reject(error);
     }
 
     const { status } = error.response;
-    console.log("interceptor", error);
-
     switch (status) {
       case 400:
       case "BAD_REQUEST":
