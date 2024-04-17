@@ -20,25 +20,25 @@
               <div class="info-content">
                 <p>
                   <strong>Nombre:</strong>
-                  {{ appointmentData.patient.person.name }}
-                  {{ appointmentData.patient.person.surname }}
-                  {{ appointmentData.patient.person.lastname }}
+                  {{ appointmentData.patient?.person?.name }}
+                  {{ appointmentData.patient?.person?.surname }}
+                  {{ appointmentData.patient?.person?.lastname }}
                 </p>
                 <p>
                   <strong>Código:</strong>
-                  {{ appointmentData.patient.patientCode }}
+                  {{ appointmentData.patient?.patientCode }}
                 </p>
                 <p>
                   <strong>Email:</strong>
-                  {{ appointmentData.patient.person.email }}
+                  {{ appointmentData.patient?.person?.email }}
                 </p>
                 <p>
                   <strong>Teléfono:</strong>
-                  {{ appointmentData.patient.person.phoneNumber }}
+                  {{ appointmentData.patient?.person?.phoneNumber }}
                 </p>
                 <p>
                   <strong>Sexo:</strong>
-                  {{ appointmentData.patient.person.gender.name }}
+                  {{ appointmentData.patient?.person?.gender?.name }}
                 </p>
               </div>
             </div>
@@ -51,24 +51,24 @@
               <div class="info-content">
                 <p v-if="appointmentData.doctor">
                   <strong>Nombre:</strong>
-                  {{ appointmentData.doctor.person.name }}
-                  {{ appointmentData.doctor.person.surname }}
-                  {{ appointmentData.doctor.person.lastname }}
+                  {{ appointmentData.doctor?.person?.name }}
+                  {{ appointmentData.doctor?.person?.surname }}
+                  {{ appointmentData.doctor?.person?.lastname }}
                 </p>
                 <p v-else>
                   <strong>No se ha asignado aún un doctor</strong>
                 </p>
                 <p v-if="appointmentData.doctor">
                   <strong>Email:</strong>
-                  {{ appointmentData.doctor.person.email }}
+                  {{ appointmentData.doctor?.person?.email }}
                 </p>
                 <p v-if="appointmentData.doctor">
                   <strong>Teléfono:</strong>
-                  {{ appointmentData.doctor.person.phoneNumber }}
+                  {{ appointmentData.doctor?.person?.phoneNumber }}
                 </p>
                 <p v-if="appointmentData.doctor">
                   <strong>Sexo:</strong>
-                  {{ appointmentData.doctor.person.gender.name }}
+                  {{ appointmentData.doctor?.person?.gender?.name }}
                 </p>
               </div>
             </div>
@@ -90,19 +90,19 @@
                   {{ appointmentData.remainingReschedules }}
                 </p>
                 <p>
-                  <strong>Estado:</strong> {{ appointmentData.status.name }}
+                  <strong>Estado:</strong> {{ appointmentData.status?.name }}
                 </p>
                 <p>
                   <strong>Especialidad:</strong>
-                  {{ appointmentData.speciality.name }}
+                  {{ appointmentData.speciality?.name }}
                 </p>
                 <p>
                   <strong>Tipo de Cita:</strong>
-                  {{ appointmentData.appointmentType.name }}
+                  {{ appointmentData.appointmentType?.name }}
                 </p>
                 <p>
                   <strong>Turno Preferencial:</strong>
-                  {{ appointmentData.preferentialShift.name }}
+                  {{ appointmentData.preferentialShift?.name }}
                 </p>
                 <p v-if="appointmentData.cancellationReason">
                   <strong>Razón de Cancelación:</strong>
@@ -112,23 +112,23 @@
                   <strong>Registros:</strong> {{ appointmentData.records }}
                 </p>
                 <p>
-                  <strong>Total:</strong> {{ appointmentData.payment.total }}
+                  <strong>Total:</strong> {{ appointmentData.payment?.total }}
                 </p>
                 <p>
                   <strong>Total Pagado:</strong>
-                  {{ appointmentData.payment.totalPaid }}
+                  {{ appointmentData.payment?.totalPaid }}
                 </p>
                 <p>
                   <strong>Descuento:</strong>
-                  {{ appointmentData.payment.discount }}
+                  {{ appointmentData.payment?.discount }}
                 </p>
-                <p v-if="appointmentData.payment.refundedAmount">
+                <p v-if="appointmentData.payment?.refundedAmount">
                   <strong>Monto Reembolsado:</strong>
-                  {{ appointmentData.payment.refundedAmount }}
+                  {{ appointmentData.payment?.refundedAmount }}
                 </p>
                 <p>
                   <strong>Estado del Pago:</strong>
-                  {{ appointmentData.payment.status.name }}
+                  {{ appointmentData.payment?.status.name }}
                 </p>
               </div>
             </div>
