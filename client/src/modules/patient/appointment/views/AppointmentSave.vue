@@ -668,7 +668,7 @@
                         <b-col>
                           <b-form-group>
                             <p class="m-0 text-black-50">Año</p>
-                            <b-form-select :options="listMonths"
+                            <b-form-select :options="listYears"
                                            v-model="v$.creditCard.expirationDate.year.$model"
                                            :state=" v$.creditCard.expirationDate.year.$dirty ? !v$.creditCard.expirationDate.year.$error : null"
                                            @blur.native="v$.creditCard.expirationDate.year.$touch()">

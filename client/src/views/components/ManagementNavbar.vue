@@ -27,8 +27,8 @@
              <b class="custom-nav-font">Citas </b>
               <b-icon icon="calendar"> </b-icon>
             </template>
-            <b-dropdown-item to="appointments-active-management">Citas Activas</b-dropdown-item>
             <b-dropdown-item to="appointments-pending-management">Citas Pendientes</b-dropdown-item>
+            <b-dropdown-item to="appointments-active-management">Citas Activas</b-dropdown-item>
             <b-dropdown-item to="appointments-history-management">Historial de Citas</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>

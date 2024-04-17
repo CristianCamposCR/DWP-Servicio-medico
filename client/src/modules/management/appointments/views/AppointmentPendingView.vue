@@ -86,7 +86,7 @@
     <assign-doctor :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsPending"
     @showLoading="showLoading" @hideLoading="hideLoading">
     </assign-doctor>
-    <details-appointment :appointmentData="appointmentSelected"/>
+    <details-appointment :appointmentData="appointmentDetails"/>
   </div>
 </template>
 
@@ -95,7 +95,6 @@ import Vue, { defineAsyncComponent } from "vue";
 import appointmentsController from "../services/controller/appointments.controller";
 import { encrypt } from "../../../../kernel/hashFunctions";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
-import boundary from "../boundary"
 
 export default Vue.extend({
   components: {
@@ -119,7 +118,8 @@ export default Vue.extend({
         },
       },
       appointments: [],
-      appointmentSelected: {}
+      appointmentSelected: {},
+      appointmentDetails: {}
     };
   },
   methods: {
@@ -151,10 +151,10 @@ export default Vue.extend({
       try {
         this.isLoading = true;
         const cipherId = await encrypt(id);
-        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const resp = await appointmentsController.getOne(cipherId);
         const { error } = resp;
         if (!error) {
-          this.appointmentSelected = resp;
+          this.appointmentDetails = resp;
         this.$bvModal.show("details-appointment");
         }
       } catch (error) {

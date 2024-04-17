@@ -10,11 +10,20 @@
       <b-row>
         <b-col cols="12" md="6">
           <b-input-group>
-            <b-form-input placeholder="Escribe la cita" v-model="pagination.data.name"
-              @keyup.enter="getAllAppointmentsActive" class="custom-placeholder"></b-form-input>
+            <b-form-input
+              placeholder="Escribe la cita"
+              v-model="pagination.data.name"
+              @keyup.enter="getAllAppointmentsActive"
+              class="custom-placeholder"
+            ></b-form-input>
 
             <b-input-group-append>
-              <b-button variant="primary" block @click="getAllAppointmentsActive">Buscar</b-button>
+              <b-button
+                variant="primary"
+                block
+                @click="getAllAppointmentsActive"
+                >Buscar</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </b-col>
@@ -39,27 +48,48 @@
           </thead>
           <tbody>
             <tr v-for="(appointment, index) in appointments" :key="index">
-              <td>{{ appointment.patient.person.name }} {{ appointment.patient.person.surname }} {{
-      appointment.patient.person.lastname }}</td>
+              <td>
+                {{ appointment.patient.person.name }}
+                {{ appointment.patient.person.surname }}
+                {{ appointment.patient.person.lastname }}
+              </td>
               <td>{{ appointment.speciality.name }}</td>
               <td>{{ appointment.scheduledAt }}</td>
-              <td>{{ appointment.doctor.person.name }} {{ appointment.doctor.person.surname }} {{
-      appointment.doctor.person.lastname }}</td>
+              <td>
+                {{ appointment.doctor.person.name }}
+                {{ appointment.doctor.person.surname }}
+                {{ appointment.doctor.person.lastname }}
+              </td>
               <td>{{ appointment.preferentialShift.name }}</td>
               <td>{{ appointment.appointmentType.name }}</td>
               <td>{{ appointment.scheduledHour }}</td>
               <td>{{ appointment.status.name }}</td>
               <td>
-                <b-button class="mr-2" @click="cancelDueNonAval(appointment.id)" v-b-tooltip.hover.v-info
-                  title="Cancelar por no disponibilidad" variant="outline-danger">
+                <b-button
+                  class="mr-2"
+                  @click="cancelDueNonAval(appointment.id)"
+                  v-b-tooltip.hover.v-info
+                  title="Cancelar por no disponibilidad"
+                  variant="outline-danger"
+                >
                   <b-icon icon="door-closed"></b-icon>
                 </b-button>
-                <b-button class="mr-2" @click="reassigDoctor(appointment.id)" v-b-tooltip.hover.v-info
-                  title="Resignar doctor" variant="outline-success">
+                <b-button
+                  class="mr-2"
+                  @click="reassigDoctor(appointment.id)"
+                  v-b-tooltip.hover.v-info
+                  title="Resignar doctor"
+                  variant="outline-success"
+                >
                   <b-icon icon="person-plus"></b-icon>
                 </b-button>
-                <b-button variant="outline-secondary" v-b-tooltip.hover.v-info title="Ver detalles"
-                  @click="viewAppointment(appointment.id)"><b-icon icon="eye"></b-icon></b-button>
+                <b-button
+                  variant="outline-secondary"
+                  v-b-tooltip.hover.v-info
+                  title="Ver detalles"
+                  @click="viewAppointment(appointment.id)"
+                  ><b-icon icon="eye"></b-icon
+                ></b-button>
               </td>
             </tr>
           </tbody>
@@ -68,11 +98,24 @@
     </section>
 
     <section class="mt-4" v-if="appointments.length > 0">
-      <b-row class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center">
-        <b-col cols="6" md="6" class="d-flex align-items-end align-items-md-center justify-content-center">
-          <b-pagination align="center" size="sm" class="my-0" v-model="pagination.page"
-            :total-rows="pagination.totalRows" :per-page="pagination.size" aria-controls="table-transition-example"
-            @input="getAllAppointmentsActive">
+      <b-row
+        class="m-0 py-3 py-sm-2 py-lg-1 mb-2 d-flex justify-content-center"
+      >
+        <b-col
+          cols="6"
+          md="6"
+          class="d-flex align-items-end align-items-md-center justify-content-center"
+        >
+          <b-pagination
+            align="center"
+            size="sm"
+            class="my-0"
+            v-model="pagination.page"
+            :total-rows="pagination.totalRows"
+            :per-page="pagination.size"
+            aria-controls="table-transition-example"
+            @input="getAllAppointmentsActive"
+          >
           </b-pagination>
         </b-col>
       </b-row>
@@ -82,10 +125,14 @@
       <no-registers :message="'citas'" />
     </section>
 
-    <reassign-doctor :appointmentSelected="appointmentSelected" @reloadRegisters="getAllAppointmentsActive"
-    @showLoading="showLoading" @hideLoading="hideLoading">
+    <reassign-doctor
+      :appointmentSelected="appointmentSelected"
+      @reloadRegisters="getAllAppointmentsActive"
+      @showLoading="showLoading"
+      @hideLoading="hideLoading"
+    >
     </reassign-doctor>
-    <details-appointment :appointmentData="appointmentSelected"/>
+    <details-appointment :appointmentData="appointmentDetails" />
   </div>
 </template>
 
@@ -94,15 +141,24 @@ import Vue, { defineAsyncComponent } from "vue";
 import appointmentsController from "../services/controller/appointments.controller";
 import { encrypt } from "../../../../kernel/hashFunctions";
 import SweetAlertCustom from "../../../../kernel/SweetAlertCustom";
-import boundary from "../boundary"
+import boundary from "../boundary";
 
 export default Vue.extend({
   components: {
-    LoadingCustom: defineAsyncComponent(() => import("../../../../views/components/LoadingCustom.vue")),
-    NoRegisters: defineAsyncComponent(() => import("../../../../views/components/NoRegisters.vue")),
-    ReassignDoctor: defineAsyncComponent(() => import("./components/ReassignDoctor.vue")),
-    DetailsAppointment: defineAsyncComponent(()=> import("../../../patient/appointment/views/components/DetailsAppointment.vue"))
-
+    LoadingCustom: defineAsyncComponent(() =>
+      import("../../../../views/components/LoadingCustom.vue")
+    ),
+    NoRegisters: defineAsyncComponent(() =>
+      import("../../../../views/components/NoRegisters.vue")
+    ),
+    ReassignDoctor: defineAsyncComponent(() =>
+      import("./components/ReassignDoctor.vue")
+    ),
+    DetailsAppointment: defineAsyncComponent(() =>
+      import(
+        "../../../patient/appointment/views/components/DetailsAppointment.vue"
+      )
+    ),
   },
   name: "PatientView",
   data() {
@@ -119,15 +175,16 @@ export default Vue.extend({
         },
       },
       appointments: [],
-      appointmentSelected: {}
+      appointmentSelected: {},
+      appointmentDetails: {},
     };
   },
   methods: {
-    showLoading(){
-      this.isLoading = true
+    showLoading() {
+      this.isLoading = true;
     },
-    hideLoading(){
-      this.isLoading = false
+    hideLoading() {
+      this.isLoading = false;
     },
     async getAllAppointmentsActive() {
       try {
@@ -151,17 +208,18 @@ export default Vue.extend({
       try {
         this.isLoading = true;
         const cipherId = await encrypt(id);
-        const resp = await boundary.appointmentsController.getOne(cipherId);
+        const resp = await appointmentsController.getOne(cipherId);
         const { error } = resp;
         if (!error) {
-          this.appointmentSelected = resp;
-        this.$bvModal.show("details-appointment");
+          this.appointmentDetails = resp;
+          this.$bvModal.show("details-appointment");
         }
       } catch (error) {
         console.log(error);
       } finally {
         this.isLoading = false;
-      }    },
+      }
+    },
     async reassigDoctor(id) {
       try {
         this.isLoading = true;
@@ -184,9 +242,12 @@ export default Vue.extend({
         if (result.isConfirmed) {
           this.isLoading = true;
           const cipherId = await encrypt(id);
-          const resp = await appointmentsController.cancelAppointment(cipherId, {
-            reason: "SIN_DISPONIBILIDAD"
-          });
+          const resp = await appointmentsController.cancelAppointment(
+            cipherId,
+            {
+              reason: "SIN_DISPONIBILIDAD",
+            }
+          );
           const { error } = resp;
           if (!error) {
             this.getAllAppointmentsActive();
@@ -202,7 +263,7 @@ export default Vue.extend({
         this.isLoading = false;
       }
     },
-    async changeStatus(id) { },
+    async changeStatus(id) {},
   },
   mounted() {
     this.getAllAppointmentsActive();

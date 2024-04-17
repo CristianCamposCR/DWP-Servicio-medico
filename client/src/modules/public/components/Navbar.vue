@@ -46,7 +46,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <ProgressIndicator v-if="this.$route.path === '/landing'" />
+    <ProgressIndicator v-if="this.$route.path === '/cimi/landing'" />
   </div>
 </template>
 
