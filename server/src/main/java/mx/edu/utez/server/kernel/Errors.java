@@ -2,15 +2,7 @@ package mx.edu.utez.server.kernel;
 
 public enum Errors {
     INVALID_FIELDS,
-    MISSING_FIELDS,
-    DATA_TYPE_WRONG,
     REVIEW_REQUEST,
-    NO_DATA_FOUND,
-    RECORDS_ARE_NOT_RELATED,
-    RECORD_NOT_REGISTERED,
-    RECORD_NOT_UPDATED,
-    RECORD_NOT_DELETED,
-    RECORD_HAS_DEPENDENCIES,
 
     // Area
     DUPLICATED_AREA,

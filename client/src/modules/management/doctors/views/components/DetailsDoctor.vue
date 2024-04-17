@@ -7,39 +7,46 @@
       title="Detalles del Doctor"
       centered
     >
-
       <div class="modal-container">
         <div class="doctor-details fullscreen">
           <div class="modal-content">
             <div class="profile-section">
-              <img class="profile-picture" :src="doctor && doctor.person.profilePhoto ? doctor.person.profilePhoto : 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg'" alt="Profile Picture">
+              <img
+                class="profile-picture"
+                :src="
+                  doctor && doctor.person?.profilePhoto
+                    ? doctor.person?.profilePhoto
+                    : 'https://elcomercio.pe/resizer/gj5JbwxkmqRAa4HSpfOHEIUBf7k=/580x330/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/6FUBT6XQXNHHNFOMCHIT7I34NA.jpg'
+                "
+                alt="Profile Picture"
+              />
             </div>
           </div>
           <div class="info-section">
             <div class="header">
               <h1 class="doctor-name">
-                {{ doctor.person.name }} {{ doctor.person.surname }}
-                {{ doctor.person.lastname }}
+                {{ doctor.person?.name }} {{ doctor.person?.surname }}
+                {{ doctor.person?.lastname }}
               </h1>
-              <p class="specialty">{{ doctor.speciality.name }}</p>
+              <p class="specialty">{{ doctor.speciality?.name }}</p>
             </div>
             <div class="details">
               <div class="personal-info">
                 <div class="info-item">
                   <strong>Edad:</strong>
-                  {{ calculateAge(doctor.person.birthday) }}
+                  {{ calculateAge(doctor.person?.birthday) }}
                 </div>
                 <div class="info-item">
-                  <strong>Género:</strong> {{ doctor.person.gender.name }}
+                  <strong>Género:</strong> {{ doctor.person?.gender?.name }}
                 </div>
                 <div class="info-item">
-                  <strong>Email:</strong> {{ doctor.person.email }}
+                  <strong>Email:</strong> {{ doctor.person?.email }}
                 </div>
                 <div class="info-item">
-                  <strong>Teléfono:</strong> {{ doctor.person.phoneNumber }}
+                  <strong>Teléfono:</strong> {{ doctor.person?.phoneNumber }}
                 </div>
                 <div class="info-item">
-                  <strong>Turno:</strong> {{ doctor.shift.name }}
+                  <strong>Turno:</strong> {{ doctor.shift?.name }}
                 </div>
                 <div class="info-item">
                   <strong>Experiencia:</strong> {{ doctor.experience }} años
@@ -47,7 +54,7 @@
               </div>
               <div class="professional-info">
                 <div class="info-item">
-                  <strong>CURP:</strong> {{ doctor.person.curp }}
+                  <strong>CURP:</strong> {{ doctor.person?.curp }}
                 </div>
 
                 <div class="info-item">
@@ -92,17 +99,17 @@ export default {
         WEDNESDAY: "Miércoles",
         THURSDAY: "Jueves",
         FRIDAY: "Viernes",
+        SATURDAY: "Sábado",
+        SUNDAY: "Domingo"
       },
     };
   },
   computed: {
     daysTranslates() {
       const cleanedDays = this.doctor.availableDays
-        .replace("[", "")
-        .replace("]", "");
-      console.log(cleanedDays);
+        ? this.doctor.availableDays.replace("[", "").replace("]", "")
+        : "";
       const days = cleanedDays.split(", ");
-      console.log(days);
       return days.map((day) => this.daysTranslate[day]);
     },
   },
